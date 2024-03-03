@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: SparkyBudget app",
+            "name": "(HTTP) Python: SparkyBudget app",
             "type": "python",
             "request": "launch",
             "module": "flask",
@@ -17,6 +17,28 @@
             },
             "args": [
                 "run",
+               // "--no-debugger", Comment out this line
+               // "--no-reload"  Comment out this line
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "(HTTPS) Python: SparkyBudget app",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "cwd": "${workspaceFolder}/SparkyBudget",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1"  // make sure it is not "0"
+            },
+            "args": [
+                "run",
+                "--cert=certs/cert.pem",
+                "--key=certs/key.pem"
                // "--no-debugger", Comment out this line
                // "--no-reload"  Comment out this line
             ],
