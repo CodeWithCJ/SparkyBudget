@@ -1,0 +1,20 @@
+[project]
+name = "SparkyBudget"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "CodeWithCJ", email = "CodeWithCJ@users.noreply.github.com"},
+]
+dependencies = [
+    "Flask>=3.0.2",
+    "flask-login>=0.6.3",
+    "requests>=2.31.0",
+    "schedule>=1.2.1",
+]
+requires-python = "==3.10.*"
+readme = "README.md"
+license = {text = "AGPL-3.0-or-later"}
+
+
+[tool.pdm]
+distribution = false
