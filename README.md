@@ -24,4 +24,9 @@ Note the folllowing
 2. Once access_url.txt is generated, it will try to re-create again. It will be used for downloading transactions every time you hit refresh icon. I had a code that downloads every 6 hour. But disabled as it was conflicting with inital setup for the first time.
 
 
+Discord Link: https://discord.gg/6c2D6kju
+If you need any help with installation, configuration or contribute, please join the discord.
+
 Disclaimer: I am not responsible for any broken code or loss of your data or any other issue. I am doing this as my fun project so treat it accordingly. Though I am happy to help setup this project for you, always have your backup. 
+
+
