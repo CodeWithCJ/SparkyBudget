@@ -1121,7 +1121,7 @@ if __name__ == '__main__':
 
     
     # Run the Flask app with the SSL context
-    app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
+    app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context, debug=True)
     #app.run(host='0.0.0.0', port=5000, debug=True)
 
 #if __name__ == '__main__':
