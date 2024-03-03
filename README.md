@@ -14,10 +14,8 @@ It is recommended you set up a virtual environment to keep dependencies from con
 #### PDM setup
 
 1. [install pdm](https://pdm-project.org/latest/) if not installed already
-2. `pdm venv create` to create your python virtual environment
-3. `pdm use` to select the python interpreter in your venv
-4. `pdm venv activate` will show you how to activate the venv
-5. `pdm install` will install your dependencies
+2. `pdm install` will install your dependencies
+3. `pdm venv activate` will show you how to activate the venv
 
 #### vanilla Python
 
