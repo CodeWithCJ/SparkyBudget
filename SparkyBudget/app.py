@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')  # Add this line to enable loop controls
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
-app.config['SESSION_COOKIE_SECURE'] = True  # Set to False during development with HTTP
+app.config['SESSION_COOKIE_SECURE'] = bool(int(os.getenv('USE_INTERNAL_HTTPS', 0))) or bool(int(os.getenv('USE_SECURE_SESSION_COOKIE', 1)))
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 app.secret_key = secrets.token_hex(16)
@@ -27,9 +27,8 @@ class User(UserMixin):
     def __init__(self, user_id):
         self.id = user_id
 
-# Replace with your actual user credentials
-hardcoded_username = 'Sparky'
-hardcoded_password = 'Sparky'
+sparky_username = os.getenv('SPARKY_USER', 'Sparky')
+sparky_password = os.getenv('SPARKY_PASS', 'Sparky')
 
 
 ## Define a function to schedule the task
@@ -73,10 +72,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        if username == hardcoded_username and password == hardcoded_password:
+        if username == sparky_username and password == sparky_password:
             user = User(username)
             login_user(user)
-            session['user'] = hardcoded_username
+            session['user'] = sparky_username
             session.permanent = True  # Make the session permanent
             print(f"User {username} successfully logged in.")
 
@@ -1114,11 +1113,15 @@ def delete_rule(RuleKey):
 
 if __name__ == '__main__':
     # Specify the full path to the SSL certificate and key in the "static\SSL" directory
-    ssl_cert_path = r'static/SSL/cert.pem'
-    ssl_key_path = r'static/SSL/key.pem'
+
+    ssl_context = None
+    if bool(int(os.getenv('USE_INTERNAL_HTTPS', 0))):
+        ssl_context=(r'certs/cert.pem', r'certs/key.pem')
+ 
+
     
     # Run the Flask app with the SSL context
-    app.run(host='0.0.0.0', port=5000, ssl_context=(ssl_cert_path, ssl_key_path), debug=True)
+    app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
     #app.run(host='0.0.0.0', port=5000, debug=True)
 
 #if __name__ == '__main__':
