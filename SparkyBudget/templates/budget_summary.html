@@ -1,0 +1,160 @@
+<!-- budget_summary.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Summary</title>
+
+    <!-- Your existing styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #282c35;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        #budgetsummaryTable a {
+            color: #fff; /* White font color for the hyperlink */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
+
+    <!-- Your existing DataTable and other scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.1.5/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
+
+   <script>
+    var editedRow; // Declare editedRow at a higher scope
+	var transactionYears = [{% for year in transaction_years %} "{{ year }}", {% endfor %}];
+    var transactionMonths = [{% for month in transaction_months %} "{{ month }}", {% endfor %}];
+
+
+    $(document).ready(function () {
+        var table = $('#budgetsummaryTable').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [
+                [5, 10, 25, -1],
+                [5, 10, 25, "All"]
+            ],
+            "autoWidth": false,
+            "columns": [
+                null, // Category
+                null, // Sub Category
+                { "orderable": false, "className": "editButton" }, // Budget (make it non-orderable and add a class)
+                null, // Spent
+                null // Balance
+            ]
+        });
+
+        $('#budgetsummaryTable tbody').on('click', 'button.editButton', function () {
+            var index = $(this).data('index');
+            console.log('Edit button clicked for index:', index);
+            enableInlineEdit(index);
+        });
+
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.editable').length && editedRow !== undefined) {
+                console.log('Click outside editable area, updating budget for index:', editedRow);
+                updateBudget(editedRow);
+            }
+        });
+
+        $('#budgetsummaryTable tbody').on('click', 'td.editable', function () {
+            var index = $(this).closest('tr').index();
+            console.log('Editable cell clicked, enabling inline edit for index:', index);
+            enableInlineEdit(index);
+        });
+
+        function enableInlineEdit(index) {
+            console.log('Enabling inline edit for index:', index);
+            var row = $('#budgetsummaryTable').DataTable().row(index).nodes().to$();
+            var budgetValue = row.find('.budgetValue').text();
+
+            // Hide the span and show the input field
+            row.find('.budgetValue').hide();
+            row.find('.editInput').show().val(budgetValue).focus();
+
+            // Store the edited row information in a data attribute
+            editedRow = index;
+            row.data('editedRow', index);
+            console.log('New value is', editedRow);
+        }
+
+       function updateBudget(index) {
+			var row = $('#budgetsummaryTable').DataTable().row(index).nodes().to$();
+			var editedValue = row.find('.editInput').val();
+
+			var selectedYear =  '2023' ;//$('#transactionYear').val();
+			var selectedMonth = '12' ; //$('#monthButtons .active').data('month');
+			var selectedSubcategory = row.find('td:eq(1)').text();
+			console.log('data written are ' ,selectedYear,selectedMonth,selectedSubcategory,editedValue);
+
+			$.ajax({
+				url: '/inline_edit_budget',  // Change the URL to match your Flask route
+				type: 'POST',
+				contentType: 'application/json',  // Add this line to specify JSON content type
+				data: JSON.stringify({
+					year: selectedYear,  // Make sure this variable is defined
+					month: selectedMonth,
+					subcategory: selectedSubcategory,
+					budget: editedValue
+				}),
+				success: function (data, textStatus, jqXHR) {
+					console.log('Budget updated successfully:', data);
+					row.find('.budgetValue').text(editedValue);
+					disableInlineEdit(row);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.error('Error updating budget:', textStatus);
+				}
+			});
+		}
+
+        function disableInlineEdit(row) {
+            row.find('.budgetValue').show();
+            row.find('.editInput').hide();
+            // Clear the edited row information
+            row.data('editedRow', null);
+            editedRow = undefined; // Reset editedRow
+        }
+    });
+</script>
+
+</head>
+<body>
+
+    <table border="1" id="budgetsummaryTable">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Sub Category</th>
+                <th>Budget</th>
+                <th>Spent</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in transaction_data %}            
+                <tr>
+                    <td>{{ data[0] }}</td>
+                    <td>{{ data[1] }}</td>
+                    <td class="editable">
+						<span class="budgetValue">{{ data[2] }}</span>
+						<input type="text" class="editInput" style="display:none;">
+					</td>             
+                    <td><a href="#" onclick="showTransactionDetails(event,'{{ data[1] }}')">{{ data[3] }}</a></td>
+                    <td>{{ data[4] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

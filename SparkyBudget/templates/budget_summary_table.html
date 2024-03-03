@@ -1,0 +1,73 @@
+<!-- budget_summary_table.html -->
+
+<div class="container">
+    {% for data in budget_summary_chart %}
+        <!-- ... (existing content) ... -->
+    {% endfor %}
+
+    <!-- Button and select element for Show/Hide options -->
+    <label for="toggleBudgetSummaryTable">Show/Hide Budget Summary Table:</label>
+    <select id="toggleBudgetSummaryTable" onchange="toggleBudgetSummaryTable()">
+        <option value="show">Show</option>
+        <option value="hide">Hide</option>
+    </select>
+
+    <!-- Budget Summary table container -->
+    <div id="budgetSummaryTableContainer">
+        {% block budget_summary_table %}
+            <!-- Budget Summary table content will be dynamically updated here -->
+            <table border="1" id="budgetSummaryTable">
+                <tbody id="budgetSummaryTableBody">
+                    <!-- Budget Summary table content will be dynamically updated here -->
+                </tbody>
+            </table>
+        {% endblock %}
+    </div>
+
+    <!-- Container for budget details -->
+    <div id="budgetSummaryTableDetailsContainer"></div>
+
+    <!-- Include the rendered balance summary HTML here -->
+    {% include 'balance_summary.html' %}
+
+    <a class="analyze-link" href="{{ url_for('analyze_transaction') }}">
+        <i class="fas fa-piggy-bank"></i> Balance Details
+    </a>
+
+    {% include 'balance_details.html' %}
+
+    <h1><i class="fas fa-money-bill-wave"></i> Budget Summary</h1>
+
+    <div class="filters">
+        <!-- ... (existing content) ... -->
+    </div>
+
+    <div class="center-content">
+        <!-- Include the rendered budget summary HTML here -->
+        {% include 'budget_summary_chart.html' %}
+        <div id="budgetSummaryChart"></div>
+    </div>
+
+    <!-- ... (existing content) ... -->
+</div>
+
+<!-- Include the JavaScript code for toggleBudgetSummaryTable function -->
+<script>
+    function toggleBudgetSummaryTable() {
+        var toggleOption = document.getElementById("toggleBudgetSummaryTable").value;
+        var budgetSummaryTableContainer = document.getElementById("budgetSummaryTableContainer");
+
+        if (toggleOption === "show") {
+            budgetSummaryTableContainer.style.display = "block";
+        } else {
+            budgetSummaryTableContainer.style.display = "none";
+        }
+    }
+</script>
+
+<!-- Include the CSS styles for hiding the budget summary table initially -->
+<style>
+    #budgetSummaryTableContainer {
+        display: none; /* Initially hide the budget summary table */
+    }
+</style>

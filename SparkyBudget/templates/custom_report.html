@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Custom Report</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+ 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+  
+
+</head>
+<body>
+
+<a href="/" title="Go to Home">
+        <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
+    </a>
+<div class="dt-buttons"> </div>
+<form method="GET" action="/custom_report">
+  <label for="date_range">Select Date Range:</label>
+  <input type="text" id="date_range" name="date_range"  />
+  
+  <!-- Add hidden input fields for start_date and end_date -->
+  <input type="hidden" id="start_date" name="start_date" />
+  <input type="hidden" id="end_date" name="end_date" />
+  
+  
+
+  <!-- Bar chart or report visualization code goes here -->
+  <div id="bar_chart">
+    <!-- Include your chart library (e.g., Chart.js) and render the chart here -->
+    <!-- Example using Chart.js -->
+    <canvas id="myChart" style="width: 50vw; height: auto;"></canvas>
+  </div>
+</form>
+
+<script>
+  $(function() {
+	  var lastMonthStart = moment().subtract(1, 'month').startOf('month');
+	var lastMonthEnd = moment().subtract(1, 'month').endOf('month');
+    $('#date_range').daterangepicker({
+       
+		startDate: lastMonthStart,
+		endDate: lastMonthEnd,
+      locale: {
+        cancelLabel: 'Clear'
+      },
+      ranges: {
+        'This month': [moment().startOf('month'), moment().endOf('month')],
+		'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+		'3 months': [moment().subtract(3, 'months'), moment()],
+        '6 months': [moment().subtract(6, 'months'), moment()],
+        '12 months': [moment().subtract(12, 'months'), moment()],
+        'Qtr': [moment().startOf('quarter'), moment().endOf('quarter')],        
+		'Half Year': [moment().subtract(6, 'months').startOf('month'), moment()],
+        'This year': [moment().startOf('year'), moment().endOf('year')],
+        'Last year': [moment().startOf('year').subtract(1, 'year'), moment().endOf('year').subtract(1, 'year')]        
+      }
+    });
+
+    $('#date_range').on('apply.daterangepicker', function(ev, picker) {
+      // Separate start and end dates and set them as separate input values
+      $('#start_date').val(picker.startDate.format('MM/DD/YYYY'));
+      $('#end_date').val(picker.endDate.format('MM/DD/YYYY'));
+         
+
+      // Remove the date_range parameter if it's empty
+      if (!picker.startDate.isSame(picker.endDate)) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+			 $('form').submit();
+
+      } else {
+        $('#date_range').removeAttr('name');
+      }
+    });
+
+    $('#date_range').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+      $('#start_date').val('');
+      $('#end_date').val('');
+      // Remove the date_range parameter when canceled
+      $('#date_range').removeAttr('name');
+    });
+
+    // Extract data for the chart from the server-side data
+    var customReportData = {{ custom_report_data|tojson }};
+
+    // Prepare data for the chart
+    var labels = customReportData.map(function(item) {
+      return item[0]; // Assuming TransactionPayee is at index 1
+    });
+
+    var values = customReportData.map(function(item) {
+      return item[1]; // Assuming TotalTransactionAmount is at index 4
+    });
+
+    // Define an array of colors (you can add more colors as needed)
+    // Define an array of 50 colors
+    var colors = [
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+];
+
+    // Ensure there are enough colors for the number of labels
+    while (colors.length < labels.length) {
+      // If you run out of predefined colors, you can add more or use a color generator
+      colors = colors.concat(colors);
+    }
+
+    // Slice the array to match the number of labels
+    colors = colors.slice(0, labels.length);
+
+    // Create an array to store the background color for each bar
+    var backgroundColors = labels.map(function(label, index) {
+      return colors[index % colors.length];
+    });
+
+    // Render the bar chart using Chart.js
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Total Transaction Amount',
+          data: values,
+          backgroundColor: backgroundColors,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            display: 'auto',
+            color: 'black', // You can specify the color of the data labels
+            formatter: function(value, context) {
+              return '$' + value; // You can customize the format as needed
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

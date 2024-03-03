@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add DataTables styles -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+    <!-- Include DataTables, DataTables Buttons, and Date Range Filter extension scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    
+
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+	<link href="https://cdn.datatables.net/v/dt/dt-1.13.8/datatables.min.css" rel="stylesheet">
+ 
+	<script src="https://cdn.datatables.net/v/dt/dt-1.13.8/datatables.min.js"></script>
+	
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+	
+
+
+
+
+    <!-- Additional styles for customization -->
+    <style>
+	
+		/* Change color for Select2 option being highlighted (mouseover) */
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #555 !important; /* Darker background for highlighted item */
+    color: #fff !important;
+}
+
+/* Adjust select2 dropdown to fit dark theme */
+.select2-container--default .select2-results>.select2-results__options {
+    background-color: #333;
+    color: #ddd;
+}
+
+/* Adjust the select2 search within dropdown input box to fit dark theme */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #333;
+    color: #ddd;
+    border-color: #444;
+}
+
+/* Adjust the border and text color of the select2 box itself */
+.select2-container--default .select2-selection--single {
+    border-color: #444;
+    color: #ddd;
+}
+
+/* Adjust the border and text color of the select2 dropdown */
+.select2-dropdown {
+    border-color: #444;
+    color: #ddd;
+}
+
+/* Adjust the text color of the select2 results */
+.select2-container--default .select2-results__option {
+    color: #ddd;
+}
+	
+		/* Your existing styles */
+		body {
+			background-color: #1b1e23; /* Dark background color */
+			color: #ffffff; /* Light text color */
+		}
+
+		/* Adjust the background and text color of the table */
+		table.dataTable {
+			background-color: #000000; /* Black background color for the table */
+			color: #ffffff; /* Light text color for the table */
+		}
+
+		/* Adjust the color of table headers */
+		table.dataTable thead th {
+			color: #ffffff; /* Light text color for table headers */
+		}
+
+		/* Adjust the color of table rows */
+		table.dataTable tbody tr {
+			background-color: #000000; /* Black background color for all rows */
+			color: #ffffff; /* Light text color for all rows */
+		}
+
+		.custom-row-class {
+			background-color: #444444 !important; /* Dark background color for highlighted rows */
+		}
+
+		table.dataTable tbody td:first-child {
+			background-color: #000000; /* Black background color for the first column */
+			color: #ffffff; /* Light text color for the first column */
+		}
+
+		/* Override the default DataTables stripe color */
+		table.dataTable tbody tr.odd,
+		table.dataTable tbody tr.odd:hover {
+			background-color: #555555 !important; /* Darker background color for odd rows */
+		}
+
+		/* Adjust the color of DataTables pagination controls */
+		.dataTables_paginate .paginate_button {
+			color: #ffffff !important; /* Light text color for pagination controls */
+		}
+
+		.dataTables_paginate .paginate_button:hover {
+			color: #ffffff !important; /* Light text color for pagination controls on hover */
+		}
+
+		/* Adjust the color of other DataTables elements */
+		.dataTables_info,
+		.dataTables_length label,
+		.dataTables_filter label,
+		.dataTables_processing,
+		.dataTables_paginate,
+		.dataTables_paginate span a {
+			color: #ffffff !important; /* Light text color for other DataTables elements */
+		}
+
+		.dataTables_paginate span .current {
+			background-color: #555555 !important; /* Darker background color for the current page number */
+			color: #ffffff !important; /* Light text color for the current page number */
+		}
+
+		/* Adjust the color of DataTables length menu */
+		.dataTables_length label select {
+			color: #ffffff !important; /* Light text color for length menu */
+			background-color: #444444 !important; /* Dark background color for length menu */
+		}
+
+		/* Adjust the color of DataTables pagination buttons */
+		.dataTables_paginate .paginate_button {
+			color: #ffffff !important; /* Light text color for pagination buttons */
+		}
+
+		.dataTables_paginate .paginate_button:hover {
+			color: #ffffff !important; /* Light text color for pagination buttons on hover */
+		}
+
+		/* Adjust the color of DataTables pagination controls at the bottom right */
+		.dataTables_wrapper .dataTables_paginate .paginate_button {
+			color: #ffffff !important; /* Light text color for pagination controls */
+		}
+
+		.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+			color: #ffffff !important; /* Light text color for pagination controls on hover */
+		}
+
+		/* Adjust the color of DataTables previous button */
+		.dataTables_wrapper .dataTables_paginate .previous {
+			color: #ffffff !important; /* Light text color for the Previous button */
+		}
+
+		.dataTables_wrapper .dataTables_paginate .previous:hover {
+			color: #ffffff !important; /* Light text color for the Previous button on hover */
+		}
+
+		/* Adjust the color of DataTables search input */
+		.dataTables_wrapper .dataTables_filter input {
+			color: #ffffff !important; /* Light text color for the search input */
+			background-color: #444444 !important; /* Dark background color for the search input */
+		}
+
+		/* Adjust the color of DataTables search input on focus */
+		.dataTables_wrapper .dataTables_filter input:focus {
+			color: #ffffff !important; /* Light text color for the search input on focus */
+			background-color: #555555 !important; /* Darker background color for the search input on focus */
+		}
+
+		#balanceTable {
+			margin: 20px auto;
+		}
+
+		table.dataTable thead th.sorting,
+		table.dataTable thead th.sorting_asc,
+		table.dataTable thead th.sorting_desc,
+		table.dataTable thead th.sorting_asc_disabled,
+		table.dataTable thead th.sorting_desc_disabled {
+			background-color: #000000 !important; /* Darker background color for the filtered column header */
+			color: #ffffff !important; /* Light text color for the filtered column header */
+		}
+		table.dataTable tbody tr.even,
+		table.dataTable tbody tr.even:hover,
+		table.dataTable tbody tr.odd,
+		table.dataTable tbody tr.odd:hover {
+			background-color: #000000 !important; /* Set the background color as needed */
+		}
+
+		#balanceTable_wrapper {
+			margin: 20px auto;
+			width: 80%; /* Adjust the width as needed */
+		}
+		table.dataTable tbody tr {
+			background-color: #000000 !important; /* Set the background color as needed */
+		}
+		
+
+		/* Adjust the color of table rows during hover */
+		table.dataTable tbody tr:hover {
+			background-color: #333333 !important; /* Set the hover background color as needed */
+		}
+		/* Add these styles to customize the Date Range Filter */
+		.daterangepicker {
+			background-color: #000000 !important; /* Black background color */
+			color: #ffffff !important; /* White text color */
+		}
+
+		.daterangepicker .calendar-time {
+			background-color: #000000 !important; /* Black background color for time selection */
+		}
+
+		.daterangepicker .daterangepicker_input {
+			background-color: #000000 !important; /* Black background color for input */
+			color: #ffffff !important; /* White text color for input */
+		}
+
+		.daterangepicker .daterangepicker_input input {
+			border-color: #555555 !important; /* Border color for input */
+		}
+
+		.daterangepicker .ranges li.active {
+			background-color: #555555 !important; /* Darker background color for active range */
+		}
+
+		.daterangepicker .ranges li:hover {
+			background-color: #444444 !important; /* Dark background color for hover effect */
+		}
+
+		.daterangepicker .ranges li.active::before {
+			border-bottom-color: #555555 !important; /* Border color for active range indicator */
+		}
+
+		.daterangepicker .applyBtn, .daterangepicker .cancelBtn {
+			background-color: #555555 !important; /* Dark background color for buttons */
+			color: #ffffff !important; /* White text color for buttons */
+		}
+
+		.daterangepicker .applyBtn:hover, .daterangepicker .cancelBtn:hover {
+			background-color: #444444 !important; /* Darker background color for button hover effect */
+		}
+		table.dataTable tbody tr.filter-row td {
+			background-color: #000000 !important; /* Black background color for the filtered column */
+			color: #ffffff !important; /* Light text color for the filtered column */
+		}
+		
+	.subcategory-select {
+			background-color: black;
+			color: white; /* Set the text color to white for better visibility */
+		}
+		
+		#bar_chart .c3-axis-x-label,
+		#bar_chart .c3-axis-y-label,
+		#bar_chart .c3-axis-x .tick text,
+		#bar_chart .c3-axis-y .tick text {
+			fill: white !important;
+		}
+		#bar_chart .c3-tooltip {
+    background-color: darkgray;
+}
+
+#bar_chart .c3-tooltip tr {
+    color: white; /* Set the text color for better visibility on dark background */
+}.c3-tooltip-container {
+    background-color: darkgray !important;
+    color: white !important;
+}
+	
+ .transaction_edit_filter {
+            display: flex;
+            align-items: center;
+        }
+.spacer-label {
+            padding: 0 10px; /* Adjust the padding as needed */
+        }
+
+	</style>
+
+</head>
+
+<body>
+
+<a href="/" title="Go to Home">
+        <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
+    </a>
+<!-- Add this to your transaction_edit.html file -->
+<div style="width: 80%; height: 50%;">
+    <canvas id="lineChartCanvas" style="width: 100%; height: 100%;"></canvas>
+</div>
+
+
+
+
+<div class="transaction_edit_filter">
+
+
+
+<form method="GET" action="/analyze_transaction">
+  <label for="date_range">Date Range:</label>
+  <input type="text" id="date_range" name="date_range"  />
+  
+  <!-- Add hidden input fields for start_date and end_date -->
+  <input type="hidden" id="start_date" name="start_date" />
+  <input type="hidden" id="end_date" name="end_date" />
+
+ 
+</form>
+    <label class="spacer-label" for="dropdown_select"> </label>
+
+<label for="dropdown_select"></label>
+<select id="dropdown_select">
+	<option value="Subcategory">Subcategory</option>
+    <option value="Year">Year</option>
+    <option value="Month">Month</option>
+    <option value="FormattedMonth">Formatted Month</option>
+    <option value="Payee">Payee</option>    
+</select>
+</div>
+<div id="bar_chart_container">
+    <div id="bar_chart"></div>
+</div>
+<div class="dt-buttons"> </div>
+    <!-- DataTable for displaying transaction details -->
+    <table id="transactionTable" class="display">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Formatted Month</th>
+                <th>Transaction Date</th>
+                <th>Description</th>
+                <th>Payee</th>
+                <th>Subcategory</th> <!-- New column for dropdown -->
+                <th>Transaction Key</th>
+                <th>Transaction Amount</th>
+				<th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transaction_data %}
+            <tr>
+                <td>{{ transaction[0] }}</td>
+                <td>{{ transaction[1] }}</td>
+                <td>{{ transaction[2] }}</td>
+                <td>{{ transaction[3] }}</td>
+                <td>{{ transaction[4] }}</td>
+                <td>{{ transaction[5] }}</td>
+				<td>{{ transaction[6] }}</td>                
+                <td>{{ transaction[7] }}</td>
+                <td>{{ transaction[8] }}</td>
+				<td>
+					<div class="subcategory-cell">
+						<button class="re-categorize-button">Re-categorize</button>
+						<div class="subcategory-dropdown" style="display: none;"></div>
+					</div>
+				</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Include DataTables initialization script with export options and date range filter -->
+    <script>
+var table; // Define the table variable globally
+var selectedOption = "Subcategory";
+    var transaction_data = {{ transaction_data | tojson | safe }};
+
+
+
+        
+    $(document).ready(function () {
+         table = $('#transactionTable').DataTable({
+            // ... (your existing DataTable configuration)
+			
+			"orderClasses": false,
+            "pageLength": 15,
+			"order": [],
+			dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'excel', 'pdf'
+                ],
+            "columnDefs": [
+                { "targets": [0, 1, 2, 7], "visible": false }
+            ],
+            "stripeClasses": [],
+            "createdRow": function (row, data, index) {
+                $(row).addClass('custom-row-class');
+
+                // Find the cell containing the new Subcategory dropdown
+                var subcategoryCell = $(row).find('td.subcategory-dropdown');
+
+                // Find the button and dropdown elements
+                var reCategorizeButton = $(row).find('.re-categorize-button');
+                var subcategoryDropdown = $(row).find('.subcategory-dropdown');
+
+                // Add click event listener to the "Re-categorize" button
+                reCategorizeButton.on('click', function () {
+                    // Toggle the visibility of the dropdown
+                    subcategoryDropdown.toggle();
+
+                    // Hide the "Re-categorize" button after it's pressed
+                    reCategorizeButton.hide();
+
+                    // Check if the dropdown is visible
+                    if (subcategoryDropdown.is(':visible')) {
+                        // Load subcategories only when the dropdown becomes visible
+                        $.ajax({
+                            url: '/getDistinctSubcategories',
+                            method: 'GET',
+                            success: function (response) {
+                                // Populate the dropdown with subcategories using Select2
+                                subcategoryDropdown.html('<select class="subcategory-select"></select>');
+                                var subcategorySelect = subcategoryDropdown.find('.subcategory-select');
+                                subcategorySelect.select2({
+                                    data: response.map(function (subcategory) {
+                                        return { id: subcategory, text: subcategory };
+                                    }),
+                                    placeholder: 'Select a subcategory',
+                                    allowClear: true,																		
+                                    width: '200px'// Set the width to a specific value (e.g., 200 pixels)
+									 
+                                });
+								
+								subcategorySelect.on('select2:open', function (e) {
+									$('.select2-dropdown--below').addClass('dark-theme');
+								});
+
+								// Add custom styles to the head of the document
+								var customStyles = `
+									.dark-theme {
+										background-color: #333 !important;
+										color: #fff !important;
+									}
+
+									.dark-theme .select2-results__option {
+										color: #fff !important;
+									}
+								`;
+
+								$('head').append('<style>' + customStyles + '</style>');
+
+                                // Add change event listener to the Select2 dropdown
+                                subcategorySelect.on('select2:select', function (e) {
+                                    // Get the updated Subcategory value
+                                    var updatedSubcategory = e.params.data.text;
+
+                                    // Add additional data you may need for the update
+                                    var rowData = table.row($(row)).data();
+                                    var transactionId = rowData[7];
+
+                                    // Trigger AJAX request to updateSubcategory endpoint
+                                    $.ajax({
+                                        url: '/updateSubcategory',
+                                        method: 'POST',
+                                        data: {
+                                            transactionId: transactionId,
+                                            updatedSubcategory: updatedSubcategory
+                                            // Add any other necessary data for the update
+                                        },
+                                        success: function (response) {
+                                            console.log('Subcategory updated successfully:', response);
+                                            
+                                        },
+                                        error: function (error) {
+                                            console.error('Error updating subcategory:', error);
+                                            $('<div></div>').appendTo('body')
+                                                .html('<div><h6>Error updating subcategory: ' + error + '</h6></div>')
+                                                .dialog({
+                                                    modal: true, title: 'Error', zIndex: 10000, autoOpen: true,
+                                                    width: 'auto', resizable: false,
+                                                    close: function (event, ui) {
+                                                        $(this).remove();
+                                                    }
+                                                });
+                                        }
+                                    });
+                                });
+                            },
+
+                            error: function (error) {
+                                console.error('Error loading subcategories:', error);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+            // Add individual column filters
+            $('#transactionTable thead th').each(function (index) {
+                var title = $(this).text();
+
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+            // Apply the individual column filters
+            table.columns().every(function () {
+                var that = this;
+
+                // Check if the input is not focused to prevent sorting
+                var isInputFocused = false;
+
+                $('input', this.header())
+                    .on('focus', function () {
+                        isInputFocused = true;
+                    })
+                    .on('blur', function () {
+                        isInputFocused = false;
+                    })
+                    .on('keyup change', function (e) {
+                        // Prevent sorting when the input field is focused
+                        if (isInputFocused && e.type === 'keyup' && e.key !== 'Enter') {
+                            return;
+                        }
+
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+            });
+			
+			
+
+		// Trigger aggregateData with the default option on page load
+		aggregateData(transaction_data, selectedOption);
+	
+		function aggregateData(transaction_data, selectedOption) {
+		  // Initialize an object to store aggregated data
+		  var aggregatedData = {};
+
+		  // Iterate over the transaction_data array
+		  for (var i = 0; i < transaction_data.length; i++) {
+			// Extract relevant fields from each transaction
+			var selectedField = transaction_data[i][getIndexForSelectedOption(selectedOption)];
+			var transactionAmount = Math.round(Math.abs(parseFloat(transaction_data[i][8])));
+
+
+			// Create a unique key based on the desired field (e.g., selectedField)
+			var key = selectedField;
+
+			// Check if the key already exists in the aggregatedData object
+			if (aggregatedData[key]) {
+			  // If it exists, update the aggregated values
+			  aggregatedData[key].count += 1;
+			  aggregatedData[key].totalAmount += isNaN(transactionAmount) ? 0 : transactionAmount;
+			} else {
+			  // If it doesn't exist, initialize a new entry
+			  aggregatedData[key] = {
+				count: 1,
+				totalAmount: isNaN(transactionAmount) ? 0 : transactionAmount
+			  };
+			}
+			// Check for NaN values
+			if (isNaN(aggregatedData[key].totalAmount)) {
+				console.log('NaN value detected for key:', key);
+				console.log('Transaction data:', transaction_data[i]);
+			}
+		  }
+
+		  // Log or use the aggregatedData object as needed
+		  console.log("My aggregated data is ", aggregatedData);
+		 updateChart(aggregatedData);
+		}
+
+		// Helper function to get the index based on selected option
+		function getIndexForSelectedOption(selectedOption) {
+		  switch (selectedOption) {
+			case "Year":
+			  return 0; // Assuming Year is at index 0 in your data structure
+			case "Month":
+			  return 1; // Assuming Month is at index 1
+			case "FormattedMonth":
+			  return 2; // Assuming FormattedMonth is at index 2
+			case "Payee":
+			  return 5; // Assuming Payee is at index 5
+			case "Subcategory":
+			  return 6; // Assuming Subcategory is at index 6
+			default:
+			  return 6; // Default to Subcategory if selectedOption is not recognized
+		  }
+		}
+
+		// Function to update the chart with the aggregated data
+		function updateChart(aggregatedData) {
+    var excludedCategories = ["Money Transfer", "Paycheck", "Interest Income", "CC Payment","Transfer","Credit Card Payment"];
+    var filteredData = Object.entries(aggregatedData)
+        .filter(([category, data]) => !excludedCategories.includes(category))
+        .reduce((obj, [category, data]) => {
+            obj[category] = data.totalAmount;
+            return obj;
+        }, {});
+
+    // Extract categories and values needed for the chart
+    var categories = Object.keys(filteredData);
+    var totalAmounts = Object.values(filteredData);
+
+    // Process filteredData object
+    for (var i = 0; i < categories.length; i++) {
+        var category = categories[i];
+
+        // Check for NaN values in totalAmount field and replace them with 0
+        if (isNaN(filteredData[category])) {
+            console.error("NaN value found in totalAmount for category:", category, filteredData[category]);
+            filteredData[category] = 0;
+        }
+    }
+
+    // Generate an array of unique colors for each category
+    var categoryColors = generateCategoryColors(categories.length);
+
+    // Use C3.js to generate the chart with different colors for each bar
+    var chart = c3.generate({
+        bindto: '#bar_chart',
+        data: {
+            x: 'Category', // x-axis data will be stored under 'Category' in the columns array
+            columns: [
+                // Use 'Category' as the label for the x-axis
+                ['Category'].concat(categories),
+                ['Total Amount'].concat(totalAmounts)
+            ],
+            type: 'bar',
+            color: function (color, d) {
+                return categoryColors[d.index % categoryColors.length]; // Assign color based on category index
+            },
+            labels: {
+                format: function (v, id, i, j) {
+                    return v; // Display the data value as the label
+                },
+                color: 'white' // Set the label color to white
+            }
+        },
+        axis: {
+            x: {
+                type: 'category', // Specify that x-axis should be treated as a category
+                label: {
+                    text: 'Category', // Use 'Category' as the x-axis label
+                    position: 'outer-center',
+                    color: 'white' // Set x-axis label color to white
+                }
+            },
+            y: {
+                label: {
+                    text: 'Total Amount', // Y-axis label
+                    position: 'outer-middle',
+                    color: 'white' // Set y-axis label color to white
+                }
+            }
+        },
+        grid: {
+            y: {
+                lines: [{ value: 0 }] // Add a horizontal line at y = 0 for better visibility on a dark background
+            }
+        },
+        // Your other chart configurations...
+    });
+
+    d3.selectAll('#bar_chart .c3-axis-x-label, #bar_chart .c3-axis-y-label')
+        .style('fill', 'white');
+}
+
+
+// Function to generate an array of unique colors for each category
+function generateCategoryColors(numCategories) {
+    var colors = [];
+    for (var i = 0; i < numCategories; i++) {
+        // Generate a random color code (you can customize this logic)
+        var color = '#' + Math.floor(Math.random()*16777215).toString(16);
+        colors.push(color);
+    }
+    return colors;
+}
+
+
+
+
+
+
+
+
+    // Add change event listener to the dropdown for triggering aggregation
+    $('#dropdown_select').on('change', function () {
+        var selectedOption = $(this).val();
+          aggregateData(transaction_data, selectedOption);
+    });
+			
+        });
+		
+		
+	$(function() {
+	  var lastMonthStart = moment().subtract(1, 'month').startOf('month');
+	var lastMonthEnd = moment().subtract(1, 'month').endOf('month');
+	  var currentMonthStart = moment().startOf('month');
+    var currentMonthEnd = moment().endOf('month');
+    $('#date_range').daterangepicker({
+       
+		startDate: currentMonthStart,
+		endDate: currentMonthEnd,
+      locale: {
+        cancelLabel: 'Clear'
+      },
+      ranges: {
+        'This month': [moment().startOf('month'), moment().endOf('month')],
+		'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+		'3 months': [moment().subtract(3, 'months'), moment()],
+        '6 months': [moment().subtract(6, 'months'), moment()],
+        '12 months': [moment().subtract(12, 'months'), moment()],
+        'Qtr': [moment().startOf('quarter'), moment().endOf('quarter')],        
+		'Half Year': [moment().subtract(6, 'months').startOf('month'), moment()],
+        'This year': [moment().startOf('year'), moment().endOf('year')],
+        'Last year': [moment().startOf('year').subtract(1, 'year'), moment().endOf('year').subtract(1, 'year')]        
+      }
+    });
+
+    $('#date_range').on('apply.daterangepicker', function(ev, picker) {
+      // Separate start and end dates and set them as separate input values
+      $('#start_date').val(picker.startDate.format('MM/DD/YYYY'));
+      $('#end_date').val(picker.endDate.format('MM/DD/YYYY'));
+         
+
+      // Remove the date_range parameter if it's empty
+      if (!picker.startDate.isSame(picker.endDate)) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+			 $('form').submit();
+
+      } else {
+        $('#date_range').removeAttr('name');
+      }
+    });
+
+    $('#date_range').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+      $('#start_date').val('');
+      $('#end_date').val('');
+      // Remove the date_range parameter when canceled
+      $('#date_range').removeAttr('name');
+    });
+	
+	
+	
+	
+
+   
+  });	
+		
+// Add this code to your existing <script> block in transaction_edit.html
+$(document).ready(function () {
+    // Function to fetch line chart data
+    function fetchLineChartData() {
+        $.ajax({
+            url: '/salary_chart_data',
+            method: 'GET',
+            success: function (lineChartData) {
+                // Call a function to render the line chart using lineChartData
+                renderLineChart(lineChartData);
+            },
+            error: function (error) {
+                console.error('Error fetching line chart data:', error);
+            }
+        });
+    }
+
+    // Function to render the line chart
+    function renderLineChart(lineChartData) {
+    const dates = lineChartData.map(entry => entry[0]);
+    const salaries = lineChartData.map(entry => entry[1]);
+
+    const ctx = document.getElementById('lineChartCanvas').getContext('2d');
+
+    const myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [{
+      label: 'Salary',
+      data: salaries,
+      borderColor: 'rgba(75, 192, 192, 1)',
+      fill: false,
+    }]
+  },
+  options: {
+    maintainAspectRatio: false,
+    responsive: true,
+    scales: {
+      x: {
+        ticks: {
+          color: 'white', // X-axis tick color
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)', // X-axis grid color
+        }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: 'white', // Y-axis tick color
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)', // Y-axis grid color
+        },
+        title: {
+          display: true,
+          text: 'Salary',
+          color: 'white', // Y-axis title color
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          color: 'rgba(255, 255, 255, 1)',
+        }
+      }
+    }
+  }
+});
+
+
+    console.log("lineChart:", myLineChart);
+}
+
+
+
+
+    // Fetch line chart data on page load
+    fetchLineChartData();
+});
+
+    </script>
+
+
+
+</body>
+
+</html>
