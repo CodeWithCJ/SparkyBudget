@@ -166,3 +166,4 @@ containers/data/
 # secrets for SparkyBudget
 SparkyBudget/token.txt
 SparkyBudget/access_url.txt
+SparkyBudget/SparkyBudget.db
