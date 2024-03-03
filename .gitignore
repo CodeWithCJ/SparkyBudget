@@ -167,3 +167,4 @@ containers/data/
 SparkyBudget/token.txt
 SparkyBudget/access_url.txt
 SparkyBudget/SparkyBudget.db
+SparkyBudget/output/
