@@ -10,6 +10,7 @@ dependencies = [
     "flask-login>=0.6.3",
     "requests>=2.31.0",
     "schedule>=1.2.1",
+    "gunicorn>=21.2.0",
 ]
 requires-python = "==3.10.*"
 readme = "README.md"
