@@ -1,5 +1,4 @@
 
-    <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #282c35;
@@ -95,7 +94,7 @@
             border: 1px solid red;
         }
 		
-		#addBudgetForm {
+		#addBudgetForm.hide {
             display: none;
         }
 		
@@ -354,4 +353,34 @@
 			}
 		}
 
-    </style>
+.month-year-picker-container {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.month-year-picker-container .year-month-picker.hide {
+    display: none;
+}
+
+.month-year-picker-container .year-month-picker {
+    display: block;
+    position: absolute;
+    background-color: black;
+    right: 0px;
+    width: 200px;
+    padding: 4px;
+    z-index: 100;
+}
+
+.month-year-picker-container .year-month-picker .year-picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.month-year-picker-container .year-month-picker .month-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: auto;
+}
