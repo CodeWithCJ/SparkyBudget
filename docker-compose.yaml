@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    container_name: sparkybudget
+    env_file:
+      - .env
+    image: sparkybudget
+    volumes:
+      - ./access_url.txt:/app/access_url.txt
+      - ./SparkyBudget.db:/app/SparkyBudget.db
+      - ./token.txt:/app/token.txt
+      - ./output:/app/output
+    ports:
+      - 5050:5000
+    restart: unless-stopped
