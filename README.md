@@ -42,7 +42,7 @@ Make sure to tell VSCode to use your venv: https://code.visualstudio.com/docs/py
 
 To use local HTTPS, create self signed certicate and upload under `SparkyBudget\certs`. Then in your .env set `USE_INTERNAL_HTTPS` and `USE_SECURE_SESSION_COOKIE` both equal to `1`
 
-You can now use `(HTTPS) Python: SparkyBudget app` from VSCode to launc the web application
+You can now use `(HTTPS) Python: SparkyBudget app` from VSCode to launch the web application
 
 TODO: will need to enable dotenv to do this: Run using "python app.py" command. It uses 5000 port.
 
@@ -51,11 +51,17 @@ TODO: will need to enable dotenv to do this: Run using "python app.py" command. 
 Default User name: Sparky
 Default Password: Sparky
 
-These can be changed in your .env file vis `SPARKY_USER` and `SPARKY_PASS`
+These can be changed in your .env file via `SPARKY_USER` and `SPARKY_PASS`
 
 ## Docker
 
-TBD
+an example dockerfile and docker-compose.yaml are included at the root of the project. The docker version runs using gunicorn in a production build
+
+You can build the image via the following command: `sudo docker build -t sparkybudget .`
+
+And you can run it via docker-compose like so: `sudo docker compose up`
+
+You may need to change the the mounting paths for the database, output directory, and token.txt/access_url.txt. By default I expect them at the root, so you may wish to copy them out of the SparkyBudget directory up to the same level as the docker-compose.yaml
 
 ## Information on how it works and SimpleFin
 
