@@ -708,7 +708,7 @@ function updateSubcategory(transactionKey, event) {
 
 <form id="addBudgetForm" class="hidden">
     <label for="budgetMonth">Budget Month (YYYY-MM):</label>
-    <input type="month" id="budgetMonth" placeholder="Enter budget month" required>
+    <input type="month" id="budgetMonth" placeholder="Enter budget month" required pattern="[0-9]{4}-[0-9]{2}">
     <label for="subCategoryInput">Subcategory:</label>
 	<select id="subCategoryInput" class="select2" required>
 		<option value="" selected disabled>Select a subcategory</option>
