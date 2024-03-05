@@ -122,12 +122,12 @@ $(document).ready(function () {
         }
     });
 
-    // Add individual column filters
-    $('#transactionTable thead th').each(function (index) {
-        var title = $(this).text();
+    // // Add individual column filters
+    // $('#transactionTable thead th').each(function (index) {
+    //     var title = $(this).text();
 
-        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-    });
+    //     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    // });
 
     // Apply the individual column filters
     table.columns().every(function () {
