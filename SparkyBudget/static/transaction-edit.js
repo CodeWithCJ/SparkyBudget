@@ -121,7 +121,8 @@ $(document).ready(function () {
             });
         }
     });
-
+    
+    // TODO: this guy breaks excel export as there's no header columns. Do we really need this?
     // // Add individual column filters
     // $('#transactionTable thead th').each(function (index) {
     //     var title = $(this).text();
