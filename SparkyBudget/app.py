@@ -218,7 +218,7 @@ def index():
     conn.close()
 
     # Render the template with the fetched data and filters, including transaction_years
-    return render_template('index.html', account_type_data=account_type_data, account_type_banak_data=account_type_banak_data, bank_account_name_balance_details=bank_account_name_balance_details, transaction_years=transaction_years, transaction_months=transaction_months)
+    return render_template('index.html', account_type_data=account_type_data, account_type_banak_data=account_type_banak_data, bank_account_name_balance_details=bank_account_name_balance_details, transaction_years=transaction_years, transaction_months=transaction_months, now=datetime.utcnow())
 
 
 
