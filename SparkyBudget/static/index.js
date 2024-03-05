@@ -124,7 +124,10 @@ function updateTransactionTable(selectedMonth) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            document.getElementById("transactionTableBody").innerHTML = xhr.responseText;
+            const transactionTableBody = document.getElementById("transactionTableBody");
+            if(transactionTableBody) {
+                transactionTableBody.innerHTML = xhr.responseText;
+            }
         }
     };
     xhr.open("GET", "/update_transaction_table?year=" + selectedYear + "&month=" + selectedMonth, true);
