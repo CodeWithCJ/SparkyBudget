@@ -164,8 +164,8 @@ cython_debug/
 containers/data/
 
 # secrets for SparkyBudget
-SparkyBudget/token.txt
-SparkyBudget/access_url.txt
-SparkyBudget/SparkyBudget.db
-SparkyBudget/output/
-SparkyBudget/certs/
+token.txt
+access_url.txt
+SparkyBudget.db
+output/
+certs/
