@@ -544,7 +544,7 @@ function updateSubcategory(transactionKey, event) {
 // start modernizing this, baby steps with iife
 (function () {
     const hasTouchScreen = navigator && navigator.maxTouchPoints > 2;
-    const isIOS = /iPad|iPhone|Macintosh/.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isFirefox = /firefox/i.test(navigator.userAgent);
 
     const addBudgetForm = document.getElementById('addBudgetForm');
@@ -556,7 +556,9 @@ function updateSubcategory(transactionKey, event) {
     const nextYear = addBudgetForm.querySelector('.next-year');
     const currentDate = new Date();
     let year = currentDate.getFullYear();
-    if(((isIOS && !hasTouchScreen) || isFirefox) && addBudgetForm && monthInputField && monthSelectContainer && picker && yearContainer && prevYear && nextYear) {
+    // only desktop safari and desktop firefox don't support month picker
+    // debating adding to desktop chrome bc desktop chrome's selector kinda sucks
+    if(((isSafari && !hasTouchScreen) || (isFirefox && !hasTouchScreen)) && addBudgetForm && monthInputField && monthSelectContainer && picker && yearContainer && prevYear && nextYear) {
         function closePicker(e) {
             e.stopPropagation();
             if(!monthSelectContainer.contains(e.target)) {
