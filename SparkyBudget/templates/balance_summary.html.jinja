@@ -1,16 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Balance Summary</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <style>
-	
-		#balanceSummaryTable {
-			background-color: #173F3F;
-			border-radius: 10px; /* Adjust the border-radius as needed for rounded corners */
-			overflow: hidden; /* Hide any content that overflows the rounded corners */
-		}
+        #balanceSummaryTable {
+            background-color: #173F3F;
+            border-radius: 10px;
+            /* Adjust the border-radius as needed for rounded corners */
+            overflow: hidden;
+            /* Hide any content that overflows the rounded corners */
+        }
 
         .child-row {
             display: none;
@@ -31,23 +33,19 @@
         .negative {
             color: red;
         }
-		
-		/* Add a class for collapsed state */
-		.balance-summary-container.collapsed {
-			height: 0;
-			overflow: hidden;
-			 display: none;
-		}
 
-		/* Add a transition for smooth animation */
-		.balance-summary-container {
-			transition: height 0.3s ease-in-out;
-		}
+        /* Add a class for collapsed state */
+        .balance-summary-container.collapsed {
+            height: 0;
+            overflow: hidden;
+            display: none;
+        }
 
+        /* Add a transition for smooth animation */
+        .balance-summary-container {
+            transition: height 0.3s ease-in-out;
+        }
     </style>
-
-    
-
     <script>
         $(document).ready(function () {
             // Add click event for expanding/collapsing rows
@@ -61,126 +59,114 @@
             var balances = [];
 
             {% for data in account_type_data %}
-                labels.push("{{ data[0] }}");
-                balances.push({{ data[1] }});
-            {% endfor %}
+            labels.push("{{ data[0] }}");
+            balances.push({{ data[1] }});
+        {% endfor %}
 
-            // Create a bar chart
-            const balanceChart = document.getElementById('balanceChart');
-            if(balanceChart) {
-                const ctx = balanceChart.getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Balance',
-                            data: balances,
-                            backgroundColor: [
-                                '#32A45F', // Color for the first account type
-                                '#90EBFC', // Color for the second account type
-                                '#846BFF',
-                                '#FF8E5F',
-                                // Add more colors as needed
-                            ],
-                            borderColor: 'white', // Adjust color as needed
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y', // Set the index axis to 'y' for a vertical bar chart
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: 'white', // Set x-axis label color to white
-                                    fontSize: 14 // Set font size for x-axis labels
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: 'white', // Set y-axis label color to white
-                                    fontSize: 14 // Set font size for y-axis labels
-                                }
+        // Create a bar chart
+        const balanceChart = document.getElementById('balanceChart');
+        if (balanceChart) {
+            const ctx = balanceChart.getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Balance',
+                        data: balances,
+                        backgroundColor: [
+                            '#32A45F', // Color for the first account type
+                            '#90EBFC', // Color for the second account type
+                            '#846BFF',
+                            '#FF8E5F',
+                            // Add more colors as needed
+                        ],
+                        borderColor: 'white', // Adjust color as needed
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Set the index axis to 'y' for a vertical bar chart
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white', // Set x-axis label color to white
+                                fontSize: 14 // Set font size for x-axis labels
                             }
                         },
-                        maintainAspectRatio: false, // Make the chart responsive
-                        aspectRatio: 8, // Adjust this value to control the height of the chart
-                        plugins: {
-                            legend: {
-                                display: false,
-                                
-                            },
-                            datalabels: {
-                                
-                                color: 'white', // Set the color of the datalabels
-                                font: {
-                                    size: 14 // Set the font size of the datalabels
-                                },
-                                anchor: 'end',
-                                align: 'end'
-                               
-                                
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white', // Set y-axis label color to white
+                                fontSize: 14 // Set font size for y-axis labels
                             }
                         }
-                    }
-                });
-            }
-        });
-		
-		
-		document.addEventListener('DOMContentLoaded', function () {
-    // Toggle the collapsed class on button click
-    document.getElementById('toggleBalanceSummary').addEventListener('click', function () {
-        document.querySelector('.balance-summary-container').classList.toggle('collapsed');
-    });
-});
+                    },
+                    maintainAspectRatio: false, // Make the chart responsive
+                    aspectRatio: 8, // Adjust this value to control the height of the chart
+                    plugins: {
+                        legend: {
+                            display: false,
 
+                        },
+                        datalabels: {
+
+                            color: 'white', // Set the color of the datalabels
+                            font: {
+                                size: 14 // Set the font size of the datalabels
+                            },
+                            anchor: 'end',
+                            align: 'end'
+
+
+                        }
+                    }
+                }
+            });
+        }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle the collapsed class on button click
+            document.getElementById('toggleBalanceSummary').addEventListener('click', function () {
+                document.querySelector('.balance-summary-container').classList.toggle('collapsed');
+            });
+        });
     </script>
 </head>
 <body>
-
-<!-- <div style="text-align: center; border: 2px solid white; padding: 10px;">
-    <canvas id="balanceChart" width="50" height="300"></canvas>
-</div> -->
-
-
-
-
-<table id="balanceSummaryTable" border="1" style="background-color: #173F3F;">
-    <thead>
-        <tr>
-            <th>Account</th>
-            <th>Balance</th>
-            <th>Available Balance</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for data in account_type_data %}
-        <tr class="type-row">
-            <td>
-                <span class="expand-collapse-toggle"></span>
-                {{ data[0] }}
-            </td>
-            <td>{{ data[1] }}</td>
-            <td>{{ data[2] }}</td>
-        </tr>
-        {% for bank_data in account_type_banak_data %}
-        {% if bank_data[0] == data[0] %}
-		 {% if bank_data[2] != 0.0 or bank_data[3] != 0.0 %}
-        <tr class="child-row">
-            <td style="text-align: right;">{{ bank_data[1] }}</td>
-            <td>{{ bank_data[2] }}</td>
-            <td>{{ bank_data[3] }}</td>
-        </tr>
-        {% endif %}
-		{% endif %}
-        {% endfor %}
-        {% endfor %}
-    </tbody>
-</table>
-
-
+    <table id="balanceSummaryTable" border="1" style="background-color: #173F3F;">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Balance</th>
+                <th>Available Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in account_type_data %}
+            <tr class="type-row">
+                <td>
+                    <span class="expand-collapse-toggle"></span>
+                    {{ data[0] }}
+                </td>
+                <td>{{ data[1] }}</td>
+                <td>{{ data[2] }}</td>
+            </tr>
+            {% for bank_data in account_type_banak_data %}
+            {% if bank_data[0] == data[0] %}
+            {% if bank_data[2] != 0.0 or bank_data[3] != 0.0 %}
+            <tr class="child-row">
+                <td style="text-align: right;">{{ bank_data[1] }}</td>
+                <td>{{ bank_data[2] }}</td>
+                <td>{{ bank_data[3] }}</td>
+            </tr>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

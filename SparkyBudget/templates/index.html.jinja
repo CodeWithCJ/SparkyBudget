@@ -1,225 +1,139 @@
-<!-- index.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sparky Budget</title>
-	<!-- Font Awesome -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-	 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
-
-	<!-- jQuery -->
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-
-	<!-- Moment.js -->
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
-
-	<!-- DateRangePicker -->
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-
-	<!-- Select2 -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
-	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
-
-	<!-- Chart.js -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
-
-	<!-- Bootstrap -->
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-	<!-- Your custom stylesheet -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-	<!-- Favicon -->
-	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="header-container"> 
-	
-	
-	<div id="toggleBalanceSummary" class="toggle-icon" style="color: #61DAFB; font-size: 24px;">
-        <i class="fas fa-piggy-bank"></i>
-
-</div>
-
-
-<h1>
-    <i class="fas fa-info-circle" onclick="balanceDetailsTableToggleVisibility()" title="Account Details"></i>
-</h1>	
-
-	
-	
-
-
-
-<a class="custom_report" href="{{ url_for('analyze_transaction') }}" style="color: #61DAFB; font-size: 24px;" title="All Transaction">
-    <i class="fas fa-chart-bar" ></i>
-</a>
-
-	
-	
-	<a class="custom_report" href="{{ url_for('manage_categories') }}" style="color: #61DAFB; font-size: 24px;" title="Category Management">
-    <i class="fas fa-tags"></i> <!-- Assuming you want to use a tags icon for category management -->
-</a>
-
-
-	
-	<i id="downloadButton" style="margin-left: 5px; background: transparent; display: inline-block;" >
-        <img src="static/images/refresh.svg" alt="Refresh" title="Sync" >
-		<img id="spinner" src="{{ url_for('static', filename='Spinner-0.4s-57px.gif') }}" alt="Loading..." style="width: 50px; height: auto;"/>
-    </i>
-	
-	{% if current_user.is_authenticated %}
-	
-		<!-- Include the rendered budget summary HTML here 
+    <div class="header-container">
+        <div id="toggleBalanceSummary" class="toggle-icon" style="color: #61DAFB; font-size: 24px;">
+            <i class="fas fa-piggy-bank"></i>
+        </div>
+        <h1>
+            <i class="fas fa-info-circle" onclick="balanceDetailsTableToggleVisibility()" title="Account Details"></i>
+        </h1>
+        <a class="custom_report" href="{{ url_for('analyze_transaction') }}" style="color: #61DAFB; font-size: 24px;"
+            title="All Transaction">
+            <i class="fas fa-chart-bar"></i>
+        </a>
+        <a class="custom_report" href="{{ url_for('manage_categories') }}" style="color: #61DAFB; font-size: 24px;"
+            title="Category Management">
+            <i class="fas fa-tags"></i> <!-- Assuming you want to use a tags icon for category management -->
+        </a>
+        <i id="downloadButton" style="margin-left: 5px; background: transparent; display: inline-block;">
+            <img src="static/images/refresh.svg" alt="Refresh" title="Sync">
+            <img id="spinner" src="{{ url_for('static', filename='Spinner-0.4s-57px.gif') }}" alt="Loading..."
+                style="width: 50px; height: auto;" />
+        </i>
+        {% if current_user.is_authenticated %}
+        <!-- Include the rendered budget summary HTML here 
 		<p>Welcome, {{ current_user.id }}!</p>
 		-->
-	
-	
-	<a href="{{ url_for('logout') }}" style="color: #61DAFB; font-size: 24px;">
-    <i class="fas fa-sign-out-alt" title="Logout"></i>
-</a>
-
-
-
-
-	{% endif %}
-</div>
-	
-<div class="content">
-
-	
-
-
-<!-- collapsed -->
-    <div class="balance-summary-container ">
-
-    {% include 'balance_summary.html' %}
-
-</div>
-    
-	<div class="main-content">
-	
-	<div id="balanceDetailsTable" class="hidden-balance-details">	
-		<H1><i class="fas fa-piggy-bank"></i> Balance Details</H1>
-		{% include 'balance_details.html' %}
-	</div>
-
-	
-	
-	
-
-
-
-
-
-
-
-<div class="filters">
-        <label for="transactionYear">Year:</label>
-        <select id="transactionYear" onchange="updateTransactionTable()">
-            {% for year in transaction_years %}
-                <option value="{{ year }}" {% if year == transaction_years[0] %}selected{% endif %}>{{ year }}</option>
-            {% endfor %}
-        </select>
-
-        <label>Month:</label>
-        <div id="monthButtons">
-            {% for month in transaction_months %}
-                <button onclick="updateTransactionTable('{{ month }}')" {% if month == transaction_months[0] %}class="active"{% endif %} data-month="{{ month }}">{{ month }}</button>
-            {% endfor %}
+        <a href="{{ url_for('logout') }}" style="color: #61DAFB; font-size: 24px;">
+            <i class="fas fa-sign-out-alt" title="Logout"></i>
+        </a>
+        {% endif %}
+    </div>
+    <div class="content">
+        <!-- collapsed -->
+        <div class="balance-summary-container ">
+            {% include 'balance_summary.html.jinja' %}
+        </div>
+        <div class="main-content">
+            <div id="balanceDetailsTable" class="hidden-balance-details">
+                <H1><i class="fas fa-piggy-bank"></i> Balance Details</H1>
+                {% include 'balance_details.html.jinja' %}
+            </div>
+            <div class="filters">
+                <label for="transactionYear">Year:</label>
+                <select id="transactionYear" onchange="updateTransactionTable('01')">
+                    {% for year in transaction_years %}
+                    <option value="{{ year }}" {% if year==transaction_years[0] %}selected{% endif %}>{{ year }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <label>Month:</label>
+                <div id="monthButtons">
+                    {% for month in transaction_months %}
+                    <button onclick="updateTransactionTable('{{ month }}')" {% if month==transaction_months[0]
+                        %}class="active" {% endif %} data-month="{{ month }}">{{ month }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <button id="addBudgetButton" onclick="toggleAddBudgetForm()">Add Budget</button>
+            <form id="addBudgetForm" class="hide">
+                <label class="month-year-picker-container" for="budgetMonth">Budget Month:
+                    <input type="month" id="budgetMonth" value="{{ now.year }}-{{ now.strftime('%m') }}" required
+                        pattern="[0-9]{4}-[0-9]{2}">
+                    <div class="year-month-picker hide">
+                        <div class="year-picker">
+                            <button class="previous-year">&lt;</button><span class="selected-year">{{ now.year
+                                }}</span><button class="next-year">&gt;</button>
+                        </div>
+                        <div class="month-picker">
+                            <button data-month="01">Jan</button>
+                            <button data-month="02">Feb</button>
+                            <button data-month="03">Mar</button>
+                            <button data-month="04">Apr</button>
+                            <button data-month="05">May</button>
+                            <button data-month="06">Jun</button>
+                            <button data-month="07">Jul</button>
+                            <button data-month="08">Aug</button>
+                            <button data-month="09">Sep</button>
+                            <button data-month="10">Oct</button>
+                            <button data-month="11">Nov</button>
+                            <button data-month="12">Dec</button>
+                        </div>
+                    </div>
+                </label>
+                <label for="subCategoryInput">Subcategory:</label>
+                <select id="subCategoryInput" class="select2" required>
+                    <option value="" selected disabled>Select a subcategory</option>
+                </select>
+                <label for="budgetAmountInput">Budget Amount:</label>
+                <input type="text" id="budgetAmountInput" placeholder="Enter budget amount" required>
+                <button type="button" onclick="addBudget()">Submit Budget</button>
+            </form>
+            <div id="budgetSummaryKPIContainer"></div>
+            <div id="dropdown-container">
+                <label for="sortCriteria">Sort by:</label>
+                <select id="sortCriteria" onchange="updateBudgetSummaryChart()">
+                    <option value="budget">Budget</option>
+                    <option value="category">Category</option>
+                    <option value="subcategory">Subcategory</option>
+                    <option value="spent">Spent</option>
+                    <option value="balance">Balance</option>
+                </select>
+                <select id="SortAscDesc" onchange="updateBudgetSummaryChart()">
+                    <option value="True">Desc</option>
+                    <option value="False">Asc</option>
+                </select>
+            </div>
+            <div class="center-content" style="margin-top: 20px;">
+                <!-- Include the rendered budget summary HTML here -->
+                {% include 'budget_summary_chart.html.partial.jinja' %}
+                <div id="budgetSummaryChart"></div>
+            </div>
+            <!-- Transaction Details of selected SubCategory-->
+            <div id="transactionDetails"></div>
         </div>
     </div>
-	
-
-
-	<button id="addBudgetButton" onclick="toggleAddBudgetForm()">Add Budget</button>
-
-
-
-<form id="addBudgetForm" class="hide">
-    <label class="month-year-picker-container" for="budgetMonth">Budget Month:
-		<input type="month" id="budgetMonth" value="{{ now.year }}-{{ now.strftime('%m') }}" required pattern="[0-9]{4}-[0-9]{2}">
-		<div class="year-month-picker hide">
-			<div class="year-picker">
-				<button class="previous-year">&lt;</button><span class="selected-year">{{ now.year }}</span><button class="next-year">&gt;</button>
-			</div>
-			<div class="month-picker">
-				<button data-month="01">Jan</button>
-				<button data-month="02">Feb</button>
-				<button data-month="03">Mar</button>
-				<button data-month="04">Apr</button>
-				<button data-month="05">May</button>
-				<button data-month="06">Jun</button>
-				<button data-month="07">Jul</button>
-				<button data-month="08">Aug</button>
-				<button data-month="09">Sep</button>
-				<button data-month="10">Oct</button>
-				<button data-month="11">Nov</button>
-				<button data-month="12">Dec</button>
-			</div>
-		</div>
-	</label>
-    <label for="subCategoryInput">Subcategory:</label>
-	<select id="subCategoryInput" class="select2" required>
-		<option value="" selected disabled>Select a subcategory</option>
-	</select>
-    <label for="budgetAmountInput">Budget Amount:</label>
-    <input type="text" id="budgetAmountInput" placeholder="Enter budget amount" required>
-    <button type="button" onclick="addBudget()">Submit Budget</button>
-</form>
-
-	
-	
-	<div id="budgetSummaryKPIContainer"></div>
-
-
-
-
-
-<div id="dropdown-container">
-    <label for="sortCriteria">Sort by:</label>
-    <select id="sortCriteria" onchange="updateBudgetSummaryChart()">
-        <option value="budget">Budget</option>
-        <option value="category">Category</option>
-        <option value="subcategory">Subcategory</option>
-        <option value="spent">Spent</option>
-        <option value="balance">Balance</option>
-    </select>
-    
-    <select id="SortAscDesc" onchange="updateBudgetSummaryChart()">
-        <option value="True">Desc</option>
-        <option value="False">Asc</option>
-    </select>
-</div>
-
-
-	
-	
-	
-		<div class="center-content" style="margin-top: 20px;">
-		<!-- Include the rendered budget summary HTML here -->
-		{% include 'budget_summary_chart.html' %}
-		<div id="budgetSummaryChart"></div>
-		</div>
-
-
-
-  
-
-	<!-- Transaction Details of selected SubCategory-->
-	<div id="transactionDetails"></div>
-	
-	</div>
-	
-</div>
-<script src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html>

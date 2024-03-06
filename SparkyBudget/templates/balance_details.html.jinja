@@ -1,151 +1,175 @@
-<!-- balance_details.html -->
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Details</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <!-- Add DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <title>Balance Details</title>
     <!-- Your existing styles and scripts -->
-	
-	<!-- balance_details.html -->
+    <style>
+        /* Your existing styles */
+        body {
+            background-color: #1b1e23;
+            /* Dark background color */
+            color: #ffffff;
+            /* Light text color */
+        }
 
-<style>
-    /* Your existing styles */
-    body {
-        background-color: #1b1e23; /* Dark background color */
-        color: #ffffff; /* Light text color */
-    }
+        /* Adjust the background and text color of the table */
+        table.dataTable {
+            background-color: #333333;
+            /* Dark background color for the table */
+            color: #ffffff;
+            /* Light text color for the table */
+        }
 
-    /* Adjust the background and text color of the table */
-    table.dataTable {
-        background-color: #333333; /* Dark background color for the table */
-        color: #ffffff; /* Light text color for the table */
-    }
+        /* Adjust the color of table headers */
+        table.dataTable thead th {
+            color: #000000;
+            /* Light text color for table headers */
+        }
 
-    /* Adjust the color of table headers */
-    table.dataTable thead th {
-        color: #000000 ; /* Light text color for table headers */
-    }
+        /* Adjust the color of table rows */
+        table.dataTable tbody tr {
+            background-color: #000000;
+            /* Black background color for all rows */
+            color: #ffffff;
+            /* Light text color for all rows */
+        }
 
-    /* Adjust the color of table rows */
-    table.dataTable tbody tr {
-        background-color: #000000; /* Black background color for all rows */
-        color: #ffffff; /* Light text color for all rows */
-    }
 
-    
 
-    /* Override the default DataTables stripe color */
-    table.dataTable tbody tr.odd,
-    table.dataTable tbody tr.odd:hover {
-        background-color: #555555 !important; /* Darker background color for odd rows */
-    }
+        /* Override the default DataTables stripe color */
+        table.dataTable tbody tr.odd,
+        table.dataTable tbody tr.odd:hover {
+            background-color: #555555 !important;
+            /* Darker background color for odd rows */
+        }
 
-    /* Adjust the color of DataTables pagination controls */
-    .dataTables_paginate .paginate_button {
-        color: #ffffff !important; /* Light text color for pagination controls */
-    }
+        /* Adjust the color of DataTables pagination controls */
+        .dataTables_paginate .paginate_button {
+            color: #ffffff !important;
+            /* Light text color for pagination controls */
+        }
 
-    .dataTables_paginate .paginate_button:hover {
-        color: #ffffff !important; /* Light text color for pagination controls on hover */
-    }
+        .dataTables_paginate .paginate_button:hover {
+            color: #ffffff !important;
+            /* Light text color for pagination controls on hover */
+        }
 
-    /* Adjust the color of other DataTables elements */
-    .dataTables_info,
-    .dataTables_length label,
-    .dataTables_filter label,
-    .dataTables_processing,
-    .dataTables_paginate,
-    .dataTables_paginate span a {
-        color: #ffffff !important; /* Light text color for other DataTables elements */
-    }
+        /* Adjust the color of other DataTables elements */
+        .dataTables_info,
+        .dataTables_length label,
+        .dataTables_filter label,
+        .dataTables_processing,
+        .dataTables_paginate,
+        .dataTables_paginate span a {
+            color: #ffffff !important;
+            /* Light text color for other DataTables elements */
+        }
 
-    .dataTables_paginate span .current {
-        background-color: #555555 !important; /* Darker background color for the current page number */
-        color: #ffffff !important; /* Light text color for the current page number */
-    }
+        .dataTables_paginate span .current {
+            background-color: #555555 !important;
+            /* Darker background color for the current page number */
+            color: #ffffff !important;
+            /* Light text color for the current page number */
+        }
 
-    /* Adjust the color of DataTables length menu */
-    .dataTables_length label select {
-        color: #ffffff !important; /* Light text color for length menu */
-        background-color: #444444 !important; /* Dark background color for length menu */
-    }
+        /* Adjust the color of DataTables length menu */
+        .dataTables_length label select {
+            color: #ffffff !important;
+            /* Light text color for length menu */
+            background-color: #444444 !important;
+            /* Dark background color for length menu */
+        }
 
-    /* Adjust the color of DataTables pagination buttons */
-    .dataTables_paginate .paginate_button {
-        color: #ffffff !important; /* Light text color for pagination buttons */
-    }
+        /* Adjust the color of DataTables pagination buttons */
+        .dataTables_paginate .paginate_button {
+            color: #ffffff !important;
+            /* Light text color for pagination buttons */
+        }
 
-    .dataTables_paginate .paginate_button:hover {
-        color: #ffffff !important; /* Light text color for pagination buttons on hover */
-    }
+        .dataTables_paginate .paginate_button:hover {
+            color: #ffffff !important;
+            /* Light text color for pagination buttons on hover */
+        }
 
-    /* Adjust the color of DataTables pagination controls at the bottom right */
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        color: #ffffff !important; /* Light text color for pagination controls */
-    }
+        /* Adjust the color of DataTables pagination controls at the bottom right */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #ffffff !important;
+            /* Light text color for pagination controls */
+        }
 
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        color: #ffffff !important; /* Light text color for pagination controls on hover */
-    }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            color: #ffffff !important;
+            /* Light text color for pagination controls on hover */
+        }
 
-    /* Adjust the color of DataTables previous button */
-    .dataTables_wrapper .dataTables_paginate .previous {
-        color: #ffffff !important; /* Light text color for the Previous button */
-    }
+        /* Adjust the color of DataTables previous button */
+        .dataTables_wrapper .dataTables_paginate .previous {
+            color: #ffffff !important;
+            /* Light text color for the Previous button */
+        }
 
-    .dataTables_wrapper .dataTables_paginate .previous:hover {
-        color: #ffffff !important; /* Light text color for the Previous button on hover */
-    }
+        .dataTables_wrapper .dataTables_paginate .previous:hover {
+            color: #ffffff !important;
+            /* Light text color for the Previous button on hover */
+        }
 
-    /* Adjust the color of DataTables search input */
-    .dataTables_wrapper .dataTables_filter input {
-        color: #ffffff !important; /* Light text color for the search input */
-        background-color: #444444 !important; /* Dark background color for the search input */
-    }
+        /* Adjust the color of DataTables search input */
+        .dataTables_wrapper .dataTables_filter input {
+            color: #ffffff !important;
+            /* Light text color for the search input */
+            background-color: #444444 !important;
+            /* Dark background color for the search input */
+        }
 
-    /* Adjust the color of DataTables search input on focus */
-    .dataTables_wrapper .dataTables_filter input:focus {
-        color: #ffffff !important; /* Light text color for the search input on focus */
-        background-color: #555555 !important; /* Darker background color for the search input on focus */
-    }
-    #balanceTable {
-        margin: 20px auto;
-    }
-	table.dataTable thead .sorting,
-    table.dataTable thead .sorting_asc,
-    table.dataTable thead .sorting_desc,
-    table.dataTable thead .sorting_asc_disabled,
-    table.dataTable thead .sorting_desc_disabled {
-        background-color: #61dafb; /* Adjust the background color as needed */
-        color: #000000  !important; /* Adjust the text color as needed */
-    }
-	#balanceTable_wrapper {
-        margin: 20px auto;
-        width: 80%; /* Adjust the width as needed */
-    }
-</style>
+        /* Adjust the color of DataTables search input on focus */
+        .dataTables_wrapper .dataTables_filter input:focus {
+            color: #ffffff !important;
+            /* Light text color for the search input on focus */
+            background-color: #555555 !important;
+            /* Darker background color for the search input on focus */
+        }
 
-	
+        #balanceTable {
+            margin: 20px auto;
+        }
+
+        table.dataTable thead .sorting,
+        table.dataTable thead .sorting_asc,
+        table.dataTable thead .sorting_desc,
+        table.dataTable thead .sorting_asc_disabled,
+        table.dataTable thead .sorting_desc_disabled {
+            background-color: #61dafb;
+            /* Adjust the background color as needed */
+            color: #000000 !important;
+            /* Adjust the text color as needed */
+        }
+
+        #balanceTable_wrapper {
+            margin: 20px auto;
+            width: 80%;
+            /* Adjust the width as needed */
+        }
+    </style>
 </head>
 <body>
-
-<!-- Your existing table content -->
-<table id="balanceTable" border="1">
-    <thead>
-        <tr>
-            <th>Bank</th>
-            <th>Account Name</th>
-            <th>As of</th>
-            <th>Balance</th>
-            <th>Available Balance</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for balance_details_data in bank_account_name_balance_details %}
+    <!-- Your existing table content -->
+    <table id="balanceTable" border="1">
+        <thead>
+            <tr>
+                <th>Bank</th>
+                <th>Account Name</th>
+                <th>As of</th>
+                <th>Balance</th>
+                <th>Available Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for balance_details_data in bank_account_name_balance_details %}
             <tr>
                 <td>{{ balance_details_data[0] }}</td>
                 <td>{{ balance_details_data[1] }}</td>
@@ -153,47 +177,38 @@
                 <td>{{ balance_details_data[3] }}</td>
                 <td>{{ balance_details_data[4] }}</td>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- Add DataTables JS after jQuery -->
-<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
-<!-- Add DataTables JS after jQuery -->
-<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
-<script>
-    $(document).ready(function () {
-        // Initialize DataTable with custom styling
-        if (!$.fn.dataTable.isDataTable('#balanceTable')) {
-            $('#balanceTable').DataTable({
-                "pageLength": 17,
-                "lengthMenu": [
-                    [10, 17, 25, -1],
-                    [10, 17, 25, "All"]
-                ],
-                "rowCallback": function (row, data) {
-                    // Add the dark-row class to each row
-                    $(row).addClass('dark-row');
-                },
-                "autoWidth": false, // Disable automatic column width calculation
-                "stripeClasses": [], // Disable color banding
-                "columns": [
-                    null, // Bank
-                    null, // Account Name
-                    null, // As of
-                    null, // Balance
-                    null  // Available Balance
-                ]
-            });
-        }
-    });
-</script>
-
-
-<!-- Your existing scripts -->
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Add DataTables JS after jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable with custom styling
+            if (!$.fn.dataTable.isDataTable('#balanceTable')) {
+                $('#balanceTable').DataTable({
+                    "pageLength": 17,
+                    "lengthMenu": [
+                        [10, 17, 25, -1],
+                        [10, 17, 25, "All"]
+                    ],
+                    "rowCallback": function (row, data) {
+                        // Add the dark-row class to each row
+                        $(row).addClass('dark-row');
+                    },
+                    "autoWidth": false, // Disable automatic column width calculation
+                    "stripeClasses": [], // Disable color banding
+                    "columns": [
+                        null, // Bank
+                        null, // Account Name
+                        null, // As of
+                        null, // Balance
+                        null  // Available Balance
+                    ]
+                });
+            }
+        });
+    </script>
 </body>
 </html>
