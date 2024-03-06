@@ -9,6 +9,7 @@ $(document).ready(function () {
         // Populate the Select2 dropdown with fetched subcategories
         $('#subCategoryInput').select2({
             data: subcategories,
+            width: '180px',
             placeholder: 'Select or type to search',
             allowClear: true,
         });
@@ -490,6 +491,7 @@ function showSubcategoryDropdown(button) {
         // Populate the Select2 dropdown with fetched subcategories
         subcategoryDropdown.select2({
             data: subcategories,
+            width: '180px',
             placeholder: 'Select or type to search',
             allowClear: true,
         });
