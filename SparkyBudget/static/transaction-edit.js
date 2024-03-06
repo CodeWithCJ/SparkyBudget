@@ -381,7 +381,6 @@ $(function () {
 
 });
 
-// Add this code to your existing <script> block in transaction_edit.html
 $(document).ready(function () {
     // Function to fetch line chart data
     function fetchLineChartData() {

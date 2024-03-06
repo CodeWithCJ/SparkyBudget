@@ -81,7 +81,7 @@ def login():
 
             return redirect(url_for('index'))
 
-    return render_template('login.html')
+    return render_template('login.html.jinja')
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required    
@@ -218,7 +218,7 @@ def index():
     conn.close()
 
     # Render the template with the fetched data and filters, including transaction_years
-    return render_template('index.html', account_type_data=account_type_data, account_type_banak_data=account_type_banak_data, bank_account_name_balance_details=bank_account_name_balance_details, transaction_years=transaction_years, transaction_months=transaction_months, now=datetime.utcnow())
+    return render_template('index.html.jinja', account_type_data=account_type_data, account_type_banak_data=account_type_banak_data, bank_account_name_balance_details=bank_account_name_balance_details, transaction_years=transaction_years, transaction_months=transaction_months, now=datetime.utcnow())
 
 
 
@@ -315,7 +315,8 @@ def budget_summary_kpi_boxes():
         app.logger.debug("Debug: budget_summary_kpi_boxes_data = %s", budget_summary_kpi_boxes_data)
         # Render the template with the fetched data for the third table
        
-        return render_template('budget_kpi_boxes.html', budget_summary_kpi_boxes_data=budget_summary_kpi_boxes_data)
+        # TODO: is this supposed to be a partial or full html?
+        return render_template('budget_kpi_boxes.html.partial.jinja', budget_summary_kpi_boxes_data=budget_summary_kpi_boxes_data)
 
     
     except Exception as e:
@@ -398,7 +399,8 @@ def update_transaction_table():
     conn.close()
 
     # Render the template with the fetched data for the third table
-    return render_template('budget_summary.html', transaction_data=transaction_data)
+    # TODO: is this supposed to be a partial or full html?
+    return render_template('budget_summary.html.jinja', transaction_data=transaction_data)
     
     
     
@@ -506,7 +508,8 @@ def budget_summary_chart():
     conn.close()
 
     # Render the template with the fetched data for the third table
-    return render_template('budget_summary_chart.html', budget_summary_chart=budget_summary_chart)
+    # TODO: is this supposed to be a partial or full html?
+    return render_template('budget_summary_chart.html.partial.jinja', budget_summary_chart=budget_summary_chart)
        
     
     
@@ -557,7 +560,8 @@ def get_transaction_details():
     conn.close()
 
     # Render the template with the fetched data for transaction details
-    return render_template('transaction_details.html', transaction_details=transaction_details)
+    # TODO: is this supposed to be a partial or full html?
+    return render_template('transaction_details.html.partial.jinja', transaction_details=transaction_details)
 
 
 @app.route('/analyze_transaction')
@@ -654,7 +658,7 @@ def analyze_transaction():
     conn.close()
 
     # Render the template with the fetched data for transaction analysis
-    return render_template('transaction_edit.html', transaction_data=transaction_data)
+    return render_template('transaction_edit.html.jinja', transaction_data=transaction_data)
 
 
     
@@ -877,7 +881,7 @@ def chart_data():
 @app.route('/manage_categories')
 @login_required
 def manage_categories():
-    return render_template('category_mgmt.html')
+    return render_template('category_mgmt.html.jinja')
 
 @app.route('/getCategorySubCategory')
 @login_required 
