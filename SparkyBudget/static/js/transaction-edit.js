@@ -161,7 +161,7 @@ $(document).ready(function () {
 
 
     // Trigger aggregateData with the default option on page load
-    aggregateData(transaction_data, selectedOption);
+    aggregateData(appState.transaction_data, selectedOption);
 
     function aggregateData(transaction_data, selectedOption) {
         // Initialize an object to store aggregated data
@@ -319,7 +319,7 @@ $(document).ready(function () {
     // Add change event listener to the dropdown for triggering aggregation
     $('#dropdown_select').on('change', function () {
         var selectedOption = $(this).val();
-        aggregateData(transaction_data, selectedOption);
+        aggregateData(appState.transaction_data, selectedOption);
     });
 
 });

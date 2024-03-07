@@ -151,6 +151,8 @@ def index():
     )
 
     account_type_data = cursor.fetchall()
+    labels = list(zip(*account_type_data))[0]
+    balances = list(zip(*account_type_data))[1]
     locale.setlocale(locale.LC_ALL, '')
     #account_type_data = [
     #    (
@@ -218,7 +220,17 @@ def index():
     conn.close()
 
     # Render the template with the fetched data and filters, including transaction_years
-    return render_template('index.html.jinja', account_type_data=account_type_data, account_type_banak_data=account_type_banak_data, bank_account_name_balance_details=bank_account_name_balance_details, transaction_years=transaction_years, transaction_months=transaction_months, now=datetime.utcnow())
+    return render_template(
+        'index.html.jinja',
+        account_type_data=account_type_data,
+        account_type_banak_data=account_type_banak_data,
+        bank_account_name_balance_details=bank_account_name_balance_details,
+        transaction_years=transaction_years,
+        transaction_months=transaction_months,
+        now=datetime.utcnow(),
+        labels = labels,
+        balances = balances,
+    )
 
 
 
@@ -399,7 +411,6 @@ def update_transaction_table():
     conn.close()
 
     # Render the template with the fetched data for the third table
-    # TODO: is this supposed to be a partial or full html?
     return render_template('budget_summary.html.jinja', transaction_data=transaction_data)
     
     
