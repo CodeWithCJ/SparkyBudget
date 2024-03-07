@@ -1,357 +1,415 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #282c35;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #282c35;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-        }
-		body, html {
-		  overflow: hidden; /* This will hide all scrollbars */
-		}
+body,
+html {
+    height: 100%;
+}
 
-        h1 {
-            color: #61dafb;
-        }
-		h2 {
-            color: #61dafb;
-			text-align: center;
-        }
+h1 {
+    color: #61dafb;
+}
 
-		.center-content {
-			text-align: center;
-		}
+h2 {
+    color: #61dafb;
+    text-align: center;
+}
 
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
+.center-content {
+    text-align: center;
+}
 
-        th, td {
-            border: 1px solid #61dafb;
-            padding: 10px;
-            text-align: left;
-        }
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
 
-        th {
-            background-color: #61dafb;
-            color: #282c35;
-        }
+th,
+td {
+    border: 1px solid #61dafb;
+    padding: 10px;
+    text-align: left;
+}
 
-        .filters {
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-            margin: 20px auto;
-        }
+th {
+    background-color: #61dafb;
+    color: #282c35;
+}
 
-        select {
-            padding: 5px;
-            margin-right: 10px;
-        }
+.filters {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 20px auto;
+}
 
-        #monthButtons button.active {
-            background-color: #61dafb; /* Add your desired background color here */
-            color: #282c35; /* Add your desired text color here */
-        }
-		a.analyze-link {
-			color: #61dafb; /* Set the color to match the header */
-			font-size: 2.2em; /* Set the font size to match the header */
-			text-decoration: none; /* Remove underline */
-		}
+select {
+    padding: 5px;
+    margin-right: 10px;
+}
 
-		a.analyze-link:hover {
-			color: #61dafb; /* Set the color for the hover effect */
-			font-size: 2.2em; /* Set the font size to match the header */
+#monthButtons button.active {
+    /* Add your desired background color here */
+    background-color: #61dafb;
+    /* Add your desired text color here */
+    color: #282c35;
+}
 
-		}
-		
+a.analyze-link {
+    /* Set the color to match the header */
+    color: #61dafb;
+    /* Set the font size to match the header */
+    font-size: 2.2em;
+    /* Remove underline */
+    text-decoration: none;
+}
 
-		#spinner {
-			display: none; /* Initially hide the spinner */
-			width: 25px; /* Adjust the width if needed */
-			height: 25px; /* Adjust the height if needed */
-		}
-		/* Add this style for the hyperlink in the Spent column */
-		#transactionTable a {
-			color: #fff; /* White font color for the hyperlink */
-			
-		}
-		.child-row {
-            display: none;
-        }
-		.hidden-balance-details {
-            display: none;
-        }
-		
-        #balanceDetailsTableToggleButton {
-            background-color: #282c35; 
-            color: #61dafb;
-            font-size: 0.75em;
-        }
-		.invalid-date {
-            border: 1px solid red;
-        }
-		
-		#addBudgetForm.hide {
-            display: none;
-        }
-		
-		.select2-container--default .select2-results__option {
-			background-color: black;
-			color: white; /* Set the text color to white for better visibility */
-		}
-		.active {
+a.analyze-link:hover {
+    /* Set the color for the hover effect */
+    color: #61dafb;
+    /* Set the font size to match the header */
+    font-size: 2.2em;
+
+}
+
+
+#spinner {
+    /* Initially hide the spinner */
+    display: none;
+    /* Adjust the width if needed */
+    width: 25px;
+    /* Adjust the height if needed */
+    height: 25px;
+}
+
+/* Add this style for the hyperlink in the Spent column */
+#transactionTable a {
+    /* White font color for the hyperlink */
+    color: #fff;
+
+}
+
+.child-row {
+    display: none;
+}
+
+.hidden-balance-details {
+    display: none;
+}
+
+#balanceDetailsTableToggleButton {
+    background-color: #282c35;
+    color: #61dafb;
+    font-size: 0.75em;
+}
+
+.invalid-date {
+    border: 1px solid red;
+}
+
+#addBudgetForm.hide {
+    display: none;
+}
+
+.select2-container--default .select2-results__option {
+    background-color: black;
+    /* Set the text color to white for better visibility */
+    color: white;
+}
+
+.active {
     background-color: #336699;
     color: #ffffff;
 }
-	
-	.container {
-        display: flex;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Adjust the value as needed */
+    padding-bottom: 50px;
+}
+
+.category-bar {
+    width: 95%;
+    margin-bottom: 1px;
+    position: relative;
+}
+
+.top-content {
+    display: flex;
+    /* Align items vertically centered */
+    align-items: center;
+    /* Add space between left and right content */
+    justify-content: space-between;
+    margin-left: 0;
+    /* Adjust the width as needed */
+    width: 80%;
+}
+
+.subcategory-bar {
+    height: 10px;
+    border-radius: 5px;
+
+}
+
+.left-content {
+    /* Align items to center vertically */
+    align-items: center;
+    left: 10px;
+    font-size: 15px;
+    /* Adjust margin as needed */
+    margin-left: 0;
+    /* Add display flex for button alignment */
+    display: flex;
+}
+
+.right-content {
+
+    /* Add display flex for button alignment */
+    display: flex;
+
+}
+
+.delete-icon {
+    /* Adjust margin for spacing between button and text */
+    margin-right: 10px;
+}
+
+
+.input-group-text {
+    /* Set input group background color to a dark shade */
+    background-color: #333;
+    /* Set input group text color to white */
+    color: #fff;
+    /* Add a border with a slightly lighter color */
+    border: 1px solid #555;
+}
+
+#date-range {
+    width: 200px;
+    /* Set input background color to a slightly lighter shade */
+    background-color: #444;
+    /* Set input text color to white */
+    color: #fff;
+    /* Add a border with a slightly lighter color */
+    border: 1px solid #555;
+}
+
+#selected-dates {
+    margin-top: 20px;
+    /* Set text color to white */
+    color: #fff;
+}
+
+/* Custom styles for DateRangePicker */
+.daterangepicker {
+    /* Set calendar background color */
+    background-color: #333 !important;
+    /* Set calendar text color */
+    color: #fff !important;
+}
+
+.daterangepicker th {
+    /* Set header background color */
+    background-color: #444 !important;
+    /* Set header text color */
+    color: #fff !important;
+}
+
+.daterangepicker th.available:hover,
+.daterangepicker th.available.active {
+    /* Set hover/active header background color */
+    background-color: #555 !important;
+    /* Set hover/active header text color */
+    color: #fff !important;
+}
+
+.daterangepicker td,
+.daterangepicker th {
+    /* Set border color for days */
+    border-color: #555 !important;
+}
+
+.daterangepicker .calendar-time,
+.daterangepicker .calendar-table,
+.daterangepicker .calendar-time select {
+    /* Set timepicker background color */
+    background-color: #444 !important;
+    /* Set timepicker text color */
+    color: #fff !important;
+}
+
+.daterangepicker .calendar-time select {
+    /* Set timepicker border color */
+    border: 1px solid #555 !important;
+}
+
+
+
+.daterangepicker .ranges li.active {
+    /* Set active range background color */
+    background-color: #555 !important;
+    /* Set active range text color */
+    color: #fff !important;
+}
+
+.daterangepicker .ranges li:hover {
+    /* Set hover range background color to light blue */
+    background-color: #3498db !important;
+    /* Set hover range text color to white */
+    color: #fff !important;
+}
+
+.kpi {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.kpi .box {
+    min-height: clamp(80px, 15vw, 120px);
+    max-height: clamp(120px, 15vw, 180px);
+    margin: 0 10px;
+
+    border-radius: 10px;
+    text-align: center;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(236, 240, 241, 0.1);
+    transition: transform 0.2s;
+    flex: 1 1 calc(30% - 20px);
+    max-width: 125px;
+    min-width: 125px;
+    font-size: clamp(12px, 3vw, 16px);
+    font-weight: bold;
+
+}
+
+.kpi .box:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .kpi .box {
+        flex: 1 1 calc(45% - 20px);
+        min-height: clamp(60px, 8vw, 90px);
+        max-height: clamp(120px, 15vw, 150px);
+        font-size: clamp(12px, 3vw, 16px);
+    }
+
+    .kpi .box:hover {
+        transform: scale(1.05);
+    }
+}
+
+
+
+.income {
+    background-color: #173F3F;
+}
+
+.budget {
+    background-color: #784315;
+}
+
+.expense {
+    background-color: #880015;
+}
+
+.remaining {
+    background-color: #00023D;
+}
+
+.aremaining {
+    background-color: #3A083E;
+}
+
+#balanceSummaryTable {
+    max-width: 500px;
+}
+
+
+
+
+
+#dropdown-container {
+    margin-top: 1vw;
+    /* Adjust the margin as needed */
+    margin-right: 12vw;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    border-bottom: 10px solid #1d1d1d;
+    /* Change to your desired dark color */
+    background-color: #333;
+    /* Optional: Set text color to white for better visibility */
+    color: #fff;
+    /* Optional: Set a high z-index value to make sure it's on top */
+    z-index: 1000;
+}
+
+/* Optional: Add some margin to the logout button */
+.logout-button {
+    margin-right: 10px;
+}
+
+.content {
+    height: calc(100% - 50px);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.camera-icon:hover {
+    cursor: pointer;
+}
+
+
+.balance-summary-container {
+    flex: 1;
+    background-color: #1d1d1d;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.main-content {
+    flex: 4;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Updated background color */
+    background-color: #282c35;
+    /* Add this property for vertical scrollbar */
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Media Query for mobile devices */
+@media (max-width: 768px) {
+    .content {
         flex-direction: column;
-        align-items: center;
-		padding-bottom: 50px; /* Adjust the value as needed */
-    }
-
-    .category-bar {
-        width: 95%;
-        margin-bottom: 1px;
-        position: relative;
-    }
-
-    .top-content {
-        display: flex;
-        align-items: center; /* Align items vertically centered */
-        justify-content: space-between; /* Add space between left and right content */
-        margin-left: 0;
-		width: 80%; /* Adjust the width as needed */
-    }
-
-    .subcategory-bar {
-        height: 10px;
-		 border-radius: 5px; 
-		
-    }
-
-    .left-content {
-        align-items: center; /* Align items to center vertically */
-        left: 10px;
-        font-size: 15px;
-        margin-left: 0; /* Adjust margin as needed */
-        display: flex; /* Add display flex for button alignment */
-    }
-
-    .right-content {
-		
-		display: flex; /* Add display flex for button alignment */
-		
-    }
-
-    .delete-icon {
-        margin-right: 10px; /* Adjust margin for spacing between button and text */
     }
 
 
-	 .input-group-text {
-            background-color: #333; /* Set input group background color to a dark shade */
-            color: #fff; /* Set input group text color to white */
-            border: 1px solid #555; /* Add a border with a slightly lighter color */
-        }
-
-        #date-range {
-            width: 200px;
-            background-color: #444; /* Set input background color to a slightly lighter shade */
-            color: #fff; /* Set input text color to white */
-            border: 1px solid #555; /* Add a border with a slightly lighter color */
-        }
-
-        #selected-dates {
-            margin-top: 20px;
-            color: #fff; /* Set text color to white */
-        }
-
-        /* Custom styles for DateRangePicker */
-        .daterangepicker {
-            background-color: #333 !important; /* Set calendar background color */
-            color: #fff !important; /* Set calendar text color */
-        }
-
-        .daterangepicker th {
-            background-color: #444 !important; /* Set header background color */
-            color: #fff !important; /* Set header text color */
-        }
-
-        .daterangepicker th.available:hover,
-        .daterangepicker th.available.active {
-            background-color: #555 !important; /* Set hover/active header background color */
-            color: #fff !important; /* Set hover/active header text color */
-        }
-
-        .daterangepicker td,
-        .daterangepicker th {
-            border-color: #555 !important; /* Set border color for days */
-        }
-
-        .daterangepicker .calendar-time,
-        .daterangepicker .calendar-table,
-        .daterangepicker .calendar-time select {
-            background-color: #444 !important; /* Set timepicker background color */
-            color: #fff !important; /* Set timepicker text color */
-        }
-
-        .daterangepicker .calendar-time select {
-            border: 1px solid #555 !important; /* Set timepicker border color */
-        }
-
-       
-		
-		.daterangepicker .ranges li.active {
-			background-color: #555 !important; /* Set active range background color */
-			color: #fff !important; /* Set active range text color */
-		}
-
-		.daterangepicker .ranges li:hover {
-			background-color: #3498db !important; /* Set hover range background color to light blue */
-			color: #fff !important; /* Set hover range text color to white */
-		}
-		.kpi {
-			display: flex;
-			justify-content: center;
-			flex-wrap: wrap;
-		}
-
-		.kpi .box {
-			min-height: clamp(80px, 15vw, 120px);
-			max-height: clamp(120px, 15vw, 180px);
-			margin: 0 10px;
-			
-			border-radius: 10px;
-			text-align: center;
-			padding: 5px;
-			box-shadow: 0 4px 8px rgba(236, 240, 241, 0.1);
-			transition: transform 0.2s;
-			flex: 1 1 calc(30% - 20px);
-			max-width: 125px;
-			min-width: 125px;
-			font-size: clamp(12px, 3vw, 16px);
-			font-weight: bold;
-			
-		}
-
-		.kpi .box:hover {
-			transform: scale(1.05);
-		}
-
-		@media (max-width: 768px) {
-			.kpi .box {
-				flex: 1 1 calc(45% - 20px);
-				min-height: clamp(60px, 8vw, 90px);
-				max-height: clamp(120px, 15vw, 150px);
-				font-size: clamp(12px, 3vw, 16px);
-			}
-
-			.kpi .box:hover {
-				transform: scale(1.05);
-			}
-		}
-
-		
-
-		.income {
-			background-color: #173F3F;
-		}
-		.budget {
-			background-color: #784315;
-		}
-
-		.expense {
-			background-color: #880015;
-		}
-
-		.remaining {
-			background-color: #00023D;
-		}
-		.aremaining {
-			background-color: #3A083E;
-		}
-		
-		#balanceSummaryTable {
-			max-width: 500px;
-		}
-		
-
-
-		
-
-        #dropdown-container {
-			margin-top: 1vw;
-            margin-right: 12vw; /* Adjust the margin as needed */			
-           
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            
-        }
-
-	   .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-			height: 40px;
-            background-color: #333; /* Change to your desired dark color */
-            color: #fff; /* Optional: Set text color to white for better visibility */
-            z-index: 1000; /* Optional: Set a high z-index value to make sure it's on top */
-        }
-
-        /* Optional: Add some margin to the logout button */
-        .logout-button {
-            margin-right: 10px;
-        }
-		.content {
-            margin-top: 50px; /* Adjust this value based on the height of your fixed header */
-			display: flex;
-			flex-wrap: wrap;
-        }
-		.camera-icon:hover {
-			cursor: pointer;
-		}
-		
-		
-		.balance-summary-container {
-			flex: 1;
-			background-color: #1d1d1d;
-			padding: 5px;
-			box-sizing: border-box;
-		}
-
-		.main-content {
-			flex: 4;
-			padding: 20px;
-			box-sizing: border-box;
-			background-color: #282c35; /* Updated background color */
-			overflow-y: auto; /* Add this property for vertical scrollbar */
-			max-height: 100vh; /* Set a maximum height to prevent the entire page from scrolling */
-		}
-
-		/* Media Query for mobile devices */
-		@media (max-width: 768px) {
-			.content {
-				flex-direction: column;
-			}
-			
-
-			.balance-summary-container,
-			.main-content {
-				flex: none;
-				width: 100%;
-			}
-		}
+    .balance-summary-container,
+    .main-content {
+        flex: none;
+        width: 100%;
+    }
+}
 
 .month-year-picker-container {
     position: relative;
