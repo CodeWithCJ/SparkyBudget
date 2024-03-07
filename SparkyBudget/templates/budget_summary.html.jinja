@@ -13,8 +13,10 @@
     <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
     <script src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
     <script>
-        const transactionYears = {{ transaction_years | default(()) | tojson }};
-        const transactionMonths = {{ transaction_months | default(()) | tojson }};
+        // have to keep these as var for now until I understand their purpose
+        // TODO: review this later
+        var transactionYears = {{ transaction_years | default(()) | tojson }};
+        var transactionMonths = {{ transaction_months | default(()) | tojson }};
     </script>
     <script src="{{ url_for('static', filename='js/budget_summary.js') }}"></script>
 </head>
