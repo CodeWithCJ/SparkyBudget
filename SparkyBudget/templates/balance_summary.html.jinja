@@ -7,10 +7,11 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_summary.css') }}">
     <script>
-        const appState = {
-            labels: {{ labels | tojson}},
-            balances: {{ balances  | tojson }}
-        };
+        // merge any existing appState with the new data. since appState can be null, start with empty object as the base
+        window.appState = Object.assign({}, window.appState, {
+            labels: {{ labels | default(()) | tojson }},
+            balances: {{ balances | default(()) | tojson }}
+        });
     </script>
     <script src="{{ url_for('static', filename='js/balance_summary.js') }}"></script>
 </head>

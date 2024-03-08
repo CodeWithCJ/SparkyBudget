@@ -6,7 +6,7 @@
     <title>Balance Details</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <!-- Add DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
     <!-- Your existing styles and scripts -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">
 </head>
@@ -36,7 +36,7 @@
     </table>
     <!-- Add DataTables JS after jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="{{ url_for('static', filename='js/balance_details.js') }}"></script>
 </body>
 </html>
