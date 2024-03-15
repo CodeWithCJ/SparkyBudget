@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Summary</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -102,9 +101,10 @@
     </table>
     <!-- Include DataTables initialization script with export options and date range filter -->
     <script>
-        const appState = {
+        // merge any existing appState with the new data. since appState can be null, start with empty object as the base
+        window.appState = Object.assign({}, window.appState, {
             transaction_data: {{ transaction_data | tojson | safe }}
-        };
+        });
     </script>
     <script src="{{ url_for('static', filename='js/transaction-edit.js') }}"></script>
 </body>

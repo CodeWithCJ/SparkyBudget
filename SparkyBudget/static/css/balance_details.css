@@ -122,8 +122,12 @@ table.dataTable tbody tr.odd:hover {
     background-color: #555555 !important;
 }
 
+div.dt-container div.dt-layout-cell {
+    padding: 0;
+}
+
 #balanceTable {
-    margin: 20px auto;
+    margin-bottom: 20px;
 }
 
 table.dataTable thead .sorting,

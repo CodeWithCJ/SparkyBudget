@@ -13,10 +13,10 @@ $(document).ready(function () {
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: appState.labels,
+                labels: window.appState.labels,
                 datasets: [{
                     label: 'Balance',
-                    data: appState.balances,
+                    data: window.appState.balances,
                     backgroundColor: [
                         '#32A45F', // Color for the first account type
                         '#90EBFC', // Color for the second account type
