@@ -31,8 +31,8 @@
                         <span class="expand-collapse-toggle"></span>
                         {{ data[0] }}
                     </td>
-                    <td>{{ data[1] }}</td>
-                    <td>{{ data[2] }}</td>
+                    <td>{{ data[1] | tocurrency }}</td>
+                    <td>{{ data[2] | tocurrency }}</td>
                 </tr>
                 {% for bank_data in account_type_banak_data %}
                     {% if bank_data[0] == data[0] %}

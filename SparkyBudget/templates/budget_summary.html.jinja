@@ -44,8 +44,8 @@
                     <span class="budgetValue">{{ data[2] }}</span>
                     <input type="text" class="editInput" style="display:none;">
                 </td>
-                <td><a href="#" onclick="showTransactionDetails(event,'{{ data[1] }}')">{{ data[3] }}</a></td>
-                <td>{{ data[4] }}</td>
+                <td><a href="#" onclick="showTransactionDetails(event,'{{ data[1] }}')">{{ data[3] | tocurrency }}</a></td>
+                <td>{{ data[4] | tocurrency }}</td>
             </tr>
             {% endfor %}
         </tbody>

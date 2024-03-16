@@ -106,7 +106,7 @@
                     <option value="" selected disabled>Select a subcategory</option>
                 </select>
                 <label for="budgetAmountInput">Budget Amount:</label>
-                <input type="text" id="budgetAmountInput" placeholder="Enter budget amount" required>
+                <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput" placeholder="Enter budget amount" required>
                 <button type="button" onclick="addBudget()">Submit Budget</button>
             </form>
             <div id="budgetSummaryKPIContainer"></div>

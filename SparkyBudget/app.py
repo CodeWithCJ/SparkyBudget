@@ -2,13 +2,10 @@ import locale
 import os
 import secrets
 import sqlite3
-import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
-import schedule
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
-from monthly_budget_insert import update_budget
 from SimpleFinToDB import process_accounts_data
 
 app = Flask(__name__)
@@ -64,10 +61,20 @@ sparky_password = os.getenv("SPARKY_PASS", "Sparky")
 #
 #
 
+locale.setlocale(locale.LC_ALL, "")
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id)
+
+
+@app.template_filter("tocurrency")
+def format_money(number):
+    if number is None:
+        return "--"
+    else:
+        return locale.currency(number, grouping=True)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -131,7 +138,9 @@ def format_currency(value):
 @login_required
 def index():
     # Connect to the SQLite database
-    conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
+    conn = sqlite3.connect(
+        "SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+    )  # Replace with the actual name of your SQLite database file
     cursor = conn.cursor()
 
     # Fetch data for the first table: OrganizationName, sum(Balance), sum(AvailableBalance)
@@ -160,7 +169,6 @@ def index():
     account_type_data = cursor.fetchall()
     labels = list(zip(*account_type_data))[0]
     balances = list(zip(*account_type_data))[1]
-    locale.setlocale(locale.LC_ALL, "")
     # account_type_data = [
     #    (
     #        account_type,
@@ -204,7 +212,7 @@ def index():
         SELECT OrganizationName,
                 Coalesce(DisplayAccountName,
                 AccountName) as AccountName,
-                strftime("%Y-%m-%d", BalanceDate) AS FormattedBalanceDate,
+                DATE(BalanceDate) AS "[date]",
                 ROUND(Balance, 2) AS Balance,
                 ROUND(AvailableBalance, 2) AS AvailableBalance
         FROM F_Balance 
@@ -234,7 +242,7 @@ def index():
         bank_account_name_balance_details=bank_account_name_balance_details,
         transaction_years=transaction_years,
         transaction_months=transaction_months,
-        now=datetime.utcnow(),
+        now=datetime.now(timezone.utc),
         labels=labels,
         balances=balances,
     )
