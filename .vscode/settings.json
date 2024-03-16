@@ -1,0 +1,29 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "python.languageServer": "Pylance",
+    "python.missingPackage.severity": "Warning",
+    "python.terminal.activateEnvInCurrentTerminal": false,
+    "mypy.dmypyExecutable": "${workspaceFolder}/.venv/bin/dmypy",
+    "black-formatter.args": [
+        "--line-length",
+        "119"
+    ],
+    "isort.args": ["--profile", "black"],
+    "[python]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.unusedImports": "explicit"
+        }
+    },
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingParameterType": "information",
+        "reportMissingTypeStubs": "information",
+        "reportUnknownArgumentType": "information",
+        "reportUnknownMemberType": "information",
+        "reportUnknownParameterType": "information",
+        "reportUnknownVariableType": "information"
+      }
+}
