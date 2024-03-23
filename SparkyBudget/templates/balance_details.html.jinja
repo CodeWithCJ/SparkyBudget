@@ -27,9 +27,9 @@
             <tr>
                 <td>{{ balance_details_data[0] }}</td>
                 <td>{{ balance_details_data[1] }}</td>
-                <td>{{ balance_details_data[2] }}</td>
-                <td>{{ balance_details_data[3] }}</td>
-                <td>{{ balance_details_data[4] }}</td>
+                <td>{{ balance_details_data[2].strftime("%B %-d, %Y") }}</td>
+                <td>{{ balance_details_data[3] | tocurrency }}</td>
+                <td>{{ balance_details_data[4] | tocurrency }}</td>
             </tr>
             {% endfor %}
         </tbody>

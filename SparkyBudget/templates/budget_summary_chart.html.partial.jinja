@@ -45,14 +45,14 @@
         <div class="left-content">
             <i class="fas fa-trash delete-icon" onclick="deleteBudget('{{ data[1] }}')" style="color: #61DAFB;"></i>
             <p href="#" onclick="showTransactionDetails(event,'{{ data[1] }}','{{ data[3] }}')" style="color: #61DAFB;">
-                {{ data[1] }} - </p>
-            {{ data[3] }}
+                {{ data[1] }} -&nbsp;</p>
+            {{ data[3] | tocurrency }}
         </div>
         <div class="right-content">
             <p>
-                <span id="budgetValue_{{ loop.index }}" onclick="editBudget(event,  '{{ data[1] }}', '{{ data[2] }}')"
+                <span id="budgetValue_{{ loop.index }}" onclick="editBudget(event,  '{{ data[1] }}', {{ data[2] }})"
                     style="text-decoration: underline;">
-                    {{ data[2] }}
+                    {{ data[2] | tocurrency }}
                 </span>
             </p>
         </div>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="bottom-content">
-        Bal:{{ data[4] }}
+        Bal: {{ data[4] | tocurrency }}
     </div>
     {% endfor %}
 </div>

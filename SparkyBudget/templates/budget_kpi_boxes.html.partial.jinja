@@ -1,22 +1,22 @@
 <div class="kpi boxes">
     <div class="box income" style="margin-top: 20px;">
         <h2>Income</h2>
-        <p>${{ budget_summary_kpi_boxes_data[0][0] }}</p>
+        <p>{{ budget_summary_kpi_boxes_data[0][0] | tocurrency }}</p>
     </div>
     <div class="box budget" style="margin-top: 20px;">
         <h2>Budget</h2>
-        <p>${{ budget_summary_kpi_boxes_data[0][1] }}</p>
+        <p>{{ budget_summary_kpi_boxes_data[0][1] | tocurrency }}</p>
     </div>
     <div class="box expense" style="margin-top: 20px;">
         <h2>Spent</h2>
-        <p>${{ budget_summary_kpi_boxes_data[0][2] }}</p>
+        <p>{{ budget_summary_kpi_boxes_data[0][2] | tocurrency }}</p>
     </div>
     <div class="box remaining" style="margin-top: 20px;">
         <h2>Budgeted Balance</h2>
-        <p>${{ budget_summary_kpi_boxes_data[0][3] }}</p>
+        <p>{{ budget_summary_kpi_boxes_data[0][3] | tocurrency }}</p>
     </div>
     <div class="box aremaining" style="margin-top: 20px;">
         <h2>Spent Balance</h2>
-        <p>${{ budget_summary_kpi_boxes_data[0][4] }}</p>
+        <p>{{ budget_summary_kpi_boxes_data[0][4] | tocurrency }}</p>
     </div>
 </div>

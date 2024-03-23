@@ -244,6 +244,10 @@ $(document).ready(function () {
 
 
 function editBudget(event, subcategory, currentBudget) {
+    const USDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
     console.log("Editing budget...", subcategory);
 
     const budgetValueElement = event.target;
@@ -254,11 +258,13 @@ function editBudget(event, subcategory, currentBudget) {
     // Create an input element
     const inputElement = document.createElement('input');
     inputElement.type = 'text';
+    inputElement.pattern = "^(\d)+(\.\d{1,2})?$";
+    inputElement.inputmode = "decimal";
     inputElement.value = currentBudget;
 
     // Create a span element
     const spanElement = document.createElement('span');
-    spanElement.textContent = currentBudget;
+    spanElement.textContent = USDollar.format(currentBudget);
 
     // Append the input and span elements to the container
     container.appendChild(inputElement);
@@ -272,11 +278,27 @@ function editBudget(event, subcategory, currentBudget) {
 
     // Add event listeners to handle blur and focusout events
     inputElement.addEventListener('blur', handleUpdate);
-    inputElement.addEventListener('focusout', handleUpdate);
+    //inputElement.addEventListener('focusout', (e) => handleUpdate(e));
 
     function handleUpdate() {
-        // Use function scope to access variables
-        updateBudget(subcategory, inputElement.value);
+        const budgetAmount = Number(inputElement.value);
+
+        if (Number.isNaN(budgetAmount) || budgetAmount === 0) {
+            // too lazy to do a modal
+            const resp = confirm('Invalid budget amount. Would you like to go back and fix or cancel?');
+            if(resp) {
+                setTimeout(() => {
+                    inputElement.focus();
+                }, 0);
+                return false;
+            } else {
+                updateBudgetSummaryChart();
+                return false;
+            }
+        } else {
+            // Use function scope to access variables
+            updateBudget(subcategory, inputElement.value);
+        }
 
         // Replace the container with the original budgetValueElement
         if (budgetValueElement.parentNode) {
@@ -352,6 +374,7 @@ function toggleAddBudgetForm() {
 }
 
 function addBudget() {
+    const addBudgetForm = document.getElementById('addBudgetForm');
     const budgetMonthInput = document.getElementById('budgetMonth');
     const budgetMonth = budgetMonthInput.value.trim();
     console.log("Inside add budget")
@@ -373,9 +396,24 @@ function addBudget() {
     // Continue with the rest of your logic for adding the budget
 
     // Get other input values (subcategory, budget amount, etc.)
-    //const subCategory = document.getElementById('subCategoryInput').value.trim();
+    const subCategorySelect = document.getElementById('subCategoryInput');
     const subCategory = $('#subCategoryInput').val();
-    const budgetAmount = document.getElementById('budgetAmountInput').value.trim();
+
+    if(!subCategory) {
+        subCategorySelect.setCustomValidity('Please select a budget category');
+        addBudgetForm.reportValidity();
+        return false;
+    }
+
+
+    const budgetAmountInput = document.getElementById('budgetAmountInput');
+    const budgetAmount = Number(budgetAmountInput.value.trim());
+
+    if (Number.isNaN(budgetAmount) || budgetAmount === 0) {
+        budgetAmountInput.setCustomValidity('Please enter a budget amount');
+        addBudgetForm.reportValidity();
+        return false;
+    }
 
     // You can perform additional validation for subcategory and budget amount if needed
 
