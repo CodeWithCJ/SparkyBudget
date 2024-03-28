@@ -26,8 +26,8 @@
             {% for balance_details_data in bank_account_name_balance_details %}
             <tr>
                 <td>{{ balance_details_data[0] }}</td>
-                <td>{{ balance_details_data[1] }}</td>
-                <td>{{ balance_details_data[2].strftime("%B %-d, %Y") }}</td>
+                <td>{{ balance_details_data[1] }}</td>                
+				<td>{{ balance_details_data[2].strftime("%B ") }}{{ balance_details_data[2].day }}, {{ balance_details_data[2].year }}</td>
                 <td>{{ balance_details_data[3] | tocurrency }}</td>
                 <td>{{ balance_details_data[4] | tocurrency }}</td>
             </tr>
