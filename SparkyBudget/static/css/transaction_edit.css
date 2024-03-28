@@ -216,7 +216,11 @@ table.dataTable tbody tr:hover {
     /* Black background color */
     background-color: #000000 !important;
     /* White text color */
-    color: #ffffff !important;
+    color: #ffffff;
+}
+
+.daterangepicker .calendar-table {
+    color: #555555;
 }
 
 .daterangepicker .calendar-time {
