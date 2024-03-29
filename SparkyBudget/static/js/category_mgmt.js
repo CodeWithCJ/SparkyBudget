@@ -74,21 +74,23 @@ $(document).ready(function () {
         ]
     });
 
-    $('#category').select2({
-        width: '100%',
-        ajax: {
-            url: '/getCategory', // Adjust this to your endpoint for fetching unique categories
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function (item) {
-                        return {
-                            id: item.Category,
-                            text: item.Category
-                        };
-                    })
-                };
-            }
-        }
+    $.get('/getCategory', function (categories) {
+        // Clear existing options
+
+        const formattedCategories = categories.map(x => ({
+            id: x.Category,
+            text: x.Category
+        }));
+
+        $('#category').empty();
+
+        // Populate the Select2 dropdown with fetched subcategories
+        $('#category').select2({
+            data: formattedCategories,
+            width: '180px',
+            placeholder: 'Select or type to search',
+            allowClear: true,
+        });
     });
 
     $('#addCategoryForm').on('submit', function (e) {

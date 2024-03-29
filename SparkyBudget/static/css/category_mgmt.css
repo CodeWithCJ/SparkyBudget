@@ -288,7 +288,7 @@ table.dataTable tbody tr.filter-row td {
 
 #category {
     /* Set width of the dropdown */
-    width: 80ch;
+    width: 25ch;
 }
 
 #subcategory {
