@@ -45,6 +45,7 @@
         <div class="left-content">
             <i class="fas fa-trash delete-icon" onclick="deleteBudget('{{ data[1] }}')" style="color: #61DAFB;"></i>
             <p href="#" onclick="showTransactionDetails(event,'{{ data[1] }}','{{ data[3] }}')" style="color: #61DAFB;">
+				    <img src="{{ url_for('static', filename='images/budget_icons/' + data[1] + '.png') }}"  style="width:30px; height:30px; vertical-align:middle; margin-right: 8px;">
                 {{ data[1] }} -&nbsp;</p>
             {{ data[3] | tocurrency }}
         </div>

@@ -36,6 +36,14 @@
         </table>
     </div>
     <h2>Category Rule Management</h2>
+	<div class="AddSubCategoryRuleContainer">
+		<form id="addSubCategoryRuleForm">
+			<select id="subcategoryDropDown" name="subcategoryDropDown" required></select>
+			<input type="text" id="matchword" name="matchword" placeholder="Enter New Match Word" required>			
+			<button type="submit" id="submitAddSubCategoryRule">Add Rule</button>
+		</form>
+	</div>
+
     <div class="containerRule">
         <table id="categoryRuleTable" class="display" style="width:100%">
             <thead>

@@ -28,8 +28,8 @@
                 <td>{{ balance_details_data[0] }}</td>
                 <td>{{ balance_details_data[1] }}</td>                
 				<td>{{ balance_details_data[2].strftime("%B ") }}{{ balance_details_data[2].day }}, {{ balance_details_data[2].year }}</td>
-                <td>{{ balance_details_data[3] | tocurrency }}</td>
-                <td>{{ balance_details_data[4] | tocurrency }}</td>
+                <td>{{ balance_details_data[3] | tocurrency_whole }}</td>
+                <td>{{ balance_details_data[4] | tocurrency_whole }}</td>
             </tr>
             {% endfor %}
         </tbody>

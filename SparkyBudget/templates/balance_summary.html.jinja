@@ -31,16 +31,16 @@
                         <span class="expand-collapse-toggle"></span>
                         {{ data[0] }}
                     </td>
-                    <td>{{ data[1] | tocurrency }}</td>
-                    <td>{{ data[2] | tocurrency }}</td>
+                    <td>{{ data[1] | tocurrency_whole }}</td>
+                    <td>{{ data[2] | tocurrency_whole }}</td>
                 </tr>
                 {% for bank_data in account_type_banak_data %}
                     {% if bank_data[0] == data[0] %}
                         {% if bank_data[2] != 0.0 or bank_data[3] != 0.0 %}
                         <tr class="child-row">
                             <td style="text-align: right;">{{ bank_data[1] }}</td>
-                            <td>{{ bank_data[2] }}</td>
-                            <td>{{ bank_data[3] }}</td>
+                            <td>{{ bank_data[2] | tocurrency_whole }}</td>
+                            <td>{{ bank_data[3] | tocurrency_whole }}</td>
                         </tr>
                         {% endif %}
                     {% endif %}
