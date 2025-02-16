@@ -1,0 +1,62 @@
+#balanceSummaryTable {
+    background-color: #173F3F;
+    /* Adjust the border-radius as needed for rounded corners */
+    border-radius: 10px;
+    /* Hide any content that overflows the rounded corners */
+    overflow: hidden;
+}
+
+table {
+    width: 100%; /* Ensure table takes up full width */
+    table-layout: fixed; /* Prevents width from changing */
+}
+
+td, th {
+    padding: 10px;
+    text-align: left;
+    word-wrap: break-word; /* Prevents content from breaking out of the cell */
+}
+
+.child-row {
+    display: none; /* Initially hidden */
+    overflow: hidden;
+    max-height: 0; /* Set max-height to 0 for collapsed state */
+    opacity: 0;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Smooth transition */
+}
+
+
+.type-row.expanded + .child-row {
+    display: table-row;
+}
+
+
+
+
+.expand-collapse-toggle::before {
+    content: '►';
+    display: inline-block;
+    width: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.expanded .expand-collapse-toggle::before {
+    content: '▼';
+}
+
+.negative {
+    color: red;
+}
+
+/* Add a class for collapsed state */
+.balance-summary-container.collapsed {
+    height: 0;
+    overflow: hidden;
+    display: none;
+}
+
+/* Add a transition for smooth animation */
+.balance-summary-container {
+    transition: height 0.3s ease-in-out;
+}

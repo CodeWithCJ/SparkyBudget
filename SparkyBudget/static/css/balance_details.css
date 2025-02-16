@@ -1,0 +1,148 @@
+body {
+    /* Dark background color */
+    background-color: #1b1e23;
+    /* Light text color */
+    color: #ffffff;
+}
+
+/* Adjust the background and text color of the table */
+table.dataTable {
+    /* Dark background color for the table */
+    background-color: #333333;
+    /* Light text color for the table */
+    color: #ffffff;
+}
+
+/* Adjust the color of table headers */
+table.dataTable thead th {
+    /* Light text color for table headers */
+    color: #000000;
+}
+
+/* Adjust the color of table rows */
+table.dataTable tbody tr {
+    /* Black background color for all rows */
+    background-color: #000000;
+    /* Light text color for all rows */
+    color: #ffffff;
+}
+
+
+
+/* Override the default DataTables stripe color */
+table.dataTable tbody tr.odd,
+table.dataTable tbody tr.odd:hover {
+    /* Darker background color for odd rows */
+    background-color: #555555 !important;
+}
+
+/* Adjust the color of DataTables pagination controls */
+.dataTables_paginate .paginate_button {
+    /* Light text color for pagination controls */
+    color: #ffffff !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    /* Light text color for pagination controls on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of other DataTables elements */
+.dataTables_info,
+.dataTables_length label,
+.dataTables_filter label,
+.dataTables_processing,
+.dataTables_paginate,
+.dataTables_paginate span a {
+    /* Light text color for other DataTables elements */
+    color: #ffffff !important;
+}
+
+.dataTables_paginate span .current {
+    /* Darker background color for the current page number */
+    background-color: #555555 !important;
+    /* Light text color for the current page number */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables length menu */
+.dataTables_length label select {
+    /* Light text color for length menu */
+    color: #ffffff !important;
+    /* Dark background color for length menu */
+    background-color: #444444 !important;
+}
+
+/* Adjust the color of DataTables pagination buttons */
+.dataTables_paginate .paginate_button {
+    /* Light text color for pagination buttons */
+    color: #ffffff !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    /* Light text color for pagination buttons on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables pagination controls at the bottom right */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    /* Light text color for pagination controls */
+    color: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    /* Light text color for pagination controls on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables previous button */
+.dataTables_wrapper .dataTables_paginate .previous {
+    /* Light text color for the Previous button */
+    color: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .previous:hover {
+    /* Light text color for the Previous button on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables search input */
+.dataTables_wrapper .dataTables_filter input {
+    /* Light text color for the search input */
+    color: #ffffff !important;
+    /* Dark background color for the search input */
+    background-color: #444444 !important;
+}
+
+/* Adjust the color of DataTables search input on focus */
+.dataTables_wrapper .dataTables_filter input:focus {
+    /* Light text color for the search input on focus */
+    color: #ffffff !important;
+    /* Darker background color for the search input on focus */
+    background-color: #555555 !important;
+}
+
+div.dt-container div.dt-layout-cell {
+    padding: 0;
+}
+
+#balanceTable {
+    margin-bottom: 20px;
+}
+
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting_asc_disabled,
+table.dataTable thead .sorting_desc_disabled {
+    /* Adjust the background color as needed */
+    background-color: #61dafb;
+    /* Adjust the text color as needed */
+    color: #000000 !important;
+}
+
+#balanceTable_wrapper {
+    margin: 20px auto;
+    /* Adjust the width as needed */
+    width: 80%;
+}
