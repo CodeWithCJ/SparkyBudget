@@ -2,14 +2,24 @@ import locale
 import os
 import secrets
 import sqlite3
+import schedule, time
+import re
 from datetime import datetime, timedelta, timezone
+from threading import Lock
 
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for, Blueprint  
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
+
+from monthly_budget_insert import month_budget_update_using_template
+from daily_balance_history import daily_balance_history_insert
 from SimpleFinToDB import process_accounts_data
+
 
 app = Flask(__name__)
 app.jinja_env.add_extension("jinja2.ext.loopcontrols")  # Add this line to enable loop controls
+
+
 
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
 app.config["SESSION_COOKIE_SECURE"] = bool(int(os.getenv("USE_INTERNAL_HTTPS", 0))) or bool(
@@ -21,6 +31,12 @@ app.secret_key = secrets.token_hex(16)
 login_manager = LoginManager(app)
 
 
+
+from manage_categories import manage_categories_bp
+
+# Register the Blueprint
+app.register_blueprint(manage_categories_bp)
+
 # Simple hardcoded user class (replace with your user model if you have one)
 class User(UserMixin):
     def __init__(self, user_id):
@@ -30,36 +46,40 @@ class User(UserMixin):
 sparky_username = os.getenv("SPARKY_USER", "Sparky")
 sparky_password = os.getenv("SPARKY_PASS", "Sparky")
 
+db_lock = Lock()
 
-## Define a function to schedule the task
-# def schedule_update_budget():
-#    print("Monthly Budget App in progress...")
-#    # Check if it's 2 am
-#    if datetime.now().hour == 2 and datetime.now().minute == 0:
-#    #if datetime.now().hour == 18 and datetime.now().minute == 34:
-#        # Check if it's the first day of the month
-#        if datetime.now().day == 1:
-#            update_budget()
-#
-## Schedule the task to run daily at 2 am
-# schedule.every().day.at("02:00").do(schedule_update_budget)
-#
-#
-#
-# def schedule_process_accounts_data():
-#    # Schedule the task to run every 6 hours
-#    print("Bank balance & Transaction update in progress...")
-#    schedule.every(6).hours.do(process_accounts_data)
-#
-#
-#
-# def run_scheduler():
-#    while True:
-#        schedule.run_pending()
-#        time.sleep(1)
-#
-#
-#
+#Define a function to schedule the task
+#def monthly_budget_update_schedule():
+#   print("Monthly Budget App in progress...")
+#   # Check if it's 1 am
+#   if datetime.now().hour == 1 and datetime.now().minute == 0:
+#   #if datetime.now().hour == 18 and datetime.now().minute == 34:
+#       # Check if it's the first day of the month
+#       if datetime.now().day == 1:
+#           month_budget_update_using_template()
+# #Schedule the task to run daily at 1 am
+schedule.every().day.at("01:00").do(month_budget_update_using_template)
+
+#def daily_balance_history_insert_schedule():
+#   print("Daily Balance History in progress...")
+#   # Check if it's 23:55 PM
+#   if datetime.now().hour == 23 and datetime.now().minute == 55:
+#      daily_balance_history_insert()
+# #Schedule the task to run daily at 1:05 am
+schedule.every().day.at("23:55").do(daily_balance_history_insert)
+
+
+schedule.every(4).hours.do(process_accounts_data)
+
+#def schedule_process_accounts_data():
+#   # Schedule the task to run every 6 hours
+#   print("Bank balance & Transaction update in progress...")
+#   #schedule.every(6).hours.do(process_accounts_data)
+#   schedule.every(4).hours.do(process_accounts_data)
+def run_scheduler():
+   while True:
+       schedule.run_pending()
+       time.sleep(10)
 
 locale.setlocale(locale.LC_ALL, "")
 
@@ -74,7 +94,17 @@ def format_money(number):
     if number is None:
         return "--"
     else:
-        return locale.currency(number, grouping=True)
+        rounded_number = round(number,2)  # Round to whole number
+        return f"${rounded_number:,}"  # Format without decimals
+
+
+@app.template_filter("tocurrency_whole")
+def format_money_whole(number):
+    if number is None:
+        return "--"
+    else:
+        rounded_number = round(number)  # Round to whole number
+        return f"${rounded_number:,}"  # Format without decimals
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -146,22 +176,44 @@ def index():
     # Fetch data for the first table: OrganizationName, sum(Balance), sum(AvailableBalance)
     cursor.execute(
         """
-        SELECT
-            AccountType,            
-            ROUND(SUM(Balance), 2) AS TotalBalance,
-            ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
-        FROM
-            F_Balance
-        WHERE AccountType not in ('Hide')
-        GROUP BY
-            AccountType            
+        SELECT * FROM (
+            SELECT
+                AccountType,            
+                ROUND(SUM(Balance), 2) AS TotalBalance,
+                ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
+            FROM
+                F_Balance
+            WHERE AccountType not in ('Hide')
+            GROUP BY
+                AccountType
+            UNION ALL
+            SELECT
+                'Net Cash' as AccountType,            
+                ROUND(SUM(Balance), 2) AS TotalBalance,
+                ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
+            FROM
+                F_Balance
+            WHERE AccountType  in ('Checking','Savings','Credit Card')
+            UNION ALL
+            SELECT
+                'Net Worth' as AccountType,            
+                ROUND(SUM(Balance), 2) AS TotalBalance,
+                ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
+            FROM
+                F_Balance
+            WHERE AccountType not in ('Hide')
+        )
         ORDER BY
             CASE
+                WHEN AccountType = 'Net Cash' THEN 0
                 WHEN AccountType = 'Checking' THEN 1
                 WHEN AccountType = 'Savings' THEN 2
                 WHEN AccountType = 'Credit Card' THEN 3
-                WHEN AccountType = 'Loan' THEN 4
-                ELSE 5  -- For the rest
+                WHEN AccountType = 'Utilities' THEN 4
+                WHEN AccountType = 'Loan' THEN 5
+                WHEN AccountType = 'Retirement' THEN 6
+                WHEN AccountType = 'Net Worth' THEN 7
+                ELSE 999  -- For the rest
             END            
         """
     )
@@ -298,7 +350,7 @@ def budget_summary_kpi_boxes():
                 SELECT
                     Null as ProjectedSalary,
                     Null as BudgetAmount,
-                    ROUND(SUM(COALESCE(a11.TransactionAmount, 0)), 2) AS TotalTransactionAmount,
+                    ROUND(COALESCE(a11.TransactionAmountNew,a11.TransactionAmount, 0), 2) AS TotalTransactionAmount,
                     Null as Salary
                 FROM
                     F_Transaction a11
@@ -315,7 +367,7 @@ def budget_summary_kpi_boxes():
                     Null as ProjectedSalary,
                     Null as BudgetAmount,
                     Null as TotalTransactionAmount,
-                    ROUND(SUM(COALESCE(a11.TransactionAmount, 0)), 2) AS Salary
+                    ROUND(COALESCE(a11.TransactionAmountNew,a11.TransactionAmount, 0), 2) AS Salary
                 FROM
                     F_Transaction a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
@@ -352,79 +404,6 @@ def budget_summary_kpi_boxes():
         return jsonify({"error": "Failed to fetch distinct subcategories"}), 500
 
 
-@app.route("/update_transaction_table")
-@login_required
-def update_transaction_table():
-    selected_year = request.args.get("year")
-    selected_month = request.args.get("month")
-
-    # Connect to the SQLite database
-    conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
-    cursor = conn.cursor()
-
-    # Enable query logging
-    cursor.execute("PRAGMA query_only = 1;")
-
-    # Print the SQL query for debugging
-    sql_query = """
-        SELECT
-            Category,
-            SubCategory,            
-            SUM(BudgetAmount) AS BudgetAmount,
-            ABS(SUM(TotalTransactionAmount)) AS TotalTransactionAmount,
-            Round(SUM(BudgetAmount) - ABS(SUM(TotalTransactionAmount)),2) as RemainingBudget
-        FROM
-            (
-            SELECT
-                Coalesce(a12.Category, 'Unknown') as Category,
-                Coalesce(a11.SubCategory,'Unknown') as SubCategory,
-                0 AS TotalTransactionAmount,
-                ROUND(Sum(COALESCE(BudgetAmount,0)),2) AS BudgetAmount
-            FROM
-                F_Budget a11
-                LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
-            WHERE
-                a11.SubCategory not in ('CC Payment','Money Transfer') AND
-                CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ? AND
-                strftime('%m', a11.BudgetMonth) = ?
-            GROUP BY
-                Coalesce(a12.Category, 'Unknown'),  -- Include Coalesce here
-                Coalesce(a11.SubCategory,'Unknown')
-            UNION ALL   
-            SELECT
-                Coalesce(a12.Category, 'Unknown') as Category,
-                Coalesce(a11.SubCategory,'Unknown') as SubCategory,
-                ROUND(SUM(Coalesce(a11.TransactionAmount,0)), 2) AS TotalTransactionAmount,
-                0 AS BudgetAmount
-            FROM
-                F_Transaction a11
-                LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
-            WHERE
-                a11.SubCategory not in ('CC Payment','Money Transfer') AND
-                CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
-                strftime('%m', a11.TransactionPosted) = ?
-            GROUP BY
-                Coalesce(a12.Category, 'Unknown'),  -- Include Coalesce here
-                Coalesce(a11.SubCategory,'Unknown')
-                ) a11
-        
-        GROUP BY
-            Category,
-            SubCategory
-        ORDER BY
-            3 asc,CASE WHEN Category = 'Unknown' THEN 1 ELSE 0 END desc,
-            1, 2
-    """
-
-    # Fetch data for the third table based on selected filters
-    cursor.execute(sql_query, (selected_year, selected_month, selected_year, selected_month))
-    transaction_data = cursor.fetchall()
-
-    # Close the database connection
-    conn.close()
-
-    # Render the template with the fetched data for the third table
-    return render_template("budget_summary.html.jinja", transaction_data=transaction_data)
 
 
 @app.route("/budget_summary_chart")
@@ -434,7 +413,6 @@ def budget_summary_chart():
     selected_month = request.args.get("month")
     sort_criteria = request.args.get("sort_criteria", "category")  # Default to sorting by category if not provided
 
-    # SortAscDesc = request.args.get('SortAscDesc', 'True').lower() == 'true'
     SortAscDesc = request.args.get("SortAscDesc", "True").lower() == "true"
 
     order_by_index = 0
@@ -451,95 +429,87 @@ def budget_summary_chart():
     else:
         order_by_index = 2  # Default to sorting by category if criteria is not recognized
 
-    # Connect to the SQLite database
-    conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
-    cursor = conn.cursor()
+    # Use a context manager to manage the SQLite connection
+    with sqlite3.connect("SparkyBudget.db") as conn:
+        cursor = conn.cursor()
 
-    # Enable query logging
-    cursor.execute("PRAGMA query_only = 1;")
+        # Enable query logging
+        cursor.execute("PRAGMA query_only = 1;")
 
-    # Print the SQL query for debugging
-    sql_query = """
-        SELECT
-            Category,
-            SubCategory,            
-            SUM(BudgetAmount) AS BudgetAmount,
-            ABS(SUM(TotalTransactionAmount)) AS TotalTransactionAmount,
-            Round(SUM(BudgetAmount) - ABS(SUM(TotalTransactionAmount)),2) as RemainingBudget
-        FROM
-            (
+        # Print the SQL query for debugging
+        sql_query = """
             SELECT
-                Coalesce(a12.Category, 'Unknown') as Category,
-                Coalesce(a11.SubCategory,'Unknown') as SubCategory,
-                0 AS TotalTransactionAmount,
-                ROUND(Sum(COALESCE(BudgetAmount,0)),2) AS BudgetAmount
+                Category,
+                SubCategory,            
+                SUM(BudgetAmount) AS BudgetAmount,
+                ABS(SUM(TotalTransactionAmount)) AS TotalTransactionAmount,
+                Round(SUM(BudgetAmount) - ABS(SUM(TotalTransactionAmount)),2) as RemainingBudget
             FROM
-                F_Budget a11
-                LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
-            WHERE
-                Coalesce(a11.SubCategory,'Unknown') not in ('CC Payment','Money Transfer') AND
-                CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ? AND
-                strftime('%m', a11.BudgetMonth) = ?
+                (
+                SELECT
+                    Coalesce(a12.Category, 'Unknown') as Category,
+                    Coalesce(a11.SubCategory,'Unknown') as SubCategory,
+                    0 AS TotalTransactionAmount,
+                    ROUND(Sum(COALESCE(BudgetAmount,0)),2) AS BudgetAmount
+                FROM
+                    F_Budget a11
+                    LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                WHERE
+                    Coalesce(a11.SubCategory,'Unknown') not in ('CC Payment','Money Transfer') AND
+                    CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ? AND
+                    strftime('%m', a11.BudgetMonth) = ?
+                GROUP BY
+                    Coalesce(a12.Category, 'Unknown'),
+                    Coalesce(a11.SubCategory,'Unknown')
+                UNION ALL   
+                SELECT
+                    Coalesce(a12.Category, 'Unknown') as Category,
+                    Coalesce(a11.SubCategory,'Unknown') as SubCategory,
+                    ROUND(SUM(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0)), 2) AS TotalTransactionAmount,
+                    0 AS BudgetAmount
+                FROM
+                    F_Transaction a11
+                    LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                    LEFT JOIN F_Balance a13 on (a11.AccountID=a13.AccountID)
+                WHERE
+                    AccountType not in ('Retirement','Hide') AND
+                    Coalesce(a11.SubCategory,'Unknown') not in ('CC Payment','Money Transfer') AND
+                    Coalesce(a13.AccountType,'Unknown') not in ('Utilities','Retirement','Hide') AND
+                    CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
+                    strftime('%m', a11.TransactionPosted) = ?
+                GROUP BY
+                    Coalesce(a12.Category, 'Unknown'),
+                    Coalesce(a11.SubCategory,'Unknown')
+                    ) a11
             GROUP BY
-                Coalesce(a12.Category, 'Unknown'),  -- Include Coalesce here
-                Coalesce(a11.SubCategory,'Unknown')
-            UNION ALL   
-            SELECT
-                Coalesce(a12.Category, 'Unknown') as Category,
-                Coalesce(a11.SubCategory,'Unknown') as SubCategory,
-                ROUND(SUM(Coalesce(a11.TransactionAmount,0)), 2) AS TotalTransactionAmount,
-                0 AS BudgetAmount
-            FROM
-                F_Transaction a11
-                LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
-                LEFT JOIN F_Balance a13 on (a11.AccountID=a13.AccountID)
-            WHERE
-                AccountType not in ('Retirement','Hide') AND
-                Coalesce(a11.SubCategory,'Unknown') not in ('CC Payment','Money Transfer') AND
-                Coalesce(a13.AccountType,'Unknown') not in ('Utilities','Retirement','Hide') AND
-                CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
-                strftime('%m', a11.TransactionPosted) = ?
-            GROUP BY
-                Coalesce(a12.Category, 'Unknown'),  -- Include Coalesce here
-                Coalesce(a11.SubCategory,'Unknown')
-                ) a11
-       
-        GROUP BY
-            Category,
-            SubCategory
-        ORDER BY
-            
-            CASE WHEN Category = 'Unknown' THEN 1 ELSE 0 END          
-    """
+                Category,
+                SubCategory
+            ORDER BY
+                CASE WHEN Category = 'Unknown' THEN 1 ELSE 0 END          
+        """
 
-    # Fetch data for the third table based on selected filters
-    cursor.execute(sql_query, (selected_year, selected_month, selected_year, selected_month))
-    budget_summary_chart = cursor.fetchall()
-    budget_summary_chart = sorted(
-        budget_summary_chart, key=lambda x: x[order_by_index], reverse=SortAscDesc
-    )  # Sorting by the third element
+        # Fetch data for the third table based on selected filters
+        cursor.execute(sql_query, (selected_year, selected_month, selected_year, selected_month))
+        budget_summary_chart = cursor.fetchall()
+        budget_summary_chart = sorted(
+            budget_summary_chart, key=lambda x: x[order_by_index], reverse=SortAscDesc
+        )
 
+    # Log debugging information
     print(
-        "Budget Summary chat- year: ",
+        "Budget Summary Chart - year: ",
         selected_year,
-        " Month :",
+        " Month: ",
         selected_month,
         "Sorted by: ",
         sort_criteria,
-        "Desc: ",
+        "Descending: ",
         SortAscDesc,
     )
 
-    # print("SQL Query:", sql_query)
-
-    # print("Budget Summary Chart Data:", budget_summary_chart)
-
-    # Close the database connection
-    conn.close()
-
     # Render the template with the fetched data for the third table
-    # TODO: is this supposed to be a partial or full html?
     return render_template("budget_summary_chart.html.partial.jinja", budget_summary_chart=budget_summary_chart)
+
 
 
 # Add this route to your Flask app
@@ -563,7 +533,7 @@ def get_transaction_details():
 			a11.AccountName,			              
             a11.TransactionDescription,
             a11.TransactionPayee,
-            ROUND(a11.TransactionAmount, 2) AS TransactionAmount	
+            ROUND(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0), 2) AS TransactionAmount	
         FROM
             F_Transaction a11
             left join F_balance a12
@@ -574,7 +544,7 @@ def get_transaction_details():
             strftime('%m', a11.TransactionPosted) = ?
             AND Coalesce(a11.SubCategory,'Unknown') = ?             
         ORDER BY
-            TransactionPosted desc,a11.AccountName,a11.TransactionDescription, a11.TransactionPayee, a11.TransactionAmount,TransactionKey
+            TransactionPosted desc,a11.AccountName,a11.TransactionDescription, a11.TransactionPayee, ROUND(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0), 2),TransactionKey
     """
     # Fetch transaction data for the transaction table based on selected filters
 
@@ -648,7 +618,7 @@ def analyze_transaction():
             a11.TransactionPayee,
             Coalesce(a11.SubCategory,'Unknown') as SubCategory,
             TransactionKey,
-            ROUND(a11.TransactionAmount, 2) AS TransactionAmount
+            ROUND(SUM(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0)), 2) AS TransactionAmount
         FROM
             F_Transaction a11
         WHERE
@@ -881,16 +851,16 @@ def chart_data():
         salary_chart_data_query = """
             SELECT
                 strftime('%Y-%m', TransactionPosted) AS SalaryMonth,
-                ROUND(sum(TransactionAmount)) as Salary
+                ROUND(SUM(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0)), 2) as Salary
             FROM
-                F_Transaction
+                F_Transaction a11
             WHERE
                 SubCategory='Paycheck'
                 AND strftime('%Y-%m', TransactionPosted) >= strftime('%Y-%m', 'now', '-6 months')
             GROUP BY
                 strftime('%Y-%m', TransactionPosted)
             ORDER BY
-                SalaryMonth DESC
+                SalaryMonth ASC
         """
 
         cursor.execute(salary_chart_data_query)
@@ -907,248 +877,75 @@ def chart_data():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/manage_categories")
+@app.route("/splitTransaction", methods=["POST"])
 @login_required
-def manage_categories():
-    return render_template("category_mgmt.html.jinja")
-
-
-@app.route("/getCategorySubCategory")
-@login_required
-def category_subcategory_data():
+def split_transaction():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
-        category_subcategory_query = """
-            SELECT                
-                SubCategoryKey,
-                SubCategory,
-                Category
-            FROM
-                D_Category            
-            ORDER BY
-                SubCategory, Category ASC
-        """
-        cursor.execute(category_subcategory_query)
-        category_subcategory_data = cursor.fetchall()
-        conn.close()
+        # Get data from the frontend
+        transaction_key = request.form.get("transactionKey")  # transactionKey is passed from the form
+        split_amount = float(request.form.get("splitAmount"))
+        new_subcategory = request.form.get("newSubcategory")
+        
+        print("Split Transaction:", transaction_key, split_amount, new_subcategory)
+        
+        if not transaction_key or not split_amount or not new_subcategory:
+            return jsonify({"error": "Invalid data received!"}), 400
 
-        # Format the data for DataTables
-        formatted_data = [
-            {"SubCategoryKey": row[0], "SubCategory": row[1], "Category": row[2]} for row in category_subcategory_data
-        ]
-        # print(formatted_data)  # Debug print
-        return jsonify({"data": formatted_data})
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/getCategory")
-@login_required
-def category_data():
-    try:
+        # Connect to the database
         conn = sqlite3.connect("SparkyBudget.db")
         cursor = conn.cursor()
 
-        # Adjusted SQL query to correctly fetch distinct categories
-        category_query = """
-            SELECT DISTINCT                
-                Category  
-            FROM
-                D_Category            
-            ORDER BY
-                Category ASC 
-        """
+        # Fetch the original transaction details using TransactionKey (since it's the column name)
+        cursor.execute(
+            "SELECT AccountID,AccountName,TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee FROM F_Transaction WHERE TransactionKey = ?", 
+            (transaction_key,)
+        )
+        original_transaction = cursor.fetchone()
 
-        cursor.execute(category_query)
-        categories = cursor.fetchall()
-        conn.close()
+        if not original_transaction:
+            return jsonify({"error": "Transaction not found!"}), 404
 
-        # Format the fetched data for JSON response
-        categories_list = [
-            {"Category": row[0]} for row in categories
-        ]  # Assuming 'Category' is the column name in your table
+        account_id,account_name,original_transaction_id, original_amount, original_subcategory, transaction_date, description, payee = original_transaction
 
-        # Return the categories as JSON
-        return jsonify(categories_list)
+        # Ensure the split amount has the correct sign
+        if (original_amount < 0 and split_amount > 0) or (original_amount > 0 and split_amount < 0):
+            split_amount = -split_amount  # Convert the split amount to match the original transaction sign
 
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        # Validate that split amount is not greater than the original amount (absolute value comparison)
+        if abs(split_amount) >= abs(original_amount) or abs(split_amount) <= 0:
+            return jsonify({"error": "Invalid split amount!"}), 400
 
+        # Check if the TransactionID ends with a _digit
+        match = re.match(r"(.+?)_(\d+)$", original_transaction_id)
+        if match:
+            base_id = match.group(1)  # Extract base part (before the last underscore)
+            max_suffix = int(match.group(2))  # Get the current suffix number
+            new_transaction_id = f"{base_id}_{max_suffix + 1}"  # Increment suffix
+        else:
+            base_id = original_transaction_id  # No suffix, so it's the first split
+            new_transaction_id = f"{base_id}_1"  # Create the first split transaction
 
-@app.route("/addSubCategory", methods=["POST"])
-@login_required
-def add_subcategory():
-    try:
-        subcategory = request.form["subcategory"]
-        category = request.form["category"]
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
+        # Insert the new transaction for the split amount
+        cursor.execute(
+            "INSERT INTO F_Transaction (AccountID,AccountName,TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (account_id,account_name,new_transaction_id, split_amount, new_subcategory, transaction_date, description, payee)
+        )
 
-        print("Adding New Subcategory: From Python", subcategory, "  ", category)
+        # Update the original transaction amount (subtract the split amount)
+        new_original_amount = original_amount - split_amount
+        cursor.execute("UPDATE F_Transaction SET TransactionAmountNew = ? WHERE TransactionKey = ?", (new_original_amount, transaction_key))
 
-        add_category_query = """
-            INSERT INTO D_Category (SubCategory, Category)
-            VALUES (?, ?)
-        """
-        add_category_data = (subcategory, category)
-
-        cursor.execute(add_category_query, add_category_data)
+        # Commit changes and close connection
         conn.commit()
         conn.close()
 
-        return jsonify({"success": True, "message": "Category added successfully"})
+        return jsonify({"success": True, "message": "Transaction split successfully!"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        print(f"Error splitting transaction: {str(e)}")
+        return jsonify({"error": f"Failed to split transaction! {str(e)}"}), 500
 
 
-@app.route("/deleteSubCategory/<int:subcategory_key>", methods=["DELETE"])
-@login_required
-def delete_subcategory(subcategory_key):
-    try:
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
-
-        delete_category_query = """
-            DELETE FROM D_Category
-            WHERE SubCategoryKey = ?
-        """
-        delete_category_data = (subcategory_key,)
-
-        cursor.execute(delete_category_query, delete_category_data)
-        conn.commit()
-        conn.close()
-
-        return jsonify({"success": True, "message": "Category deleted successfully"})
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/updateSubCategoryDIM", methods=["POST"])
-@login_required
-def update_category():
-    try:
-        subcategory_key = request.form["subcategory_key"]
-        new_subcategory_name = request.form["new_subcategory_name"]
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
-
-        update_category_query = """
-            UPDATE D_Category
-            SET SubCategory = ?
-            WHERE SubCategoryKey = ?
-        """
-        update_category_data = (new_subcategory_name, subcategory_key)
-
-        cursor.execute(update_category_query, update_category_data)
-        conn.commit()
-        conn.close()
-
-        return jsonify({"success": True, "message": "Category updated successfully"})
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/getSubCategoryRules")
-@login_required
-def subcategory_rule_data():
-    try:
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
-        subcategory_rule_query = """
-            SELECT                
-                RuleKey,
-                Default_SubCategory,
-                Rule_Category,
-                Rule_Pattern,
-                Match_Word
-            FROM
-                D_Category_Rule            
-            ORDER BY
-                2,3,4,5 ASC
-        """
-        cursor.execute(subcategory_rule_query)
-        subcategory_rule_data = cursor.fetchall()
-        conn.close()
-
-        # Format the data for DataTables
-        formatted_data = [
-            {
-                "RuleKey": row[0],
-                "Default_SubCategory": row[1],
-                "Rule_Category": row[2],
-                "Rule_Pattern": row[3],
-                "Match_Word": row[4],
-            }
-            for row in subcategory_rule_data
-        ]
-
-        # print(formatted_data)  # Debug print
-        return jsonify({"data": formatted_data})
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/updateRule", methods=["POST"])
-@login_required
-def update_rule():
-    try:
-        RuleKey = request.form["RuleKey"]
-        Match_Word = request.form["Match_Word"]
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
-
-        update_rule_query = """
-            UPDATE D_Category_Rule
-            SET Match_Word = ?
-            WHERE RuleKey = ?
-        """
-        update_rule_data = (Match_Word, RuleKey)
-
-        cursor.execute(update_rule_query, update_rule_data)
-        conn.commit()
-        conn.close()
-        print(update_rule_data)  # Debug print
-        return jsonify({"success": True, "message": "Rule updated successfully"})
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/deleteRule/<int:RuleKey>", methods=["DELETE"])
-@login_required
-def delete_rule(RuleKey):
-    try:
-        conn = sqlite3.connect("SparkyBudget.db")
-        cursor = conn.cursor()
-
-        delete_rule_query = """
-            DELETE FROM D_Category_Rule
-            WHERE RuleKey = ?
-        """
-        delete_rule_data = (RuleKey,)
-
-        cursor.execute(delete_rule_query, delete_rule_data)
-        conn.commit()
-        conn.close()
-
-        return jsonify({"success": True, "message": "Category deleted successfully"})
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
@@ -1157,26 +954,14 @@ if __name__ == "__main__":
     ssl_context = None
     if bool(int(os.getenv("USE_INTERNAL_HTTPS", 0))):
         ssl_context = (r"certs/cert.pem", r"certs/key.pem")
+    #process_accounts_data()
+    # Schedule the process_accounts_data function to run every 6 hours
+    #schedule_process_accounts_data()
+
+    import threading
+    scheduler_thread = threading.Thread(target=run_scheduler)
+    scheduler_thread.start()
 
     # Run the Flask app with the SSL context
     app.run(host="0.0.0.0", port=5000, ssl_context=ssl_context, debug=True)
-    # app.run(host='0.0.0.0', port=5000, debug=True)
-
-# if __name__ == '__main__':
-#
-#    # Schedule the process_accounts_data function to run every 6 hours
-#    schedule_process_accounts_data()
-#
-#
-#    import threading
-#    scheduler_thread = threading.Thread(target=run_scheduler)
-#    scheduler_thread.start()
-#
-#    # Specify the full path to the SSL certificate and key in the "static\SSL" directory
-#
-#    ssl_cert_path = '/sparky/ssl/certificate.crt'
-#    ssl_key_path = '/sparky/ssl/private.key'
-#
-#    # Run the Flask app with the SSL context
-#    app.run(host='0.0.0.0', port=5000, ssl_context=(ssl_cert_path, ssl_key_path), debug=True)
-#    #app.run(host='0.0.0.0', port=5000, debug=True)
+    

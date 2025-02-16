@@ -4,8 +4,13 @@ import datetime
 import json
 import os
 import sqlite3
+#from datetime import datetime
+
 
 import requests
+#from app import db_lock
+#from threading import Lock
+#db_lock = Lock()
 
 
 # Function to convert timestamp to datetime
@@ -51,206 +56,193 @@ def get_access_url():
 
 
 def process_accounts_data():
+    server_local_timestamp = datetime.datetime.now()
+    print(f"process_accounts_data executed at {server_local_timestamp}")
+    from app import db_lock  # Import inside the function to avoid circular import
+    with db_lock:  # Synchronize database access
+        # Create the output folder if it doesn't exist
+        output_folder = "output"
+        os.makedirs(output_folder, exist_ok=True)
 
-    # Create the output folder if it doesn't exist
-    output_folder = "output"
-    os.makedirs(output_folder, exist_ok=True)
+        # Load access URL from file if available
+        access_url = get_access_url()
+        if access_url:
+            # Calculate the start date parameter for the last 12 months (or 10 days for testing)
+            last_12_months = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=10)
+            start_date_param = int(last_12_months.timestamp())
 
-    # Load access URL from file if available
-    access_url = get_access_url()
+            # Append the parameters to the access URL
+            access_url_with_params = f"{access_url}/accounts?start-date={start_date_param}&pending=1"
 
-    # Continue only if the access URL is available
-    if access_url:
-        # Append the start-date parameter to the access URL
-        last_12_months = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=30)
-        start_date_param = int(last_12_months.timestamp())
+            try:
+                # Fetch data from the API
+                response = requests.get(access_url_with_params)
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                data = response.json()  # Parse the API response as JSON
 
-        # Append "accounts?" to the URL
-        access_url_with_params = f"{access_url}/accounts?start-date={start_date_param}&pending=1"
+                # SQLite database connection (use check_same_thread=False for multi-threading safety)
+                with sqlite3.connect("SparkyBudget.db", check_same_thread=False) as conn:
+                    cursor = conn.cursor()
 
-        # Use the Access URL to get some data
-        try:
-            response = requests.get(access_url_with_params)
-            response.raise_for_status()
-            data = response.json()  # Parse the response as JSON
+                    # Create a temporary table for transactions with pending status
+                    create_temp_table_query = """
+                    CREATE TEMP TABLE IF NOT EXISTS Temp_F_Transaction_Pending (
+                        TransactionID INTEGER,
+                        SubCategory TEXT,
+                        TransactionAmountNew REAL
+                    );
+                    """
+                    cursor.execute(create_temp_table_query)  # Execute the query
 
-            # SQLite database connection
-            conn = sqlite3.connect("SparkyBudget.db")
-            cursor = conn.cursor()
+                    # Insert data into the temporary table from F_Transaction
+                    insert_into_temp_table_query = """
+                    INSERT INTO Temp_F_Transaction_Pending (TransactionID, SubCategory,TransactionAmountNew)
+                    SELECT TransactionID, SubCategory, TransactionAmountNew
+                    FROM F_Transaction
+                    WHERE TransactionPending = 1 AND SubCategory IS NOT NULL;
+                    """
+                    cursor.execute(insert_into_temp_table_query)
 
-            create_temp_table_query = """
-            CREATE TEMP TABLE IF NOT EXISTS Temp_F_Transaction_Pending (
-                TransactionID INTEGER,
-                SubCategory TEXT
-            );
-            """
+                    # Delete transactions where TransactionPending is True
+                    delete_query = "DELETE FROM F_Transaction WHERE TransactionPending=1"
+                    cursor.execute(delete_query)
 
-            insert_into_temp_table_query = """
-            INSERT INTO Temp_F_Transaction_Pending (TransactionID, SubCategory)
-            SELECT TransactionID, SubCategory
-            FROM F_Transaction
-            WHERE TransactionPending = 1 AND SubCategory IS NOT NULL;
-            """
+                    # Prepare lists to store data for CSV output
+                    balance_org_data_list = []  # For balance and organization data
+                    transactions_data_list = []  # For transaction data
 
-            update_F_Transaction_query = """
-            UPDATE F_Transaction
-            SET SubCategory = (
-                SELECT SubCategory
-                FROM Temp_F_Transaction_Pending
-                WHERE Temp_F_Transaction_Pending.TransactionID = F_Transaction.TransactionID
-            )
-            WHERE EXISTS (
-                SELECT 1
-                FROM Temp_F_Transaction_Pending
-                WHERE Temp_F_Transaction_Pending.TransactionID = F_Transaction.TransactionID
-            );
-            """
+                    # Process each account returned by the API
+                    for account in data.get("accounts", []):
+                        # Convert balance-date timestamp to datetime
+                        account["balance-date"] = ts_to_datetime(account["balance-date"])
 
-            cursor.execute(create_temp_table_query)
-            cursor.execute(insert_into_temp_table_query)
+                        # Remove asterisks from the account name for filename purposes
+                        account_name = account["name"].replace("*", "")
 
-            # SQL query to delete all transactions where TransactionPending is 'True'
-            delete_query = "DELETE FROM F_Transaction WHERE TransactionPending=1"
-
-            # Execute the query
-            cursor.execute(delete_query)
-
-            # Commit the changes to the database to ensure that the deletions are saved
-            # connection.commit()  # Assuming `connection` is your database connection object
-
-            # Lists to store data for CSV files
-            balance_org_data_list = []
-            transactions_data_list = []
-
-            # Process each account
-            for account in data.get("accounts", []):
-                account["balance-date"] = ts_to_datetime(account["balance-date"])
-
-                # Remove asterisks from the account name for filename
-                account_name = account["name"].replace("*", "")
-
-                # Extract account information
-                account_info = {
-                    "Account ID": account["id"],
-                    "Account Name": account_name,
-                    "Balance Date": account["balance-date"].isoformat(),
-                    "Balance": account["balance"],
-                    "Available Balance": account["available-balance"],
-                }
-
-                # Extract organization data
-                organization_data = account.get("org", {})
-                # print("Organization Data for Account ID {}: {}".format(account_info['Account ID'], organization_data))
-                organization_domain = organization_data.get("domain", "")
-                organization_name = organization_data.get("name", "")  # Extract OrganizationName
-                organization_sf_in_url = organization_data.get("sfin-url", "")
-
-                # Save balance and organization data to the database
-                balance_insert_query = "INSERT INTO stg_Balance (AccountID, AccountName, BalanceDate, Balance, AvailableBalance, OrganizationDomain, OrganizationName, OrganizationSFInURL) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-                balance_insert_data = (
-                    account_info["Account ID"],
-                    account_info["Account Name"],
-                    account_info["Balance Date"],
-                    account_info["Balance"],
-                    account_info["Available Balance"],
-                    organization_domain,
-                    organization_name,
-                    organization_sf_in_url,
-                )
-
-                # print("Balance Insert Query:", balance_insert_query)
-                # print("Balance Insert Data:", balance_insert_data)
-
-                cursor.execute(balance_insert_query, balance_insert_data)
-
-                # Append data to the lists
-                balance_org_data_list.append(account_info)  # Append balance and organization data
-
-                # Save transactions data for the account
-                if "transactions" in account and account["transactions"]:
-                    for transaction in account["transactions"]:
-                        transaction_info = {
-                            "Account ID": account["id"],
-                            "Account Name": account_name,
-                            "Transaction ID": transaction.get("id", ""),
-                            "Transaction Posted": ts_to_datetime(transaction.get("transacted_at", 0)).isoformat(),
-                            "Transaction Amount": transaction.get("amount", 0.0),
-                            "Transaction Description": transaction.get("description", ""),
-                            "Transaction Payee": transaction.get("payee", ""),
-                            "Transaction Memo": transaction.get("memo", ""),
-                            "Transaction Pending": transaction.get("pending", False),
-                        }
-
-                        # Save transaction data to the database
-                        transaction_insert_query = "INSERT INTO stg_Transaction (AccountID, AccountName, TransactionID, TransactionPosted, TransactionAmount, TransactionDescription, TransactionPayee, TransactionMemo, TransactionPending) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
-                        transaction_insert_data = (
-                            transaction_info["Account ID"],
-                            transaction_info["Account Name"],
-                            transaction_info.get("Transaction ID", ""),
-                            transaction_info["Transaction Posted"],
-                            transaction_info.get("Transaction Amount", 0.0),
-                            transaction_info.get("Transaction Description", ""),
-                            transaction_info.get("Transaction Payee", ""),
-                            transaction_info.get("Transaction Memo", ""),
-                            transaction_info.get("Transaction Pending", ""),
+                        # Extract account information for database insertion
+                        balance_insert_query = """
+                            INSERT INTO stg_Balance (AccountID, AccountName, BalanceDate, Balance, AvailableBalance, OrganizationDomain, OrganizationName, OrganizationSFInURL)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        """
+                        balance_insert_data = (
+                            account["id"],
+                            account_name,
+                            account["balance-date"].isoformat(),
+                            account["balance"],
+                            account["available-balance"],
+                            account.get("org", {}).get("domain", ""),
+                            account.get("org", {}).get("name", ""),  # Extract OrganizationName
+                            account.get("org", {}).get("sfin-url", ""),  # Extract OrganizationSFInURL
                         )
 
-                        cursor.execute(transaction_insert_query, transaction_insert_data)
+                        # Insert account balance and organization data into the database
+                        cursor.execute(balance_insert_query, balance_insert_data)
+                        # Append balance and organization data to the list
+                        balance_org_data_list.append(account)
 
-                        # Append data to the lists
-                        transactions_data_list.append(transaction_info)  # Append transaction data
+                        # Process transaction data for the account, if available
+                        if "transactions" in account:
+                            for transaction in account["transactions"]:
+                                transaction_info = {
+                                    "Account ID": account["id"],
+                                    "Account Name": account_name,
+                                    "Transaction ID": transaction.get("id", ""),
+                                    "Transaction Posted": ts_to_datetime(transaction.get("transacted_at", 0)).isoformat(),
+                                    "Transaction Amount": transaction.get("amount", 0.0),
+                                    "Transaction Description": transaction.get("description", ""),
+                                    "Transaction Payee": transaction.get("payee", ""),
+                                    "Transaction Memo": transaction.get("memo", ""),
+                                    "Transaction Pending": transaction.get("pending", False),
+                                }
 
-            cursor.execute(update_F_Transaction_query)
+                                # Insert transaction data into the database
+                                transaction_insert_query = """
+                                    INSERT INTO stg_Transaction (AccountID, AccountName, TransactionID, TransactionPosted, TransactionAmount, TransactionDescription, TransactionPayee, TransactionMemo, TransactionPending)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                """
+                                transaction_insert_data = (
+                                    transaction_info["Account ID"],
+                                    transaction_info["Account Name"],
+                                    transaction_info["Transaction ID"],
+                                    transaction_info["Transaction Posted"],
+                                    transaction_info["Transaction Amount"],
+                                    transaction_info["Transaction Description"],
+                                    transaction_info["Transaction Payee"],
+                                    transaction_info["Transaction Memo"],
+                                    transaction_info["Transaction Pending"],
+                                )
+                                cursor.execute(transaction_insert_query, transaction_insert_data)
+                                # Append transaction data to the list
+                                transactions_data_list.append(transaction_info)
 
-            # Commit the changes to the database
-            conn.commit()
+                    # Update F_Transaction with SubCategory from the temporary table
+                    update_F_Transaction_query = """
+                    UPDATE F_Transaction
+                    SET 
+                        SubCategory = (
+                            SELECT SubCategory
+                            FROM Temp_F_Transaction_Pending
+                            WHERE Temp_F_Transaction_Pending.TransactionID = F_Transaction.TransactionID
+                        ),
+                        TransactionAmountNew = (
+                            SELECT TransactionAmountNew
+                            FROM Temp_F_Transaction_Pending
+                            WHERE Temp_F_Transaction_Pending.TransactionID = F_Transaction.TransactionID
+                        )
+                    WHERE TransactionID IN (
+                        SELECT TransactionID
+                        FROM Temp_F_Transaction_Pending
+                    );
 
-            # Close the database connection
-            conn.close()
+                    """
+                    cursor.execute(update_F_Transaction_query)
 
-            # Save balance and organization data to CSV file
-            balance_org_csv_filename = os.path.join(output_folder, "balance_org_data.csv")
-            with open(balance_org_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
-                csv_writer = csv.writer(csv_file)
+                    # Commit changes to the database
+                    conn.commit()
 
-                # Write header
-                header = [key.replace("-", " ") for key in balance_org_data_list[0].keys()]
-                csv_writer.writerow(header)
+                # Indicate successful processing
+                print("Data processed and saved to database.")
+                
+                
+                
+                
+                # Save balance and organization data to CSV file
+                balance_org_csv_filename = os.path.join(output_folder, "balance_org_data.csv")
+                with open(balance_org_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
+                    csv_writer = csv.writer(csv_file)
 
-                # Write data
-                for balance_org_data in balance_org_data_list:
-                    csv_writer.writerow([balance_org_data.get(key, "") for key in header])
+                    # Write header
+                    header = [key.replace("-", " ") for key in balance_org_data_list[0].keys()]
+                    csv_writer.writerow(header)
 
-            print(f"Balance and organization data saved to {balance_org_csv_filename}")
+                    # Write data
+                    for balance_org_data in balance_org_data_list:
+                        csv_writer.writerow([balance_org_data.get(key, "") for key in header])
 
-            # Save transactions data to CSV file
-            transactions_csv_filename = os.path.join(output_folder, "transactions_data.csv")
-            with open(transactions_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
-                csv_writer = csv.writer(csv_file)
+                print(f"Balance and organization data saved to {balance_org_csv_filename}")
 
-                # Write header
-                header = [key.replace("-", " ") for key in transactions_data_list[0].keys()]
-                csv_writer.writerow(header)
+                # Save transactions data to CSV file
+                transactions_csv_filename = os.path.join(output_folder, "transactions_data.csv")
+                with open(transactions_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
+                    csv_writer = csv.writer(csv_file)
 
-                # Write data
-                for transaction_data in transactions_data_list:
-                    csv_writer.writerow([transaction_data.get(key, "") for key in header])
+                    # Write header
+                    header = [key.replace("-", " ") for key in transactions_data_list[0].keys()]
+                    csv_writer.writerow(header)
 
-            print(f"Transactions data saved to {transactions_csv_filename}")
+                    # Write data
+                    for transaction_data in transactions_data_list:
+                        csv_writer.writerow([transaction_data.get(key, "") for key in header])
 
-            print("Data saved to the database and CSV files.")
+                print(f"Transactions data saved to {transactions_csv_filename}")
 
-        except ValueError as ve:
-            print(f"Error processing access_url: {ve}")
-        except requests.exceptions.HTTPError as errh:
-            print(f"HTTP Error: {errh}")
-        except requests.exceptions.ConnectionError as errc:
-            print(f"Error Connecting: {errc}")
-        except requests.exceptions.Timeout as errt:
-            print(f"Timeout Error: {errt}")
-        except requests.exceptions.RequestException as err:
-            print(f"OOps: Something went wrong: {err}")
+                print("Data saved to the database and CSV files.")
+
+
+            # Handle potential request exceptions
+            except requests.exceptions.RequestException as err:
+                print(f"Error during API call: {err}")
+
 
 
 # Call the function if this script is executed directly
