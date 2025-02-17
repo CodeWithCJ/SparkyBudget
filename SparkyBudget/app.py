@@ -282,6 +282,28 @@ def index():
 
     cursor.execute('SELECT DISTINCT strftime("%m", TransactionPosted) AS Month FROM F_Transaction ORDER BY Month DESC')
     transaction_months = [row[0] for row in cursor.fetchall()]
+    
+    
+    # Query for daily balance data (the one you need to display)
+    daily_balance_query = """
+        SELECT 
+            AccountType,
+            COALESCE(DisplayAccountName, AccountName) AS AccountName,
+            Date, 
+            ROUND(SUM(CASE WHEN COALESCE(AvailableBalance, 0) <> 0 THEN AvailableBalance ELSE Balance END), 0) AS DailyBalance
+        FROM 
+            F_Balance_History 
+        WHERE 
+            (COALESCE(AvailableBalance, 0) <> 0 OR COALESCE(Balance, 0) <> 0)
+        GROUP BY 
+            AccountType, COALESCE(DisplayAccountName, AccountName), Date 
+        ORDER BY 
+            Date, AccountType, COALESCE(DisplayAccountName, AccountName) ASC
+    """
+
+    # Execute the daily balance query
+    cursor.execute(daily_balance_query)
+    daily_balance_data = cursor.fetchall()
 
     # Close the database connection
     conn.close()
@@ -297,6 +319,7 @@ def index():
         now=datetime.now(timezone.utc),
         labels=labels,
         balances=balances,
+        daily_balance_data=daily_balance_data  # Add the new daily balance data
     )
 
 
