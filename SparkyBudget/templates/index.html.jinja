@@ -5,19 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sparky Budget</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.1/chroma.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
 </head>
 <body>
     <div class="header-container">
@@ -27,6 +32,12 @@
         <h1>
             <i class="fas fa-info-circle" onclick="balanceDetailsTableToggleVisibility()" title="Account Details"></i>
         </h1>
+		
+		<h1>
+            <i class="fas fa-line-chart" onclick="dailybalanceDetailsToggleVisibility()" title="Daily Balance Details"></i>
+        </h1>
+		
+		
         <a class="custom_report" href="{{ url_for('analyze_transaction') }}" style="color: #61DAFB; font-size: 24px;"
             title="All Transaction">
             <i class="fas fa-chart-bar"></i>
@@ -50,11 +61,50 @@
         {% endif %}
     </div>
     <div class="content">
+	
+	
+		
         <!-- collapsed -->
         <div class="balance-summary-container ">
             {% include 'balance_summary.html.jinja' %}
         </div>
         <div class="main-content">
+			
+			<div id="dailyBalanceContainer" class="daily-balance-container">
+				<!-- Daily Balance Account Type Filter (Horizontal Multi-Select Buttons) -->
+				<!-- Hidden div to store daily balance data -->
+				<div id="dailyBalanceData" data-json='{{ daily_balance_data | tojson | safe }}' style="display: none;"></div>
+
+
+				<div id="dailyBalance_accountTypeFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
+					{% for account_type in account_type_data %}
+						<button 
+							class="dailyBalance_account-type-btn" 
+							data-account-type="{{ account_type[0] }}" 
+							style="background-color: #333; color: #d6dadf; border: 1px solid #77ace0; padding: 5px 15px; border-radius: 20px; cursor: pointer;">
+							{{ account_type[0] }}
+						</button>
+					{% endfor %}
+				</div>
+
+				<!-- Daily Balance Account Name Filter (Dropdown with Multi-Select) -->
+				<select id="dailyBalance_accountNameFilter" class="select2" multiple="multiple" style="width: 100%; padding: 5px; background-color: #333; color: #d6dadf; border: 1px solid #77ace0; border-radius: 10px;">
+					<!-- Account names will be dynamically added here based on selected AccountType -->
+				</select>
+
+
+				<!-- Chart.js Line Chart Container for Daily Balance -->
+				<div style="width: 90%; margin: 20px auto; height: 60%;">
+					<canvas id="dailyBalance_lineChart"></canvas>
+				</div>
+			</div>
+
+
+		
+		
+		
+		
+		
             <div id="balanceDetailsTable" class="hidden-balance-details">
                 <H1><i class="fas fa-piggy-bank"></i> Balance Details</H1>
                 {% include 'balance_details.html.jinja' %}

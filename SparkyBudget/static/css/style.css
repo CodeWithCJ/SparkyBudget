@@ -442,3 +442,33 @@ a.analyze-link:hover {
     grid-template-columns: 1fr 1fr 1fr;
     grid-auto-rows: auto;
 }
+
+
+/* Highlighted state for selected buttons */
+.dailyBalance_account-type-btn.selected-btn {
+    background-color: #77ace0 !important;  /* Highlight color */
+    color: white !important;  /* Text color for selected state */
+}
+
+/* Default state for non-selected buttons */
+.dailyBalance_account-type-btn.default-btn {
+    background-color: #abaeb2 !important;  /* Default color */
+    color: black !important;  /* Text color for default state */
+}
+
+
+/* Default view for mobile: Hide the entire container */
+@media (max-width: 768px) {
+    .daily-balance-container {
+        display: none;
+    }
+}
+
+/* Default view for desktop: Show the container */
+@media (min-width: 769px) {
+    .daily-balance-container {
+        //display: block;
+		display: none;
+    }
+}
+

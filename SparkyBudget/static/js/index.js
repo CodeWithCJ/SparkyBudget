@@ -634,3 +634,231 @@ function updateSubcategory(transactionKey, event) {
         });
     }
 })();
+
+
+
+
+
+
+
+function dailybalanceDetailsToggleVisibility() {
+    var dailyBalanceContainer = document.getElementById('dailyBalanceContainer');
+    
+    // Toggle the visibility of the entire container
+    if (window.innerWidth <= 768) {
+        // On mobile devices, toggle visibility of the entire container
+        if (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') {
+            dailyBalanceContainer.style.display = 'block';
+        } else {
+            dailyBalanceContainer.style.display = 'none';
+        }
+    } else {
+        // On desktop devices, toggle visibility of the entire container
+        if (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') {
+            dailyBalanceContainer.style.display = 'block';
+        } else {
+            dailyBalanceContainer.style.display = 'none';
+        }
+    }
+}
+
+
+
+//addition of dailyBalance_lineChart
+$(document).ready(function() {
+    // Get daily_balance_data from the HTML data attribute
+    var daily_balance_data = JSON.parse($('#dailyBalanceData').attr('data-json'));
+    console.log("Loaded Daily Balance Data:", daily_balance_data);
+
+    // Store selected Account Types and Account Names
+    var selectedAccountTypes = [];
+    var selectedAccountNames = [];
+
+    // Initialize select2 for Account Name filter (Dropdown with Multi-Select)
+    $('#dailyBalance_accountNameFilter').select2({
+        placeholder: "Select Account Names",
+        allowClear: true
+    });
+
+    // Account Type button click handler
+    $('.dailyBalance_account-type-btn').on('click', function() {
+        var accountType = $(this).data('account-type');
+        
+        // Toggle selection of the clicked Account Type
+        if (selectedAccountTypes.includes(accountType)) {
+            selectedAccountTypes = selectedAccountTypes.filter(item => item !== accountType);
+            $(this).removeClass('selected-btn').addClass('default-btn');
+        } else {
+            selectedAccountTypes.push(accountType);
+            $(this).removeClass('default-btn').addClass('selected-btn');
+        }
+
+        console.log("Selected Account Types:", selectedAccountTypes);
+        updateAccountNameFilter(selectedAccountTypes);
+        updateChart();
+    });
+
+    // Account Name dropdown selection handler
+    $('#dailyBalance_accountNameFilter').on('change', function() {
+        selectedAccountNames = $(this).val() || [];
+        console.log("Selected Account Names:", selectedAccountNames);
+        updateChart();
+    });
+
+    function updateAccountNameFilter(accountTypes) {
+        var accountNames = [];
+        daily_balance_data.forEach(data => {
+            if (accountTypes.includes(data[0]) && !accountNames.includes(data[1])) {
+                accountNames.push(data[1]);
+            }
+        });
+
+        $('#dailyBalance_accountNameFilter').empty();
+        accountNames.forEach(accountName => {
+            $('#dailyBalance_accountNameFilter').append(new Option(accountName, accountName));
+        });
+
+        $('#dailyBalance_accountNameFilter').trigger('change');
+    }
+
+    // Initialize Chart.js
+    var ctx = document.getElementById('dailyBalance_lineChart').getContext('2d');
+	var dailyBalanceChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'Daily Balance',
+				data: [],
+				borderColor: '#00aaff',
+				fill: false,
+				tension: 0.3
+			}]
+		},
+		options: {
+			layout: {
+				padding: {
+					right: 50 // Add more space on the right
+				}
+			},
+			scales: {
+				x: {
+					ticks: {
+						color: 'white' // Make x-axis labels visible
+					},
+					border: {
+						color: 'white' // Set the x-axis border color to white
+					}
+				},
+				y: {
+					ticks: {
+						color: 'white', 
+						callback: function(value) {
+							return '$' + value.toLocaleString(); // Format with $ and comma separator
+						}
+					},
+					border: {
+						color: 'white' // Set the y-axis border color to white
+					}
+				}
+			},
+			plugins: {
+				datalabels: {
+					align: 'end', // Position label at the end of the line
+					anchor: 'end', // Keep it inside the chart area
+					color: 'white',
+					formatter: function(value, context) {
+						var index = context.dataIndex;
+						var totalPoints = context.chart.data.labels.length;
+						var isMobile = window.innerWidth <= 768; // Detect mobile screen
+
+						// Mobile: Show only 3 labels (first, middle, last)
+						if (isMobile) {
+							if (index === 0 || index === totalPoints - 1 || index === Math.floor(totalPoints / 2)) {
+								return '$' + value.toLocaleString();
+							}
+						} else {
+							// Desktop: Adjust dynamically to keep chart readable
+							var step = Math.max(1, Math.floor(totalPoints / 8)); // ~8 labels
+							if (index === 0 || index === totalPoints - 1 || index % step === 0) {
+								return '$' + value.toLocaleString();
+							}
+						}
+						return ''; // Hide other labels
+					},
+					clip: false // Prevent cutting off outside chart boundaries
+				},
+				zoom: {
+					pan: {
+						enabled: true,
+						mode: 'xy', // Enable panning in both axes (x and y)
+					},
+					zoom: {
+						enabled: true,
+						mode: 'xy', // Enable zooming in both axes (x and y)
+						speed: 0.1, // Set the zoom speed
+						sensitivity: 3, // Set the zoom sensitivity
+						limits: {
+							x: { min: 0, max: 100 }, // Limits for zooming on the x-axis
+							y: { min: 0, max: 2000 } // Limits for zooming on the y-axis
+						}
+					}
+				}
+			}
+		},
+		plugins: [ChartDataLabels] // Enable Data Labels Plugin
+	});
+
+
+    function aggregateData(selectedAccountTypes, selectedAccountNames) {
+        var aggregatedData = {};
+
+        if (selectedAccountTypes.length === 0) {
+            selectedAccountTypes = [...new Set(daily_balance_data.map(data => data[0]))];
+        }
+
+        var filteredData = daily_balance_data.filter(data =>
+            (selectedAccountTypes.length === 0 || selectedAccountTypes.includes(data[0])) &&
+            (selectedAccountNames.length === 0 || selectedAccountNames.includes(data[1]))
+        );
+
+        filteredData.forEach(data => {
+            var date = new Date(data[2]).toISOString().split('T')[0];
+            var balance = data[3];
+
+            if (!aggregatedData[date]) {
+                aggregatedData[date] = 0;
+            }
+            aggregatedData[date] += balance;
+        });
+
+        return {
+            labels: Object.keys(aggregatedData),
+            data: Object.values(aggregatedData)
+        };
+    }
+
+    function updateChart() {
+        var aggregatedData = aggregateData(selectedAccountTypes, selectedAccountNames);
+
+        if (dailyBalanceChart && dailyBalanceChart.data) {
+            dailyBalanceChart.data.labels = aggregatedData.labels;
+            dailyBalanceChart.data.datasets[0].data = aggregatedData.data;
+            dailyBalanceChart.update();
+        }
+    }
+
+    updateChart();
+});
+
+
+
+
+
+
+
+
+
+
+
+
