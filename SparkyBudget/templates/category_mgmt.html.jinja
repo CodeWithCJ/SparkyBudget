@@ -15,6 +15,38 @@
     <a href="/" title="Go to Home">
         <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
     </a>
+	
+	
+	<h2>Account Types</h2>
+
+    <div class="containerAccountTypes">
+
+        <table id="accountTypeTable" class="display" style="width:100%">
+
+            <thead>
+
+                <tr>
+
+                    <th>AccountType</th>
+
+                    <th>HideFromBudget</th>
+					<th>Delete</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <!-- Rows will be dynamically inserted here -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+	
+	
     <h2>Category Management</h2>
     <div class="AddSubCategoryContainer">
         <form id="addCategoryForm">
@@ -61,6 +93,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="{{ url_for('static', filename='js/category_mgmt.js') }}"></script>
 </body>
 </html>
