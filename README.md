@@ -1,5 +1,7 @@
 # SparkyBudget
 SparkyBudget
+![image](https://github.com/user-attachments/assets/cbdd60e7-7451-4977-ae2e-ce57c076ac63)
+
 
 ## How To Run
 
