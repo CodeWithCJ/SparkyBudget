@@ -82,7 +82,7 @@ Note the folllowing
 
 ## Contributors Welcomed!
 
-Discord Link: https://discord.gg/6c2D6kju
+Discord Link: https://discord.gg/BeYVswBC
 If you need any help with installation, configuration or contribute, please join the discord.
 
 Disclaimer: I am not responsible for any broken code or loss of your data or any other issue. I am doing this as my fun project so treat it accordingly. Though I am happy to help setup this project for you, always have your backup. 
