@@ -301,3 +301,59 @@ table.dataTable tbody tr.filter-row td {
     /* Set the text color to white for better visibility */
     color: white;
 }
+
+
+
+/* Ensure consistent alignment for table cells */
+#accountTypeTable td {
+    text-align: center; /* Center-align all table cells */
+    vertical-align: middle;
+    padding: 8px; /* Add some padding for better spacing */
+}
+
+/* Style the account type input boxes (for both existing and new rows) */
+#accountTypeTable .account-type-input {
+    width: 100px; /* Consistent width */
+    padding: 5px; /* Consistent padding */
+    margin: 0 auto; /* Center the input horizontally */
+    display: block; /* Required for margin: 0 auto to work */
+    box-sizing: border-box; /* Ensure padding doesn't add to the width */
+    background-color: #fff; /* White background to match existing rows */
+    border: 1px solid #ccc; /* Subtle border to match */
+    border-radius: 4px; /* Rounded corners to match */
+    font-size: 14px; /* Match font size (adjust if needed) */
+    color: #000; /* Black text color */
+}
+
+/* Ensure the new row input matches exactly */
+#accountTypeTable .new-row .account-type-input {
+    background-color: #fff; /* Reinforce white background */
+    border: 1px solid #ccc; /* Reinforce border */
+    border-radius: 4px; /* Reinforce rounded corners */
+}
+
+/* Adjust table cell width to fit the input comfortably */
+#accountTypeTable td:first-child {
+    width: 150px; /* Adjusted column width */
+}
+
+/* Ensure checkboxes are centered */
+#accountTypeTable .hide-from-budget,
+#accountTypeTable .new-row-checkbox {
+    display: block;
+    margin: 0 auto; /* Center the checkbox */
+}
+
+/* Style the delete button */
+#accountTypeTable .delete-btn {
+    background: none;
+    border: none;
+    color: #ff4444; /* Red color for delete icon */
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+}
+
+#accountTypeTable .delete-btn:hover {
+    color: #cc0000; /* Darker red on hover */
+}

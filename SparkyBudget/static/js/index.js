@@ -180,7 +180,7 @@ function showTransactionDetails(event, selectedSubcategory, spentAmount) {
             document.getElementById("transactionDetails").scrollIntoView({ behavior: "smooth" });
         }
     };
-    xhr.open("GET", "/get_transaction_details?year=" + selectedYear + "&month=" + selectedMonth + "&subcategory=" + selectedSubcategory, true);
+    xhr.open("GET", "/get_budget_transaction_details?year=" + selectedYear + "&month=" + selectedMonth + "&subcategory=" + selectedSubcategory, true);
     xhr.send();
 }
 

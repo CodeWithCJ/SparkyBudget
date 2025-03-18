@@ -146,3 +146,33 @@ table.dataTable thead .sorting_desc_disabled {
     /* Adjust the width as needed */
     width: 80%;
 }
+
+
+/* static/css/balance_details.css */
+
+/* Style for editable cells */
+.editable-display-name, .editable-account-type {
+    cursor: pointer;
+}
+
+.editable-display-name:hover, .editable-account-type:hover {
+    background-color: #666666;
+}
+
+/* Style for the input field */
+.display-name-input {
+    width: 100%;
+    background-color: #444444;
+    color: #ffffff;
+    border: 1px solid #61dafb;
+    padding: 5px;
+}
+
+/* Style for the dropdown */
+.account-type-select {
+    width: 100%;
+    background-color: #444444;
+    color: #ffffff;
+    border: 1px solid #61dafb;
+    padding: 5px;
+}
