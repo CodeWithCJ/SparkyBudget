@@ -1,351 +1,56 @@
 body {
-    /* Dark background color */
-    background-color: #1b1e23;
-    /* Light text color */
-    color: #ffffff;
+    background-color: #1b1e23; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    margin: 0;
+    padding: 0;
 }
 
-/* Adjust the background and text color of the table */
 table.dataTable {
-    /* Black background color for the table */
-    background-color: #000000;
-    /* Light text color for the table */
-    color: #ffffff;
+    background-color: #000000; /* Black background color for the table */
+    color: #ffffff; /* Light text color for the table */
+    width: 100% !important; /* Ensure the table takes the full width of its container */
 }
 
-/* Adjust the color of table headers */
-table.dataTable thead th {
-    /* Light text color for table headers */
-    color: #ffffff;
+table.dataTable thead th,
+table.dataTable tbody tr,
+table.dataTable tbody td {
+    background-color: #000000; /* Black background color for table headers and rows */
+    color: #ffffff; /* Light text color for table headers and rows */
 }
 
-/* Adjust the color of table rows */
-table.dataTable tbody tr {
-    /* Black background color for all rows */
-    background-color: #000000;
-    /* Light text color for all rows */
-    color: #ffffff;
-}
-
-.custom-row-class {
-    /* Dark background color for highlighted rows */
-    background-color: #444444 !important;
-}
-
-table.dataTable tbody td:first-child {
-    /* Black background color for the first column */
-    background-color: #000000;
-    /* Light text color for the first column */
-    color: #ffffff;
-}
-
-/* Override the default DataTables stripe color */
 table.dataTable tbody tr.odd,
 table.dataTable tbody tr.odd:hover {
-    /* Darker background color for odd rows */
-    background-color: #555555 !important;
+    background-color: #555555 !important; /* Darker background color for odd rows */
 }
 
-/* Adjust the color of DataTables pagination controls */
-.dataTables_paginate .paginate_button {
-    /* Light text color for pagination controls */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination controls on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of other DataTables elements */
+.dataTables_paginate .paginate_button,
 .dataTables_info,
 .dataTables_length label,
 .dataTables_filter label,
 .dataTables_processing,
-.dataTables_paginate,
-.dataTables_paginate span a {
-    /* Light text color for other DataTables elements */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate span .current {
-    /* Darker background color for the current page number */
-    background-color: #555555 !important;
-    /* Light text color for the current page number */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables length menu */
-.dataTables_length label select {
-    /* Light text color for length menu */
-    color: #ffffff !important;
-    /* Dark background color for length menu */
-    background-color: #444444 !important;
-}
-
-/* Adjust the color of DataTables pagination buttons */
-.dataTables_paginate .paginate_button {
-    /* Light text color for pagination buttons */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination buttons on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables pagination controls at the bottom right */
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    /* Light text color for pagination controls */
-    color: #ffffff !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination controls on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables previous button */
-.dataTables_wrapper .dataTables_paginate .previous {
-    /* Light text color for the Previous button */
-    color: #ffffff !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .previous:hover {
-    /* Light text color for the Previous button on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables search input */
+.dataTables_paginate span a,
+.dataTables_wrapper .dataTables_paginate .paginate_button,
 .dataTables_wrapper .dataTables_filter input {
-    /* Light text color for the search input */
-    color: #ffffff !important;
-    /* Dark background color for the search input */
-    background-color: #444444 !important;
+    color: #ffffff !important; /* Light text color for pagination controls and other elements */
+    background-color: #444444 !important; /* Dark background color for input fields */
 }
 
-/* Adjust the color of DataTables search input on focus */
+.containerCategoryManagement .dataTables_length select,
+.containerRuleManagement .dataTables_length select {
+    background-color: #444444 !important;
+    color: #201b1b !important;
+    border: 1px solid #555555 !important;
+    border-radius: 4px;
+    padding: 2px 5px;
+    cursor: pointer;
+}
 .dataTables_wrapper .dataTables_filter input:focus {
-    /* Light text color for the search input on focus */
-    color: #ffffff !important;
-    /* Darker background color for the search input on focus */
-    background-color: #555555 !important;
+    background-color: #555555 !important; /* Darker background color for input fields on focus */
 }
 
-#balanceTable {
-    margin: 20px auto;
-}
-
-table.dataTable thead th.sorting,
-table.dataTable thead th.sorting_asc,
-table.dataTable thead th.sorting_desc,
-table.dataTable thead th.sorting_asc_disabled,
-table.dataTable thead th.sorting_desc_disabled {
-    /* Darker background color for the filtered column header */
-    background-color: #000000 !important;
-    /* Light text color for the filtered column header */
-    color: #ffffff !important;
-}
-
-table.dataTable tbody tr.even,
-table.dataTable tbody tr.even:hover,
-table.dataTable tbody tr.odd,
-table.dataTable tbody tr.odd:hover {
-    /* Set the background color as needed */
-    background-color: #000000 !important;
-}
-
-#balanceTable_wrapper {
-    margin: 20px auto;
-    /* Adjust the width as needed */
-    width: 80%;
-}
-
-table.dataTable tbody tr {
-    /* Set the background color as needed */
-    background-color: #000000 !important;
-}
-
-/* Adjust the color of table rows during hover */
-table.dataTable tbody tr:hover {
-    /* Set the hover background color as needed */
-    background-color: #333333 !important;
-}
-
-/* Add these styles to customize the Date Range Filter */
-.daterangepicker {
-    /* Black background color */
-    background-color: #000000 !important;
-    /* White text color */
-    color: #ffffff !important;
-}
-
-.daterangepicker .calendar-time {
-    /* Black background color for time selection */
-    background-color: #000000 !important;
-}
-
-.daterangepicker .daterangepicker_input {
-    /* Black background color for input */
-    background-color: #000000 !important;
-    /* White text color for input */
-    color: #ffffff !important;
-}
-
-.daterangepicker .daterangepicker_input input {
-    /* Border color for input */
-    border-color: #555555 !important;
-}
-
-.daterangepicker .ranges li.active {
-    /* Darker background color for active range */
-    background-color: #555555 !important;
-}
-
-.daterangepicker .ranges li:hover {
-    /* Dark background color for hover effect */
-    background-color: #444444 !important;
-}
-
-.daterangepicker .ranges li.active::before {
-    /* Border color for active range indicator */
-    border-bottom-color: #555555 !important;
-}
-
-.daterangepicker .applyBtn,
-.daterangepicker .cancelBtn {
-    /* Dark background color for buttons */
-    background-color: #555555 !important;
-    /* White text color for buttons */
-    color: #ffffff !important;
-}
-
-.daterangepicker .applyBtn:hover,
-.daterangepicker .cancelBtn:hover {
-    /* Darker background color for button hover effect */
-    background-color: #444444 !important;
-}
-
-table.dataTable tbody tr.filter-row td {
-    /* Black background color for the filtered column */
-    background-color: #000000 !important;
-    /* Light text color for the filtered column */
-    color: #ffffff !important;
-}
-
-.category {
-    background-color: black;
-    /* Set the text color to white for better visibility */
-    color: white;
-}
-
-#bar_chart .c3-axis-x-label,
-#bar_chart .c3-axis-y-label,
-#bar_chart .c3-axis-x .tick text,
-#bar_chart .c3-axis-y .tick text {
-    fill: white !important;
-}
-
-#bar_chart .c3-tooltip {
-    background-color: darkgray;
-}
-
-#bar_chart .c3-tooltip tr {
-    /* Set the text color for better visibility on dark background */
-    color: white;
-}
-
-.c3-tooltip-container {
-    background-color: darkgray !important;
-    color: white !important;
-}
-
-.transaction_edit_filter {
-    display: flex;
-    align-items: center;
-}
-
-.spacer-label {
-    /* Adjust the padding as needed */
-    padding: 0 10px;
-}
-
-.AddSubCategoryContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-}
-
-#addCategoryForm {
-    display: flex;
-    align-items: center;
-    /* Adjust the spacing between form elements */
-    gap: 10px;
-    /* Spacing below the form */
-    margin-bottom: 20px;
-}
-
-#category {
-    /* Set width of the dropdown */
-    width: 25ch;
-}
-
-#subcategory {
-    /* Set width of the text box */
-    width: 40ch;
-}
-
-.select2-container--default .select2-results__option {
-    background-color: black;
-    /* Set the text color to white for better visibility */
-    color: white;
-}
-
-
-
-/* Ensure consistent alignment for table cells */
-#accountTypeTable td {
-    text-align: center; /* Center-align all table cells */
-    vertical-align: middle;
-    padding: 8px; /* Add some padding for better spacing */
-}
-
-/* Style the account type input boxes (for both existing and new rows) */
-#accountTypeTable .account-type-input {
-    width: 100px; /* Consistent width */
-    padding: 5px; /* Consistent padding */
-    margin: 0 auto; /* Center the input horizontally */
-    display: block; /* Required for margin: 0 auto to work */
-    box-sizing: border-box; /* Ensure padding doesn't add to the width */
-    background-color: #fff; /* White background to match existing rows */
-    border: 1px solid #ccc; /* Subtle border to match */
-    border-radius: 4px; /* Rounded corners to match */
-    font-size: 14px; /* Match font size (adjust if needed) */
-    color: #000; /* Black text color */
-}
-
-/* Ensure the new row input matches exactly */
-#accountTypeTable .new-row .account-type-input {
-    background-color: #fff; /* Reinforce white background */
-    border: 1px solid #ccc; /* Reinforce border */
-    border-radius: 4px; /* Reinforce rounded corners */
-}
-
-/* Adjust table cell width to fit the input comfortably */
-#accountTypeTable td:first-child {
-    width: 150px; /* Adjusted column width */
-}
-
-/* Ensure checkboxes are centered */
-#accountTypeTable .hide-from-budget,
-#accountTypeTable .new-row-checkbox {
-    display: block;
-    margin: 0 auto; /* Center the checkbox */
-}
-
-/* Style the delete button */
-#accountTypeTable .delete-btn {
+#accountTypeTable .delete-btn,
+#categoryTable .delete-btn,
+#categoryRuleTable .delete-btn {
     background: none;
     border: none;
     color: #ff4444; /* Red color for delete icon */
@@ -354,6 +59,64 @@ table.dataTable tbody tr.filter-row td {
     padding: 5px;
 }
 
-#accountTypeTable .delete-btn:hover {
+#accountTypeTable .delete-btn:hover,
+#categoryTable .delete-btn:hover,
+#categoryRuleTable .delete-btn:hover {
     color: #cc0000; /* Darker red on hover */
+}
+
+/* Style the parent containers to control the width */
+
+/* Container for #accountTypeTable */
+.containerAccountTypes {
+    width: 100%; /* Default width for mobile */
+    box-sizing: border-box; /* Ensure padding/margins don't affect width */
+}
+
+/* Container for #categoryTable */
+.containerCategoryManagement {
+    width: 100%; /* Default width for mobile */
+    box-sizing: border-box; /* Ensure padding/margins don't affect width */
+}
+
+/* Container for #categoryRuleTable */
+.containerRuleManagement {
+    width: 100%; /* Default width for mobile */
+    box-sizing: border-box; /* Ensure padding/margins don't affect width */
+}
+
+/* Ensure the DataTables wrapper respects the parent container's width */
+.containerAccountTypes .dataTables_wrapper,
+.containerCategoryManagement .dataTables_wrapper,
+.containerRuleManagement .dataTables_wrapper {
+    width: 100% !important; /* Match the parent container's width */
+}
+
+/* Ensure the tables inside the containers respect the container's width */
+#accountTypeTable,
+#categoryTable,
+#categoryRuleTable {
+    width: 100% !important; /* Table takes the full width of its container */
+}
+
+/* Media query for laptop/desktop (768px and up) */
+@media (min-width: 768px) {
+    .containerAccountTypes {
+        width: 40% !important; /* Force 40% width for accountTypeTable on larger screens */
+        margin: 0 auto; /* Center the container */
+    }
+    .containerCategoryManagement,
+    .containerRuleManagement {
+        width: 60% !important; /* Force 60% width for categoryTable and categoryRuleTable on larger screens */
+        margin: 0 auto; /* Center the container */
+    }
+}
+
+/* Media query for mobile (767px and below) */
+@media (max-width: 767px) {
+    .containerAccountTypes,
+    .containerCategoryManagement,
+    .containerRuleManagement {
+        width: 100% !important; /* Full width on mobile */
+    }
 }
