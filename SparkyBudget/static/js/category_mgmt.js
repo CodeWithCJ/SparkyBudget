@@ -153,13 +153,26 @@ $(document).ready(function () {
 });
 
 function deleteSubCategory(subCategoryKey) {
-    $.ajax({
-        url: '/deleteSubCategory/' + subCategoryKey,
-        type: 'DELETE',
-        success: function (result) {
-            $('#categoryTable').DataTable().ajax.reload();
-        }
-    });
+    // Fetch the row data to get the SubCategory name for the confirmation message
+    var rowData = $('#categoryTable').DataTable().row(function (idx, data, node) {
+        return data.SubCategoryKey == subCategoryKey;
+    }).data();
+
+    var subCategoryName = rowData ? rowData.SubCategory : 'this category';
+
+    // Add confirmation prompt
+    if (confirm("Are you sure you want to delete the category: " + subCategoryName + "?")) {
+        $.ajax({
+            url: '/deleteSubCategory/' + subCategoryKey,
+            type: 'DELETE',
+            success: function (result) {
+                $('#categoryTable').DataTable().ajax.reload();
+            },
+            error: function (xhr, status, error) {
+                alert("An error occurred while deleting: " + error);
+            }
+        });
+    }
 }
 
 function updateSubCategory(subCategoryKey, newSubCategoryName) {
@@ -191,13 +204,26 @@ function updateRule(RuleKey, Match_Word) {
 }
 
 function deleteRule(RuleKey) {
-    $.ajax({
-        url: '/deleteRule/' + RuleKey,
-        type: 'DELETE',
-        success: function (result) {
-            $('#categoryRuleTable').DataTable().ajax.reload();
-        }
-    });
+    // Fetch the row data to get the Rule_Pattern or Match_Word for the confirmation message
+    var rowData = $('#categoryRuleTable').DataTable().row(function (idx, data, node) {
+        return data.RuleKey == RuleKey;
+    }).data();
+
+    var ruleIdentifier = rowData ? (rowData.Rule_Pattern || rowData.Match_Word || 'this rule') : 'this rule';
+
+    // Add confirmation prompt
+    if (confirm("Are you sure you want to delete the rule: " + ruleIdentifier + "?")) {
+        $.ajax({
+            url: '/deleteRule/' + RuleKey,
+            type: 'DELETE',
+            success: function (result) {
+                $('#categoryRuleTable').DataTable().ajax.reload();
+            },
+            error: function (xhr, status, error) {
+                alert("An error occurred while deleting: " + error);
+            }
+        });
+    }
 }
 
 $(document).ready(function() {
@@ -378,19 +404,29 @@ $(document).ready(function() {
     }
 
     // Handle adding new account type
+    // Handle adding new account type with confirmation
     $('#accountTypeTable').on('blur', '.new-row input[type="text"]', function() {
         var rowNode = $(this).closest('tr');
         var accountType = $(rowNode).find('input[type="text"]').val();
         var hideFromBudget = $(rowNode).find('input[type="checkbox"]').is(':checked');
+
+        // Check if the account type is not empty
         if (accountType) {
-            // Save the new account type
-            saveAccountType({
-                AccountType: accountType,
-                HideFromBudget: hideFromBudget,
-                SortOrder: accountTypeTable.data().length
-            });
-            // Remove the new row
-            accountTypeTable.row(rowNode).remove().draw();
+            // Add confirmation prompt
+            if (confirm("Are you sure you want to add the new account type: " + accountType + "?")) {
+                // Save the new account type if confirmed
+                saveAccountType({
+                    AccountType: accountType,
+                    HideFromBudget: hideFromBudget,
+                    SortOrder: accountTypeTable.data().length
+                });
+                // Remove the new row after saving
+                accountTypeTable.row(rowNode).remove().draw();
+            } else {
+                // Optionally, you can clear the input or take other actions if the user cancels
+                $(rowNode).find('input[type="text"]').val(''); // Clear the input
+                $(rowNode).find('input[type="checkbox"]').prop('checked', false); // Uncheck the checkbox
+            }
         }
     });
 
