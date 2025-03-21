@@ -1,28 +1,69 @@
+/* --- General Body Styles --- */
 body {
-    background-color: #1b1e23; /* Dark background color */
-    color: #ffffff; /* Light text color */
+    background-color: #1b1e23;
+    color: #ffffff;
     margin: 0;
     padding: 0;
+    font-family: sans-serif;
 }
 
+/* --- Base Table Styles --- */
 table.dataTable {
-    background-color: #000000; /* Black background color for the table */
-    color: #ffffff; /* Light text color for the table */
-    width: 100% !important; /* Ensure the table takes the full width of its container */
+    background-color: transparent;
+    color: #eee;
+    width: 100% !important;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    border: none !important;
 }
 
-table.dataTable thead th,
+/* --- Header Styles --- */
+table.dataTable thead th {
+    background-color: #3399cc;
+    color: #24292e; /* MODIFIED: Header font color to black */
+    font-weight: bold;
+    border: 1px solid #3399cc;
+    padding: 10px 15px;
+    text-align: left;
+}
+
+/* --- Row and Cell Styles --- */
 table.dataTable tbody tr,
 table.dataTable tbody td {
-    background-color: #000000; /* Black background color for table headers and rows */
-    color: #ffffff; /* Light text color for table headers and rows */
+    background-color: #173F3F;
+    color: #eee;
+    border: 1px solid #3399cc;
+    padding: 8px 15px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    text-align: left;
 }
 
-table.dataTable tbody tr.odd,
-table.dataTable tbody tr.odd:hover {
-    background-color: #555555 !important; /* Darker background color for odd rows */
+/* --- Input Field Styles --- */
+table.dataTable tbody td input[type="text"] {
+    background-color: #3c444f;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 2px 5px;
+    width: 95%;
+    box-sizing: border-box;
 }
 
+table.dataTable tbody td input[type="text"]:focus {
+    background-color: #444;
+    outline: none;
+}
+
+/* --- Checkbox Styles --- */
+table.dataTable tbody td input[type="checkbox"] {
+    accent-color: #3399cc;
+    transform: scale(0.8);
+}
+
+/* --- Pagination, Info, etc. --- */
 .dataTables_paginate .paginate_button,
 .dataTables_info,
 .dataTables_length label,
@@ -31,29 +72,31 @@ table.dataTable tbody tr.odd:hover {
 .dataTables_paginate span a,
 .dataTables_wrapper .dataTables_paginate .paginate_button,
 .dataTables_wrapper .dataTables_filter input {
-    color: #ffffff !important; /* Light text color for pagination controls and other elements */
-    background-color: #444444 !important; /* Dark background color for input fields */
+    color: #ffffff !important;
+    background-color: #444444 !important;
 }
 
 .containerCategoryManagement .dataTables_length select,
 .containerRuleManagement .dataTables_length select {
     background-color: #444444 !important;
-    color: #201b1b !important;
+    color: #fff !important;
     border: 1px solid #555555 !important;
     border-radius: 4px;
     padding: 2px 5px;
     cursor: pointer;
 }
+
 .dataTables_wrapper .dataTables_filter input:focus {
-    background-color: #555555 !important; /* Darker background color for input fields on focus */
+    background-color: #555555 !important;
 }
 
+/* --- Delete Button Styles --- */
 #accountTypeTable .delete-btn,
 #categoryTable .delete-btn,
 #categoryRuleTable .delete-btn {
     background: none;
     border: none;
-    color: #ff4444; /* Red color for delete icon */
+    color: #ff4444;
     cursor: pointer;
     font-size: 16px;
     padding: 5px;
@@ -62,91 +105,77 @@ table.dataTable tbody tr.odd:hover {
 #accountTypeTable .delete-btn:hover,
 #categoryTable .delete-btn:hover,
 #categoryRuleTable .delete-btn:hover {
-    color: #cc0000; /* Darker red on hover */
+    color: #cc0000;
 }
 
-/* Style the parent containers to control the width */
-
-/* Container for #accountTypeTable */
-.containerAccountTypes {
-    width: 100%; /* Default width for mobile */
-    box-sizing: border-box; /* Ensure padding/margins don't affect width */
-}
-
-/* Container for #categoryTable */
-.containerCategoryManagement {
-    width: 100%; /* Default width for mobile */
-    box-sizing: border-box; /* Ensure padding/margins don't affect width */
-}
-
-/* Container for #categoryRuleTable */
+/* --- Container and Table Widths --- */
+.containerAccountTypes,
+.containerCategoryManagement,
 .containerRuleManagement {
-    width: 100%; /* Default width for mobile */
-    box-sizing: border-box; /* Ensure padding/margins don't affect width */
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* Ensure the DataTables wrapper respects the parent container's width */
 .containerAccountTypes .dataTables_wrapper,
 .containerCategoryManagement .dataTables_wrapper,
 .containerRuleManagement .dataTables_wrapper {
-    width: 100% !important; /* Match the parent container's width */
+    width: 100% !important;
 }
 
-/* Ensure the tables inside the containers respect the container's width */
 #accountTypeTable,
 #categoryTable,
 #categoryRuleTable {
-    width: 100% !important; /* Table takes the full width of its container */
+    width: 100% !important;
 }
 
-/* Media query for laptop/desktop (768px and up) */
+/* --- Media Queries --- */
 @media (min-width: 768px) {
-    .containerAccountTypes {
-        width: 40% !important; /* Force 40% width for accountTypeTable on larger screens */
-        margin: 0 auto; /* Center the container */
-    }
+    .containerAccountTypes,
     .containerCategoryManagement,
-    .containerRuleManagement {
-        width: 60% !important; /* Force 60% width for categoryTable and categoryRuleTable on larger screens */
-        margin: 0 auto; /* Center the container */
+    .containerRuleManagement{
+        width: 40% !important;
+        margin: 0 auto;
     }
 }
 
-/* Media query for mobile (767px and below) */
 @media (max-width: 767px) {
     .containerAccountTypes,
     .containerCategoryManagement,
-    .containerRuleManagement {
-        width: 100% !important; /* Full width on mobile */
+    .containerRuleManagement{
+        width: 100% !important;
     }
 }
 
-/* Add borders to the table and its cells */
-table.dataTable {
-    background-color: #000000; /* Black background color for the table */
-    color: #ffffff; /* Light text color for the table */
-    width: 100% !important; /* Ensure the table takes the full width of its container */
-    border-collapse: collapse; /* Ensure borders don't double up */
-    border: 1px solid #555555; /* Add a subtle gray border around the entire table */
+/* Style Datatables Dropdown */
+.dataTables_length select {
+    background-color: #3c444f !important; /* Target background */
+    color: #eee !important; /* Text color */
+    border: 1px solid #555 !important;
+    border-radius: 4px; /* Rounded */
+    padding: 6px !important; /* Adjust padding */
+    -moz-appearance: none; /* Optional: Normalize for Firefox */
+    appearance: none; /* Optional: Normalize for other browsers */
 }
 
-table.dataTable thead th,
-table.dataTable tbody td {
-    background-color: #000000; /* Black background color for table headers and cells */
-    color: #ffffff; /* Light text color for table headers and cells */
-    border: 1px solid #555555; /* Add borders to table headers and cells */
-    padding: 8px; /* Add some padding for better spacing */
+/* Style the options inside the dropdown */
+.dataTables_length select option {
+    background-color: #3c444f !important; /* Match the select background */
+    color: #eee !important; /* Match the select text color */
 }
 
-/* Ensure the borders are applied consistently for rows */
-table.dataTable tbody tr {
-    background-color: #000000; /* Black background color for rows */
-    border: 1px solid #555555; /* Add borders to rows */
+/* Optional: Hover effect for options (if supported) */
+.dataTables_length select option:hover {
+    background-color: #4a5261 !important; /* Slightly lighter shade for hover */
+    color: #fff !important;
 }
 
-/* Maintain the odd row styling with borders */
-table.dataTable tbody tr.odd,
-table.dataTable tbody tr.odd:hover {
-    background-color: #555555 !important; /* Darker background color for odd rows */
-    border: 1px solid #555555; /* Ensure borders remain consistent */
+/* Added: Focus style */
+.dataTables_length select:focus {
+    border-color: #3399cc !important; /* Border when dropdown is focused */
+    outline: none !important; /* Remove default */
+}
+
+/* Ensure the parent container doesn’t interfere */
+.dataTables_length {
+    background-color: transparent !important; /* Prevent any white background */
 }
