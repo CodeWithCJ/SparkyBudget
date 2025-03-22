@@ -78,11 +78,15 @@ function updateBudgetKPIBoxes() {
 
     xhr.open("GET", "/budget_summary_kpi_boxes?year=" + selectedYear + "&month=" + selectedMonth, true);
     xhr.send();
+    updateIncomePieChart(); // First pie chart
+    updateIncomeVsBudgetPieChart(); // Second pie chart
 }
 
 // Call the function when the page loads or as needed
 window.onload = function () {
     updateBudgetKPIBoxes();
+    updateIncomePieChart(); // First pie chart
+    updateIncomeVsBudgetPieChart(); // Second pie chart
 };
 
 
@@ -438,6 +442,8 @@ function addBudget() {
             toggleAddBudgetForm();
 
             updateBudgetSummaryChart();
+            updateIncomePieChart(); // First pie chart
+            updateIncomeVsBudgetPieChart(); // Second pie chart
             // Clear input fields
             budgetMonthInput.value = '';
             subCategoryInput.value = '';
@@ -846,6 +852,7 @@ $(document).ready(function() {
             dailyBalanceChart.data.datasets[0].data = aggregatedData.data;
             dailyBalanceChart.update();
         }
+        
     }
 
     updateChart();
@@ -857,8 +864,357 @@ $(document).ready(function() {
 
 
 
+// At the top of index.js
+Chart.register(ChartDataLabels);
 
+// Global variables to store the Chart.js instances
+let incomePieChart = null;
+let incomeVsBudgetPieChart = null;
 
+// Function to update or create the first pie chart (Budget vs. Spent vs. Remaining)
+function updateIncomePieChart() {
+    console.log('Attempting to update first pie chart (Budget vs. Spent vs. Remaining)...');
 
+    // Extract the data from the KPI boxes
+    const budgetElement = document.querySelector('.box.budget p');
+    const spentElement = document.querySelector('.box.expense p');
+
+    // Check if elements exist
+    if (!budgetElement || !spentElement) {
+        console.error('One or more KPI box elements not found for first pie chart:', {
+            budgetElement,
+            spentElement
+        });
+        return;
+    }
+
+    // Log the raw text content for debugging
+    console.log('Raw values for first pie chart:', {
+        budget: budgetElement.textContent,
+        spent: spentElement.textContent
+    });
+
+    // Remove currency symbols and commas, then convert to numbers
+    const budget = parseFloat(budgetElement.textContent.replace(/[^0-9.-]+/g, ''));
+    let spent = parseFloat(spentElement.textContent.replace(/[^0-9.-]+/g, ''));
+
+    // Ensure Spent is treated as a positive value
+    spent = Math.abs(spent);
+
+    // Log the parsed values for debugging
+    console.log('Parsed values for first pie chart:', { budget, spent });
+
+    // Check if the parsed values are valid numbers
+    if (isNaN(budget) || isNaN(spent)) {
+        console.error('Failed to parse KPI values for first pie chart:', { budget, spent });
+        return;
+    }
+
+    // Calculate the remaining amount (Budget - Spent)
+    const remaining = budget - spent;
+
+    // Calculate the rotation to ensure "Remaining" starts at 12 o'clock
+    const spentProportion = spent / budget; // e.g., 2017 / 2600 = 0.775
+    const spentAngle = spentProportion * 360; // e.g., 0.775 * 360 = 279 degrees
+    const rotation = 360 - spentAngle; // Start "Spent" so that "Remaining" begins at 12 o'clock (e.g., -90 - 279 = -369 degrees)
+
+    // Prepare data for the first pie chart
+    const ctx = document.getElementById('incomePieChart');
+    if (!ctx) {
+        console.error('Canvas element with ID "incomePieChart" not found.');
+        return;
+    }
+    const chartContext = ctx.getContext('2d');
+
+    // Create gradients for the glassy effect with darker colors
+    const gradientSpent = chartContext.createLinearGradient(0, 0, 0, 400);
+    gradientSpent.addColorStop(0, 'rgba(139, 0, 0, 0.9)'); // Dark Red (#8B0000)
+    gradientSpent.addColorStop(1, 'rgba(139, 0, 0, 0.5)');
+
+    const gradientRemaining = chartContext.createLinearGradient(0, 0, 0, 400);
+    gradientRemaining.addColorStop(0, 'rgba(47, 79, 79, 0.9)'); // Dark Slate Gray (#2F4F4F)
+    gradientRemaining.addColorStop(1, 'rgba(47, 79, 79, 0.5)');
+
+    const pieChartData = {
+        labels: ['Budgeted', 'Spent', 'Remaining'], // Spent first, then Remaining
+        datasets: [{
+            data: [
+                0, // Budgeted (not shown as a segment)
+                spent,
+                remaining
+            ],
+            backgroundColor: [
+                'rgba(0, 0, 0, 0)', // Placeholder for Budgeted (not visible)
+                gradientSpent, // Matches "Spent"
+                gradientRemaining // Matches "Remaining"
+            ],
+            borderWidth: 0
+        }]
+    };
+
+    // Log the data for debugging
+    console.log('Rendering first pie chart with data:', pieChartData);
+
+    // If the chart already exists, update it; otherwise, create a new one
+    if (incomePieChart) {
+        incomePieChart.data = pieChartData;
+        incomePieChart.options.rotation = rotation; // Update rotation dynamically
+        incomePieChart.options.direction = 'clockwise'; // Draw clockwise
+        incomePieChart.update();
+    } else {
+        incomePieChart = new Chart(chartContext, {
+            type: 'pie',
+            data: pieChartData,
+            options: {
+                responsive: true,
+                rotation: rotation, // Dynamically calculated rotation
+                circumference: 360, // Full circle
+                direction: 'clockwise', // Draw clockwise
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#d6dadf',
+                            boxWidth: 20,
+                            padding: 10,
+                            font: {
+                                //size: 12,
+                                family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
+                            },
+                            filter: (legendItem, chartData) => {
+                                // Hide the "Budgeted" label in the legend
+                                return legendItem.text !== 'Budgeted';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 37, 38, 0.9)',
+                        titleColor: '#d6dadf',
+                        bodyColor: '#d6dadf',
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: $${value.toLocaleString()}`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        formatter: (value, context) => {
+                            // Only show labels for Spent and Remaining
+                            if (context.dataIndex === 0) return '';
+                            return `$${value.toLocaleString()}`;
+                        },
+                        font: {
+                            //size: 12,
+                            weight: 'normal',
+                            family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
+                        },
+                        anchor: 'center',
+                        align: 'center',
+                        textAlign: 'center'
+                    }
+                },
+                elements: {
+                    arc: {
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 10,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Function to update or create the second pie chart (Income vs. Budget vs. Remaining)
+function updateIncomeVsBudgetPieChart() {
+    console.log('Attempting to update second pie chart (Income vs. Budget vs. Remaining)...');
+
+    // Extract the data from the KPI boxes
+    const incomeElement = document.querySelector('.box.income p');
+    const budgetElement = document.querySelector('.box.budget p');
+
+    // Check if elements exist
+    if (!incomeElement || !budgetElement) {
+        console.error('One or more KPI box elements not found for second pie chart:', {
+            incomeElement,
+            budgetElement
+        });
+        return;
+    }
+
+    // Log the raw text content for debugging
+    console.log('Raw values for second pie chart:', {
+        income: incomeElement.textContent,
+        budget: budgetElement.textContent
+    });
+
+    // Remove currency symbols and commas, then convert to numbers
+    const income = parseFloat(incomeElement.textContent.replace(/[^0-9.-]+/g, ''));
+    const budget = parseFloat(budgetElement.textContent.replace(/[^0-9.-]+/g, ''));
+
+    // Log the parsed values for debugging
+    console.log('Parsed values for second pie chart:', { income, budget });
+
+    // Check if the parsed values are valid numbers
+    if (isNaN(income) || isNaN(budget)) {
+        console.error('Failed to parse KPI values for second pie chart:', { income, budget });
+        return;
+    }
+
+    // Calculate the remaining amount (Income - Budget)
+    const remaining = income - budget;
+
+    // Calculate the rotation to ensure "Remaining" starts at 12 o'clock
+    const budgetProportion = budget / income; // e.g., 2600 / 3000 = 0.8667
+    const budgetAngle = budgetProportion * 360; // e.g., 0.8667 * 360 = 312 degrees
+    const rotation = 360 - budgetAngle; // Start "Budget" so that "Remaining" begins at 12 o'clock (e.g., -90 - 312 = -402 degrees)
+
+    // Prepare data for the second pie chart
+    const ctx = document.getElementById('incomeVsBudgetPieChart');
+    if (!ctx) {
+        console.error('Canvas element with ID "incomeVsBudgetPieChart" not found.');
+        return;
+    }
+    const chartContext = ctx.getContext('2d');
+
+    // Create gradients for the glassy effect with darker colors
+    const gradientBudget = chartContext.createLinearGradient(0, 0, 0, 400);
+    gradientBudget.addColorStop(0, 'rgba(139, 0, 0, 0.9)'); // Dark Red (#8B0000), same as "Spent"
+    gradientBudget.addColorStop(1, 'rgba(139, 0, 0, 0.5)');
+
+    const gradientRemaining = chartContext.createLinearGradient(0, 0, 0, 400);
+    gradientRemaining.addColorStop(0, 'rgba(47, 79, 79, 0.9)'); // Dark Slate Gray (#2F4F4F)
+    gradientRemaining.addColorStop(1, 'rgba(47, 79, 79, 0.5)');
+
+    const pieChartData = {
+        labels: ['Income', 'Budget', 'Remaining'], // Budget first, then Remaining
+        datasets: [{
+            data: [
+                0, // Income (not shown as a segment)
+                budget,
+                remaining
+            ],
+            backgroundColor: [
+                'rgba(0, 0, 0, 0)', // Placeholder for Income (not visible)
+                gradientBudget, // Matches "Budget"
+                gradientRemaining // Matches "Remaining"
+            ],
+            borderWidth: 0
+        }]
+    };
+
+    // Log the data for debugging
+    console.log('Rendering second pie chart with data:', pieChartData);
+
+    // If the chart already exists, update it; otherwise, create a new one
+    if (incomeVsBudgetPieChart) {
+        incomeVsBudgetPieChart.data = pieChartData;
+        incomeVsBudgetPieChart.options.rotation = rotation; // Update rotation dynamically
+        //incomeVsBudgetPieChart.options.direction = 'clockwise'; // Draw clockwise
+        incomeVsBudgetPieChart.update();
+    } else {
+        incomeVsBudgetPieChart = new Chart(chartContext, {
+            type: 'pie',
+            data: pieChartData,
+            options: {
+                responsive: true,
+                rotation: rotation, // Dynamically calculated rotation
+                circumference: 360, // Full circle
+                direction: 'clockwise', // Draw clockwise
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#d6dadf',
+                            boxWidth: 20,
+                            padding: 10,
+                            font: {
+                                //size: 12,
+                                family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
+                            },
+                            filter: (legendItem, chartData) => {
+                                // Hide the "Income" label in the legend
+                                return legendItem.text !== 'Income';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 37, 38, 0.9)',
+                        titleColor: '#d6dadf',
+                        bodyColor: '#d6dadf',
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: $${value.toLocaleString()}`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        formatter: (value, context) => {
+                            // Only show labels for Budget and Remaining
+                            if (context.dataIndex === 0) return '';
+                            return `$${value.toLocaleString()}`;
+                        },
+                        font: {
+                            //size: 12,
+                            weight: 'normal',
+                            family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
+                        },
+                        anchor: 'center',
+                        align: 'center',
+                        textAlign: 'center'
+                    }
+                },
+                elements: {
+                    arc: {
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 10,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Initial render of both pie charts with a delay to ensure DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(() => {
+        console.log('DOM loaded, initializing pie charts...');
+        updateIncomePieChart(); // First pie chart
+        updateIncomeVsBudgetPieChart(); // Second pie chart
+    }, 1000);
+
+    // Add event listeners for year and month changes
+    const transactionYear = document.getElementById('transactionYear');
+    const monthButtons = document.querySelectorAll('#monthButtons button');
+
+    if (transactionYear) {
+        transactionYear.addEventListener('change', function () {
+            console.log('Year changed, updating pie charts...');
+            setTimeout(() => {
+                updateIncomePieChart();
+                updateIncomeVsBudgetPieChart();
+            }, 1000);
+        });
+    }
+
+    monthButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            console.log('Month changed, updating pie charts...');
+            setTimeout(() => {
+                updateIncomePieChart();
+                updateIncomeVsBudgetPieChart();
+            }, 1000);
+        });
+    });
+});
 
 

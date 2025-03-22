@@ -472,3 +472,92 @@ a.analyze-link:hover {
     }
 }
 
+
+.kpi.boxes {
+    display: none;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 240px;
+    height: auto; /* Remove fixed height to maintain aspect ratio */
+    padding: 15px;
+    background-color: #1a2526;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    max-width: 200px !important; /* Ensure it's a square */
+    height: auto !important;
+    aspect-ratio: 1 / 1; /* Forces a square shape */
+}
+
+
+.chart-total {
+    text-align: center;
+    color: #d6dadf;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+/* Wrapper for side-by-side layout */
+.charts-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between the charts */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    margin-top: 20px;
+}
+
+/* Adjust chart-container for side-by-side display */
+.charts-wrapper .chart-container {
+    flex: 1;
+    max-width: 240px;
+    max-width: 240px;
+    margin: 0; /* Remove auto margins to allow flex alignment */
+}
+
+
+.chartjs-legend ul {
+    font-size: 8px !important;  /* Reduce legend text size */
+    text-align: center;
+    line-height: 1.2; /* Reduce spacing */
+}
+
+.chartjs-legend li {
+    margin: 0 !important;  /* Remove extra spacing */
+    padding: 2px !important;
+}
+
+@media (max-width: 768px) {
+    .chartjs-legend ul {
+        font-size: 6px !important;  /* Smaller on mobile */
+    }
+}
+
+
+/* Reduce size on mobile */
+@media (max-width: 768px) {
+    .charts-wrapper {
+        flex-direction: column;
+        align-items: center;  /* Center the charts horizontally */
+        justify-content: center; /* Center them vertically */
+        min-height: 40vh; /* Ensures full height for proper centering */
+        width: 70%;
+        margin: 10%;
+    }
+
+    .chart-container {
+        max-width: 110px; /* Optional: Adjust width for better fit */
+        
+    }
+}
