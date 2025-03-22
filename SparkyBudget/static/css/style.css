@@ -267,68 +267,6 @@ a.analyze-link:hover {
     color: #fff !important;
 }
 
-.kpi {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.kpi .box {
-    min-height: clamp(80px, 15vw, 120px);
-    max-height: clamp(120px, 15vw, 180px);
-    margin: 0 10px;
-
-    border-radius: 10px;
-    text-align: center;
-    padding: 5px;
-    box-shadow: 0 4px 8px rgba(236, 240, 241, 0.1);
-    transition: transform 0.2s;
-    flex: 1 1 calc(30% - 20px);
-    max-width: 125px;
-    min-width: 125px;
-    font-size: clamp(12px, 3vw, 16px);
-    font-weight: bold;
-
-}
-
-.kpi .box:hover {
-    transform: scale(1.05);
-}
-
-@media (max-width: 768px) {
-    .kpi .box {
-        flex: 1 1 calc(45% - 20px);
-        min-height: clamp(60px, 8vw, 90px);
-        max-height: clamp(120px, 15vw, 150px);
-        font-size: clamp(12px, 3vw, 16px);
-    }
-
-    .kpi .box:hover {
-        transform: scale(1.05);
-    }
-}
-
-
-
-.income {
-    background-color: #173F3F;
-}
-
-.budget {
-    background-color: #784315;
-}
-
-.expense {
-    background-color: #880015;
-}
-
-.remaining {
-    background-color: #00023D;
-}
-
-.aremaining {
-    background-color: #3A083E;
-}
 
 #balanceSummaryTable {
     max-width: 500px;
@@ -473,9 +411,6 @@ a.analyze-link:hover {
 }
 
 
-.kpi.boxes {
-    display: none;
-}
 
 .chart-container {
     width: 100%;

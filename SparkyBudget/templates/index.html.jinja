@@ -159,7 +159,19 @@
                 <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput" placeholder="Enter budget amount" required>
                 <button type="button" onclick="addBudget()">Submit Budget</button>
             </form>
-            <div id="budgetSummaryKPIContainer"></div>
+            
+
+            <div class="charts-wrapper">
+                <div class="chart-container">
+                    <h2 class="chart-total" id="incomeTotal">Income - Loading...</h2>
+                    <canvas id="incomeVsBudgetPieChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h2 class="chart-total" id="budgetTotal">Budget - Loading...</h2>
+                    <canvas id="incomePieChart"></canvas>
+                </div>
+            </div>
+
             <div id="dropdown-container">
                 <label for="sortCriteria">Sort by:</label>
                 <select id="sortCriteria" onchange="updateBudgetSummaryChart()">

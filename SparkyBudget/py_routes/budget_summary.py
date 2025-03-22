@@ -6,96 +6,101 @@ from flask_login import login_required
 
 budget_sumary_bp  = Blueprint('budget_sumary_bp', __name__)
 
-@budget_sumary_bp.route("/budget_summary_kpi_boxes")
+
+
+@budget_sumary_bp.route("/budget_summary_pie_chart")
 @login_required
-def budget_summary_kpi_boxes():
+def budget_summary_pie_chart():
     try:
         selected_year = request.args.get("year")
         selected_month = request.args.get("month")
+        
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
+        conn = sqlite3.connect("SparkyBudget.db")
         cursor = conn.cursor()
-        # Enable query logging
-        cursor.execute("PRAGMA query_only = 1;")
-        # Print the SQL query for debugging
+        
+        # SQL query (unchanged from your original)
         sql_query = """
             SELECT
-                CAST(  coalesce(Salary,ProjectedSalary,0)   as INTEGER) as Salary,
-                CAST(SUM(BudgetAmount) as INTEGER) as BudgetAmount,
-                CAST(SUM(TotalTransactionAmount) as INTEGER) as TotalTransactionAmount,
-                CAST(  coalesce(Salary,ProjectedSalary,0)   as INTEGER) - CAST(  coalesce(BudgetAmount,0)   as INTEGER) as Balance,
-                CAST(SUM(Salary) + SUm(TotalTransactionAmount) as INTEGER) as ActualBalance
+                CAST(COALESCE(Salary, ProjectedSalary, 0) AS INTEGER) AS Salary,
+                CAST(SUM(BudgetAmount) AS INTEGER) AS BudgetAmount,
+                CAST(SUM(TotalTransactionAmount) AS INTEGER) AS TotalTransactionAmount
             FROM (
                 SELECT
                     ROUND(SUM(
                         CASE
                             WHEN a11.SubCategory IN ('Paycheck') THEN BudgetAmount
-                            ELSE Null
+                            ELSE NULL
                         END
-                    ), 2) as ProjectedSalary,
+                    ), 2) AS ProjectedSalary,
                     ROUND(SUM(
                         CASE
-                            WHEN a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') and a12.Category NOT IN ('Income') THEN BudgetAmount
-                            ELSE Null
+                            WHEN a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') 
+                            AND a12.Category NOT IN ('Income') THEN BudgetAmount
+                            ELSE NULL
                         END
                     ), 2) AS BudgetAmount,
-                    Null as TotalTransactionAmount,
-                    Null as Salary
+                    NULL AS TotalTransactionAmount,
+                    NULL AS Salary
                 FROM
                     F_Budget a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
                 WHERE
-                    CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ? AND
-                    strftime('%m', a11.BudgetMonth) = ?
+                    CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ? 
+                    AND strftime('%m', a11.BudgetMonth) = ?
                 UNION ALL
                 SELECT
-                    Null as ProjectedSalary,
-                    Null as BudgetAmount,
-                    ROUND(COALESCE(a11.TransactionAmountNew,a11.TransactionAmount, 0), 2) AS TotalTransactionAmount,
-                    Null as Salary
+                    NULL AS ProjectedSalary,
+                    NULL AS BudgetAmount,
+                    ROUND(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0), 2) AS TotalTransactionAmount,
+                    NULL AS Salary
                 FROM
                     F_Transaction a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
-                    LEFT JOIN F_Balance a13 on (a11.AccountID=a13.AccountID)
-                    LEFT JOIN D_AccountTypes a14
-                    ON a13.AccountTypeKey = a14.AccountTypeKey
+                    LEFT JOIN F_Balance a13 ON (a11.AccountID = a13.AccountID)
+                    LEFT JOIN D_AccountTypes a14 ON (a13.AccountTypeKey = a14.AccountTypeKey)
                 WHERE
-                    HideFromBudget=0 AND                
-                    a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') AND
-                    a12.Category NOT IN ('Income') AND
-                    CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
-                    strftime('%m', a11.TransactionPosted) = ?
+                    HideFromBudget = 0 
+                    AND a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') 
+                    AND a12.Category NOT IN ('Income') 
+                    AND CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? 
+                    AND strftime('%m', a11.TransactionPosted) = ?
                 UNION ALL
                 SELECT
-                    Null as ProjectedSalary,
-                    Null as BudgetAmount,
-                    Null as TotalTransactionAmount,
-                    ROUND(COALESCE(a11.TransactionAmountNew,a11.TransactionAmount, 0), 2) AS Salary
+                    NULL AS ProjectedSalary,
+                    NULL AS BudgetAmount,
+                    NULL AS TotalTransactionAmount,
+                    ROUND(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0), 2) AS Salary
                 FROM
                     F_Transaction a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
                 WHERE
-                    a12.Category IN ('Income') AND
-                    CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
-                    strftime('%m', a11.TransactionPosted) = ?
+                    a12.Category IN ('Income') 
+                    AND CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? 
+                    AND strftime('%m', a11.TransactionPosted) = ?
             )
         """
-        # Fetch data for the third table based on selected filters
         cursor.execute(
-            sql_query, (selected_year, selected_month, selected_year, selected_month, selected_year, selected_month)
+            sql_query, 
+            (selected_year, selected_month, selected_year, selected_month, selected_year, selected_month)
         )
-        budget_summary_kpi_boxes_data = cursor.fetchall()
-        # Close the database connection
+        result = cursor.fetchone()
         conn.close()
-        print("Debug: budget_summary_kpi_boxes_data =", budget_summary_kpi_boxes_data)
-        # Render the template with the fetched data for the third table
-        return render_template(
-            "budget_kpi_boxes.html.partial.jinja", budget_summary_kpi_boxes_data=budget_summary_kpi_boxes_data
-        )
+
+        # Extract data from result
+        income = result[0] if result else 0  # Salary
+        budget = result[1] if result else 0  # BudgetAmount
+        spent = result[2] if result else 0   # TotalTransactionAmount
+
+        # Return JSON response
+        return jsonify({
+            "income": income,
+            "budget": budget,
+            "spent": spent
+        })
     except Exception as e:
-        # Print the exception details
-        print(f"An error occurred while fetching distinct subcategories: {str(e)}")
-        return jsonify({"error": "Failed to fetch distinct subcategories"}), 500
+        print(f"An error occurred while fetching budget summary data: {str(e)}")
+        return jsonify({"error": "Failed to fetch budget summary data"}), 500
         
         
 
