@@ -3,6 +3,14 @@ SparkyBudget
 ![image](https://github.com/user-attachments/assets/cbdd60e7-7451-4977-ae2e-ce57c076ac63)
 
 
+![image](https://github.com/user-attachments/assets/291dd911-466c-4bc1-8524-d10c6fba9425)
+
+
+![image](https://github.com/user-attachments/assets/647119f4-7902-46ec-9be2-3821616ad255)
+
+
+
+
 ## How To Run
 
 First clone this repo, then follow the below steps:
