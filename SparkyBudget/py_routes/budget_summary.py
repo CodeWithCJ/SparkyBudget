@@ -56,7 +56,11 @@ def budget_summary_kpi_boxes():
                 FROM
                     F_Transaction a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                    LEFT JOIN F_Balance a13 on (a11.AccountID=a13.AccountID)
+                    LEFT JOIN D_AccountTypes a14
+                    ON a13.AccountTypeKey = a14.AccountTypeKey
                 WHERE
+                    HideFromBudget=0 AND                
                     a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') AND
                     a12.Category NOT IN ('Income') AND
                     CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
@@ -125,7 +129,7 @@ def budget_summary_chart():
         # Enable query logging
         cursor.execute("PRAGMA query_only = 1;")
 
-        # Print the SQL query for debugging
+        # Print the SQL query for debugginga
         sql_query = """
             SELECT
                 Category,
