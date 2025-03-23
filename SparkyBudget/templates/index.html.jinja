@@ -70,34 +70,62 @@
         </div>
         <div class="main-content">
 			
-			<div id="dailyBalanceContainer" class="daily-balance-container">
-				<!-- Daily Balance Account Type Filter (Horizontal Multi-Select Buttons) -->
-				<!-- Hidden div to store daily balance data -->
-				<div id="dailyBalanceData" data-json='{{ daily_balance_data | tojson | safe }}' style="display: none;"></div>
+			
 
 
-				<div id="dailyBalance_accountTypeFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
-					{% for account_type in account_type_data %}
-						<button 
-							class="dailyBalance_account-type-btn" 
-							data-account-type="{{ account_type[0] }}" 
-							style="background-color: #333; color: #d6dadf; border: 1px solid #77ace0; padding: 5px 15px; border-radius: 20px; cursor: pointer;">
-							{{ account_type[0] }}
-						</button>
-					{% endfor %}
-				</div>
-
-				<!-- Daily Balance Account Name Filter (Dropdown with Multi-Select) -->
-				<select id="dailyBalance_accountNameFilter" class="select2" multiple="multiple" style="width: 100%; padding: 5px; background-color: #333; color: #d6dadf; border: 1px solid #77ace0; border-radius: 10px;">
-					<!-- Account names will be dynamically added here based on selected AccountType -->
-				</select>
 
 
-				<!-- Chart.js Line Chart Container for Daily Balance -->
-				<div style="width: 90%; margin: 20px auto; height: 60%;">
-					<canvas id="dailyBalance_lineChart"></canvas>
-				</div>
-			</div>
+           <div id="dailyBalanceContainer" class="daily-balance-container">
+                <!-- Hidden data div -->
+                <div id="dailyBalanceData" data-json='{{ daily_balance_data | tojson | safe }}' style="display: none;"></div>
+
+                <!-- Account type filter buttons -->
+                <div id="dailyBalance_accountTypeFilter" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    {% for account_type in account_type_data %}
+                        <button 
+                            class="dailyBalance_account-type-btn" 
+                            data-account-type="{{ account_type[0] }}" 
+                            style="background-color: #333; color: #d6dadf; border: 1px solid #77ace0; padding: 5px 15px; border-radius: 20px; cursor: pointer;">
+                            {{ account_type[0] }}
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <!-- Account name filter -->
+                <select id="dailyBalance_accountNameFilter" class="select2" multiple="multiple" style="width: 100%; padding: 5px; background-color: #333; color: #d6dadf; border: 1px solid #77ace0; border-radius: 10px;">
+                    <!-- Account names will be dynamically added -->
+                </select>
+
+                <!-- Chart wrapper with glow effects -->
+                <div class="chart-wrap">
+                   
+                    <div class="chart-card">
+                        <!-- Header -->
+                        <header>
+                            <p class="title">Daily Balance</p>
+                            <div class="views">
+                                <div class="number">$0</div> <!-- Will be updated dynamically -->
+                                <span data-label="total"></span>
+                            </div>
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
+                                    <defs>
+                                        <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
+                                            <stop offset="0%" stop-color="#ffd867"></stop>
+                                            <stop offset="70%" stop-color="#ec526b"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                    <path fill="url(#gradient)" d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"></path>
+                                </svg>
+                            </div>
+                        </header>
+                        <!-- Chart -->
+                        <div class="daily-balance-chart" style="width: 90%; margin: 20px auto; height: 60%;">
+                            <canvas id="dailyBalance_lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 		

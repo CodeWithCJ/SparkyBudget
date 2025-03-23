@@ -625,33 +625,21 @@ function updateSubcategory(transactionKey, event) {
 
 
 
-
-
-
 function dailybalanceDetailsToggleVisibility() {
     var dailyBalanceContainer = document.getElementById('dailyBalanceContainer');
     
-    // Toggle the visibility of the entire container
-    if (window.innerWidth <= 768) {
-        // On mobile devices, toggle visibility of the entire container
-        if (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') {
-            dailyBalanceContainer.style.display = 'block';
-        } else {
-            dailyBalanceContainer.style.display = 'none';
-        }
-    } else {
-        // On desktop devices, toggle visibility of the entire container
-        if (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') {
-            dailyBalanceContainer.style.display = 'block';
-        } else {
-            dailyBalanceContainer.style.display = 'none';
-        }
-    }
+    // Toggle visibility
+    dailyBalanceContainer.style.display = (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') 
+        ? 'block' 
+        : 'none';
 }
 
+// Ensure it's hidden on the first load
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('dailyBalanceContainer').style.display = 'none';
+});
 
 
-//addition of dailyBalance_lineChart
 $(document).ready(function() {
     // Get daily_balance_data from the HTML data attribute
     var daily_balance_data = JSON.parse($('#dailyBalanceData').attr('data-json'));
@@ -710,92 +698,125 @@ $(document).ready(function() {
 
     // Initialize Chart.js
     var ctx = document.getElementById('dailyBalance_lineChart').getContext('2d');
-	var dailyBalanceChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: [],
-			datasets: [{
-				label: 'Daily Balance',
-				data: [],
-				borderColor: '#00aaff',
-				fill: false,
-				tension: 0.3
-			}]
-		},
-		options: {
-			layout: {
-				padding: {
-					right: 50 // Add more space on the right
-				}
-			},
-			scales: {
-				x: {
-					ticks: {
-						color: 'white' // Make x-axis labels visible
-					},
-					border: {
-						color: 'white' // Set the x-axis border color to white
-					}
-				},
-				y: {
-					ticks: {
-						color: 'white', 
-						callback: function(value) {
-							return '$' + value.toLocaleString(); // Format with $ and comma separator
-						}
-					},
-					border: {
-						color: 'white' // Set the y-axis border color to white
-					}
-				}
-			},
-			plugins: {
-				datalabels: {
-					align: 'end', // Position label at the end of the line
-					anchor: 'end', // Keep it inside the chart area
-					color: 'white',
-					formatter: function(value, context) {
-						var index = context.dataIndex;
-						var totalPoints = context.chart.data.labels.length;
-						var isMobile = window.innerWidth <= 768; // Detect mobile screen
+    var dailyBalanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // Will be updated by updateChart()
+            // Inside your Chart.js configuration (no changes needed)
+            datasets: [{
+                label: 'Daily Balance',
+                data: [],
+                borderColor: function(context) {
+                    const chart = context.chart;
+                    const {ctx, chartArea} = chart;
+                    if (!chartArea) return;
+                    const gradient = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 100);
+                    gradient.addColorStop(0, '#ffc800');
+                    gradient.addColorStop(0.4, '#ff694a');
+                    gradient.addColorStop(1, '#ff495c');
+                    return gradient;
+                },
+                borderWidth: 6,
+                pointRadius: 0,
+                fill: false,
+                tension: 0.4
+            }]
+        },
+        options: {
+            layout: {
+                padding: {
+                    right: 50 // Keep your padding
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false // Hide legend to match target design
+                },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#77ace0',
+                    borderWidth: 1
+                },
+                datalabels: {
+                    align: 'end', // Position label at the end of the line
+                    anchor: 'end', // Keep it inside the chart area
+                    color: 'white',
+                    formatter: function(value, context) {
+                        var index = context.dataIndex;
+                        var totalPoints = context.chart.data.labels.length;
+                        var isMobile = window.innerWidth <= 768;
 
-						// Mobile: Show only 3 labels (first, middle, last)
-						if (isMobile) {
-							if (index === 0 || index === totalPoints - 1 || index === Math.floor(totalPoints / 2)) {
-								return '$' + value.toLocaleString();
-							}
-						} else {
-							// Desktop: Adjust dynamically to keep chart readable
-							var step = Math.max(1, Math.floor(totalPoints / 8)); // ~8 labels
-							if (index === 0 || index === totalPoints - 1 || index % step === 0) {
-								return '$' + value.toLocaleString();
-							}
-						}
-						return ''; // Hide other labels
-					},
-					clip: false // Prevent cutting off outside chart boundaries
-				},
-				zoom: {
-					pan: {
-						enabled: true,
-						mode: 'xy', // Enable panning in both axes (x and y)
-					},
-					zoom: {
-						enabled: true,
-						mode: 'xy', // Enable zooming in both axes (x and y)
-						speed: 0.1, // Set the zoom speed
-						sensitivity: 3, // Set the zoom sensitivity
-						limits: {
-							x: { min: 0, max: 100 }, // Limits for zooming on the x-axis
-							y: { min: 0, max: 2000 } // Limits for zooming on the y-axis
-						}
-					}
-				}
-			}
-		},
-		plugins: [ChartDataLabels] // Enable Data Labels Plugin
-	});
-
+                        if (isMobile) {
+                            if (index === 0 || index === totalPoints - 1 || index === Math.floor(totalPoints / 2)) {
+                                return '$' + value.toLocaleString();
+                            }
+                        } else {
+                            var step = Math.max(1, Math.floor(totalPoints / 8));
+                            if (index === 0 || index === totalPoints - 1 || index % step === 0) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                        return ''; // Hide other labels
+                    },
+                    clip: false // Prevent cutting off outside chart boundaries
+                },
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy',
+                        speed: 0.1,
+                        sensitivity: 3,
+                        limits: {
+                            x: { min: 0, max: 100 },
+                            y: { min: 0, max: 2000 }
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    grid: {
+                        display: false // Hide x-axis grid lines to match target design
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.6)', // Softer color
+                        maxTicksLimit: 6, // Limit the number of labels to avoid clutter
+                        callback: function(value, index, values) {
+                            const date = dailyBalanceChart.data.labels[index];
+                            if (date) {
+                                return date.split('-').slice(1).join('-'); // Format as "MM-DD"
+                            }
+                            return '';
+                        }
+                    }
+                },
+                y: {
+                    display: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)', // Subtle grid lines
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.6)', // Softer color
+                        callback: function(value) {
+                            return '$' + value.toLocaleString(); // Format with $ and comma separator
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels] // Enable Data Labels Plugin
+    });
 
     function aggregateData(selectedAccountTypes, selectedAccountNames) {
         var aggregatedData = {};
@@ -831,13 +852,23 @@ $(document).ready(function() {
         if (dailyBalanceChart && dailyBalanceChart.data) {
             dailyBalanceChart.data.labels = aggregatedData.labels;
             dailyBalanceChart.data.datasets[0].data = aggregatedData.data;
+
+            // Update the header with the latest balance
+            const latestBalance = aggregatedData.data[aggregatedData.data.length - 1] || 0;
+            document.querySelector('.chart-card .views .number').textContent = `$${latestBalance.toLocaleString()}`;
+
             dailyBalanceChart.update();
         }
-        
     }
 
     updateChart();
 });
+
+
+
+
+
+
 
 
 
@@ -898,12 +929,12 @@ function updatePieCharts(forceRefresh = false) {
             const chartContextBudget = ctxBudget.getContext('2d');
 
             const gradientSpent = chartContextBudget.createLinearGradient(0, 0, 0, 400);
-            gradientSpent.addColorStop(0, 'rgba(139, 0, 0, 0.9)');
-            gradientSpent.addColorStop(1, 'rgba(139, 0, 0, 0.5)');
+            gradientSpent.addColorStop(0, 'rgba(255, 111, 97, 0.9)');
+            gradientSpent.addColorStop(1, 'rgba(255, 111, 97, 0.5)');
 
             const gradientRemainingBudget = chartContextBudget.createLinearGradient(0, 0, 0, 400);
-            gradientRemainingBudget.addColorStop(0, 'rgba(47, 79, 79, 0.9)');
-            gradientRemainingBudget.addColorStop(1, 'rgba(47, 79, 79, 0.5)');
+            gradientRemainingBudget.addColorStop(0, 'rgba(77, 182, 172, 0.9)');
+            gradientRemainingBudget.addColorStop(1, 'rgba(77, 182, 172, 0.5)');
 
             const budgetPieChartData = {
                 labels: ['Budgeted', 'Spent', 'Remaining'],
@@ -977,18 +1008,18 @@ function updatePieCharts(forceRefresh = false) {
             const chartContextIncome = ctxIncome.getContext('2d');
 
             const gradientBudget = chartContextIncome.createLinearGradient(0, 0, 0, 400);
-            gradientBudget.addColorStop(0, 'rgba(139, 0, 0, 0.9)');
-            gradientBudget.addColorStop(1, 'rgba(139, 0, 0, 0.5)');
+            gradientBudget.addColorStop(0, 'rgba(255, 111, 97, 0.9)');
+            gradientBudget.addColorStop(1, 'rgba(255, 111, 97, 0.5)');
 
             const gradientRemainingIncome = chartContextIncome.createLinearGradient(0, 0, 0, 400);
-            gradientRemainingIncome.addColorStop(0, 'rgba(47, 79, 79, 0.9)');
-            gradientRemainingIncome.addColorStop(1, 'rgba(47, 79, 79, 0.5)');
+            gradientRemainingIncome.addColorStop(0, 'rgba(77, 182, 172, 0.9)');
+            gradientRemainingIncome.addColorStop(1, 'rgba(77, 182, 172, 0.5)');
 
             const incomePieChartData = {
                 labels: ['Income', 'Budget', 'Remaining'],
                 datasets: [{
                     data: [0, budget, remainingIncome],
-                    backgroundColor: ['rgba(0, 0, 0, 0)', gradientBudget, gradientRemainingIncome],
+                    backgroundColor: ['rgba(0, 0, 0, 0)', gradientBudget, gradientRemainingIncome],  
                     borderWidth: 0
                 }]
             };
