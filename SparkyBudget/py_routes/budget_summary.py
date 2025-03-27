@@ -207,7 +207,7 @@ def budget_summary_chart():
     )
 
     # Render the template with the fetched data for the third table
-    return render_template("budget_summary_chart.html.partial.jinja", budget_summary_chart=budget_summary_chart)
+    return render_template("budget_summary_chart.html.jinja", budget_summary_chart=budget_summary_chart)
     
     
 
@@ -375,4 +375,4 @@ def get_budget_transaction_details():
 
     # Render the template with the fetched data for transaction details
     # TODO: is this supposed to be a partial or full html?
-    return render_template("budget_transaction_details.html.partial.jinja", transaction_details=transaction_details)
+    return render_template("budget_transaction_details.html.jinja", transaction_details=transaction_details)

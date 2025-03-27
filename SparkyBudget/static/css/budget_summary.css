@@ -7,8 +7,119 @@ body {
 }
 
 #budgetsummaryTable a {
-    color: #fff;
-    /* White font color for the hyperlink */
-    text-decoration: none;
-    /* Remove underline */
+    color: #fff; /* White font color for the hyperlink */
+    text-decoration: none; /* Remove underline */
 }
+
+/* New container for each subcategory */
+.subcategory-container {
+    border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
+    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
+    border-radius: 8px; /* Rounded corners for a smoother look */
+    padding: 10px; /* Inner padding to keep content from touching the border */
+    margin-bottom: 15px; /* Space between each subcategory section */
+    width: 90%; /* Match the original width of top-content */
+    margin-left: auto; /* Center the container */
+    margin-right: auto; /* Center the container */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+.top-content {
+    display: flex;
+    justify-content: space-between; /* Push children to opposite ends */
+    align-items: center; /* Ensure all children are vertically centered */
+    width: 100% !important; /* Full width within the subcategory-container */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+.left-content {
+    display: flex; /* Ensure the content inside is aligned properly */
+    align-items: center; /* Align items vertically */
+    gap: 5px; /* Add spacing between elements inside left-content */
+}
+
+.left-content p {
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+    line-height: 1; /* Normalize line height to avoid vertical offset */
+}
+
+.left-content img {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.right-content {
+    display: flex; /* Make right-content a flex container */
+    align-items: center; /* Center its content vertically */
+    text-align: right; /* Align text to the right */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
+}
+
+.right-content p {
+    margin: 0; /* Remove default margins on the <p> tag */
+    line-height: 1; /* Normalize line height to match left-content */
+}
+
+.category-bar {
+    width: 100% !important; /* Full width within the subcategory-container */
+    margin: 10px 0; /* Adjusted margin for spacing */
+    height: 20px; /* Increase from default (e.g., 8px or 10px) */
+    border-radius: 8px; /* Optional for rounded corners */
+}
+
+.subcategory-bar {
+    height: 30px; /* Match the category-bar height */
+    border-radius: 8px;
+}
+
+.bottom-content-wrapper {
+    display: flex;
+    justify-content: space-between; /* Push content to opposite ends */
+    align-items: center; /* Align items vertically */
+    width: 100% !important; /* Full width within the subcategory-container */
+    margin-top: 20px; /* Add spacing above if needed */
+    box-sizing: border-box; /* Include padding in width calculation */
+    padding-bottom: 10px;
+}
+
+.bottom-left-content {
+    text-align: left; /* Align text to the left */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
+    align-self: flex-start; /* Align it to the start of the parent container */
+}
+
+.bottom-right-content {
+    text-align: right; /* Align text to the right */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .subcategory-container {
+        width: 100% !important; /* Full width in mobile view */
+        margin: 0 0 15px 0; /* Remove side margins, keep bottom margin */
+        padding: 10px; /* Consistent padding */
+        border: 1px solid #4a5263; /* Keep the adjusted border color */
+        background: linear-gradient(145deg, #2E3440, #353b48); /* Keep the gradient */
+        border-radius: 8px; /* Keep rounded corners */
+        box-sizing: border-box;
+    }
+
+    .top-content {
+        display: flex;
+        justify-content: space-between;
+        align-items

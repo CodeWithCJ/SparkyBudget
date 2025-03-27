@@ -1,62 +1,122 @@
-#balanceSummaryTable {
+.balance-summary-list {
+    font-family: Arial, sans-serif;
+    color: #d6dadf;
     background-color: #173F3F;
-    /* Adjust the border-radius as needed for rounded corners */
-    border-radius: 10px;
-    /* Hide any content that overflows the rounded corners */
-    overflow: hidden;
+    border-radius: 8px;
 }
 
-table {
-    width: 100%; /* Ensure table takes up full width */
-    table-layout: fixed; /* Prevents width from changing */
+.account-type {
+    margin-bottom: 5px;
 }
 
-td, th {
-    padding: 10px;
-    text-align: left;
-    word-wrap: break-word; /* Prevents content from breaking out of the cell */
-}
-
-.child-row {
-    display: none; /* Initially hidden */
-    overflow: hidden;
-    max-height: 0; /* Set max-height to 0 for collapsed state */
-    opacity: 0;
-    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Smooth transition */
-}
-
-
-.type-row.expanded + .child-row {
-    display: table-row;
-}
-
-
-
-
-.expand-collapse-toggle::before {
-    content: '►';
-    display: inline-block;
-    width: 10px;
-    text-align: center;
+.account-type-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 10px;
     cursor: pointer;
+    background-color: #1e4b4b;
+    border-radius: 4px;
 }
 
-.expanded .expand-collapse-toggle::before {
-    content: '▼';
+/* Remove cursor: pointer for headers without children */
+.account-type-header:not([data-toggle="collapse"]) {
+    cursor: default;
 }
 
-.negative {
-    color: red;
+.account-type-header:hover {
+    background-color: #255757;
 }
 
-/* Add a class for collapsed state */
-.balance-summary-container.collapsed {
-    height: 0;
-    overflow: hidden;
+.account-type-left {
+    display: flex;
+    align-items: center;
+}
+
+.expand-icon {
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.expand-placeholder {
+    width: 24px; /* Match the width of the expand-icon (14px font-size + 10px margin-right) */
+    display: inline-block;
+}
+
+.account-name {
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.account-type-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.balance {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.available-balance {
+    font-size: 12px;
+    color: #77ace0;
+    margin-top: 2px;
+}
+
+.collapse {
     display: none;
 }
 
-/* Add a transition for smooth animation */
-.balance-summary-container {
-    transition: height 0.3s ease-in-out;
+.collapse.show {
+    display: block;
 }
+
+.account-sub-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #1a3c3c;
+    border-top: 1px solid #2a5a5a;
+}
+
+.account-sub-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.account-sub-item .account-name {
+    text-align: left;
+    font-size: 14px;
+}
+
+.account-sub-item .balance {
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.account-sub-item .available-balance {
+    font-size: 11px;
+    color: #77ace0;
+    margin-top: 2px;
+}
+
+
+/* Hide balance summary by default on mobile (screens smaller than 768px) */
+@media (max-width: 768px) {
+    .balance-summary-container {
+        display: none;
+    }
+}
+
+/* Ensure the balance summary is visible on larger screens by default */
+@media (min-width: 769px) {
+    .balance-summary-container {
+        display: block;
+    }
+}
+

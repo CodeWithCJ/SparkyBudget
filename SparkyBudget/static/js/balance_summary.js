@@ -112,3 +112,33 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.balance-summary-container').classList.toggle('collapsed');
     });
 });
+
+
+
+$(document).ready(function () {
+    // Toggle balance summary visibility and icon style
+    $('#toggleBalanceSummary').on('click', function () {
+        const $balanceSummary = $('.balance-summary-container');
+        const $icon = $(this).find('i');
+        $balanceSummary.toggle();       
+    });
+
+    // Update arrow icon when collapse is shown
+    $('.account-type-header[data-toggle="collapse"]').on('show.bs.collapse', function () {
+        console.log('Collapse is being shown for:', $(this).find('.account-name').text());
+        const $icon = $(this).find('.expand-icon');
+        $icon.text('▼');
+    });
+
+    // Update arrow icon when collapse is hidden
+    $('.account-type-header[data-toggle="collapse"]').on('hide.bs.collapse', function () {
+        console.log('Collapse is being hidden for:', $(this).find('.account-name').text());
+        const $icon = $(this).find('.expand-icon');
+        $icon.text('▶');
+    });
+
+    // Initialize arrows (all collapsed by default)
+    $('.account-type-header[data-toggle="collapse"]').each(function () {
+        $(this).find('.expand-icon').text('▶');
+    });
+});

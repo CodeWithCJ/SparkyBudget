@@ -7,7 +7,6 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_summary.css') }}">
     <script>
-        // merge any existing appState with the new data. since appState can be null, start with empty object as the base
         window.appState = Object.assign({}, window.appState, {
             labels: {{ labels | default(()) | tojson }},
             balances: {{ balances | default(()) | tojson }}
@@ -16,37 +15,53 @@
     <script src="{{ url_for('static', filename='js/balance_summary.js') }}"></script>
 </head>
 <body>
-    <table id="balanceSummaryTable" border="1" style="background-color: #173F3F;">
-        <thead>
-            <tr>
-                <th>Account</th>
-                <th>Balance</th>
-                <th>Available Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in account_type_data %}
-                <tr class="type-row">
-                    <td>
-                        <span class="expand-collapse-toggle"></span>
-                        {{ data[0] }}
-                    </td>
-                    <td>{{ data[1] | tocurrency_whole }}</td>
-                    <td>{{ data[2] | tocurrency_whole }}</td>
-                </tr>
-                {% for bank_data in account_type_banak_data %}
-                    {% if bank_data[0] == data[0] %}
-                        {% if bank_data[2] != 0.0 or bank_data[3] != 0.0 %}
-                        <tr class="child-row">
-                            <td style="text-align: right;">{{ bank_data[1] }}</td>
-                            <td>{{ bank_data[2] | tocurrency_whole }}</td>
-                            <td>{{ bank_data[3] | tocurrency_whole }}</td>
-                        </tr>
+    <div class="balance-summary-list" style="background-color: #173F3F; padding: 10px;">
+        {% for data in account_type_data %}
+            <!-- Determine if the arrow should be shown -->
+            {% set show_arrow = false %}
+            {% if data[0] not in ['Net Cash', 'Net Worth'] and data[1] != 0 %}
+                {% set show_arrow = true %}
+            {% endif %}
+
+            <div class="account-type">
+                <!-- Parent row: Show expand/collapse only if show_arrow is true -->
+                <div class="account-type-header" 
+                     {% if show_arrow %}
+                     data-toggle="collapse" data-target="#collapse-{{ loop.index }}" aria-expanded="false"
+                     {% endif %}>
+                    <div class="account-type-left">
+                        {% if show_arrow %}
+                            <span class="expand-icon">▶</span>
+                        {% else %}
+                            <span class="expand-placeholder"></span>
                         {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-        </tbody>
-    </table>
+                        <span class="account-name">{{ data[0] }}</span>
+                    </div>
+                    <div class="account-type-right">
+                        <span class="balance">{{ data[1] | tocurrency_whole }}</span>
+                        <span class="available-balance">{{ data[2] | tocurrency_whole }} available</span>
+                    </div>
+                </div>
+                <!-- Child items (collapsed by default, only if show_arrow is true) -->
+                {% if show_arrow %}
+                    <div id="collapse-{{ loop.index }}" class="collapse">
+                        {% for bank_data in account_type_banak_data %}
+                            {% if bank_data[0] == data[0] %}
+                                {% if bank_data[2] != 0.0 or bank_data[3] != 0.0 %}
+                                    <div class="account-sub-item">
+                                        <span class="account-name">{{ bank_data[1] }}</span>
+                                        <div class="account-sub-item-right">
+                                            <span class="balance">{{ bank_data[2] | tocurrency_whole }}</span>
+                                            <span class="available-balance">{{ bank_data[3] | tocurrency_whole }} available</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
