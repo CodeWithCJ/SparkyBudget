@@ -6,10 +6,7 @@ services:
       - .env
     image: sparkybudget
     volumes:
-      - ./access_url.txt:/app/access_url.txt
-      - ./SparkyBudget.db:/app/SparkyBudget.db
-      - ./token.txt:/app/token.txt
-      - ./output:/app/output
+      - ./budget:/app      
     ports:
       - 5050:5000
     restart: unless-stopped

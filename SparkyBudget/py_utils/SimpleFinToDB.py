@@ -3,7 +3,6 @@
 import base64
 import csv
 import datetime
-import json
 import os
 import sqlite3
 #from datetime import datetime
@@ -22,14 +21,15 @@ def ts_to_datetime(ts):
 
 def get_access_url():
     # Load setup token from file
-    token_file_path = "token.txt"
-
-    try:
-        with open(token_file_path, "r") as token_file:
-            setup_token = token_file.read().strip()
-    except FileNotFoundError:
-        print(f"Token file '{token_file_path}' not found.")
-        return None
+    #token_file_path = "token.txt"
+#
+    #try:
+    #    with open(token_file_path, "r") as token_file:
+    #        setup_token = token_file.read().strip()
+    #except FileNotFoundError:
+    #    print(f"Token file '{token_file_path}' not found.")
+    #    return None
+    setup_token = os.getenv("SIMPLEFIN_TOKEN")
 
     # Load access URL from file if available
     access_url_file = "access_url.txt"

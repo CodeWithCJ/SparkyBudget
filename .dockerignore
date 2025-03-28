@@ -1,0 +1,74 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Ignore build and distribution directories
+build/
+dist/
+.eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+wheels/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.bak
+*.old
+*.swp
+
+# Ignore IDE/editor config files
+.vscode/
+.idea/
+.spyderproject/
+.spyproject/
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore test and coverage files
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+*.cover
+*.py,cover
+.hypothesis/
+
+# Ignore Flask-specific files
+instance/
+.webassets-cache
+
+# Ignore database and secrets
+**/*.db
+containers/data/
+**/token.txt
+**/access_url.txt
+**/*.csv
+**/.env
+
+# Ignore static files that are not needed
+static/css/*.map
+static/js/*.map
+
+# Ignore Git files
+.git/
+.gitignore
+
+# Ignore Docker-related files
+.dockerignore
+docker-compose.override.yml
