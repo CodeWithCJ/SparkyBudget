@@ -118,8 +118,20 @@ function showTransactionDetails(event, selectedSubcategory, spentAmount) {
     console.log("Function called:", selectedYear, selectedMonth, selectedSubcategory);
 
     // Set the selected subcategory as the header
-    var header = document.createElement("h2");
-    header.textContent = "Details of " + selectedSubcategory + " - " + spentAmount;
+    var header = document.createElement("h4");
+    const usdFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        // minimumFractionDigits: 2, // Usually defaults to 2 for USD, but can be explicit
+      });
+      
+      // Format the amount and set the text content
+    header.textContent = selectedSubcategory + " Expenses: " + usdFormatter.format(spentAmount);
+
+    header.style.color = "white";
+    header.style.textAlign = "center";
+
+    
     document.getElementById("transactionDetails").innerHTML = "";
     document.getElementById("transactionDetails").appendChild(header);
 
@@ -1103,7 +1115,7 @@ function budget_transaction_details_toggleDetails(button) {
         // Expand the details
         body.style.display = 'block';
         button.textContent = '▲'; // Change to up arrow
-        statusElement.textContent = 'Les ▲'; // Change to "LESS"
+        statusElement.textContent = 'Less ▲'; // Change to "LESS"
         statusElement.style.color = '#ff4d4d'; // Red for "LESS" (adjust color as needed)
     } else {
         // Collapse the details

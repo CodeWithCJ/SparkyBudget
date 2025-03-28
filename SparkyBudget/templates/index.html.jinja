@@ -40,11 +40,11 @@
             <i class="fas fa-piggy-bank"></i>
         </div>
         <h1>
-            <i class="fas fa-info-circle" onclick="balanceDetailsTableToggleVisibility()" title="Account Details"></i>
+            <i class="fas fa-info-circle" onclick="balanceDetailsTableToggleVisibility()" title="Account Details" style="color: #61DAFB; font-size: 24px;"></i>
         </h1>
 		
 		<h1>
-            <i class="fas fa-line-chart" onclick="dailybalanceDetailsToggleVisibility()" title="Daily Balance Details"></i>
+            <i class="fas fa-line-chart" onclick="dailybalanceDetailsToggleVisibility()" title="Daily Balance Details" style="color: #61DAFB; font-size: 24px;"></i>
         </h1>
 		
 		
@@ -234,7 +234,9 @@
                 <div id="budgetSummaryChart"></div>
             </div>
             <!-- Transaction Details of selected SubCategory-->
-            <div id="transactionDetails"></div>
+            <div class="budget_transaction_details_wrapper">
+                <div id="transactionDetails"></div>
+            </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
