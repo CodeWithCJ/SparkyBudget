@@ -1,1 +1,115 @@
-/*test*/
+/* Default styles for desktop */
+.budget-transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.budget-transaction-table th,
+.budget-transaction-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+/* Hide mobile view on desktop */
+.budget-transaction-mobile-container {
+    display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    /* Hide table on mobile */
+    .budget-transaction-table {
+        display: none;
+    }
+
+    /* Show mobile view */
+    .budget-transaction-mobile-container {
+        display: block;
+    }
+
+    /* Card styling */
+    .budget_transaction_details_card {
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        margin: 10px 0;
+        padding: 15px;
+        color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .budget_transaction_details_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center; /* Vertically center the items */
+    }
+
+    .budget_transaction_details_info {
+        flex-grow: 1;
+    }
+
+    .budget_transaction_details_payee {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .budget_transaction_details_date {
+        font-size: 12px;
+        color: #aaa;
+    }
+
+    .budget_transaction_details_amount {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .budget_transaction_details_amount {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .budget_transaction_details_status {
+        font-size: 12px;
+        color: #00cc00; /* Default to green for "MORE" */
+        cursor: pointer; /* Add pointer cursor to indicate clickability */
+    }
+    
+    .budget_transaction_details_toggle {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0; /* Remove padding to align better */
+    }
+
+    .budget_transaction_details_body {
+        margin-top: 10px;
+    }
+
+    .budget_transaction_details_field {
+        margin: 5px 0;
+    }
+
+    .budget_transaction_details_label {
+        font-weight: bold;
+        color: #aaa;
+    }
+
+    .budget_transaction_details_reCategorizeButton {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .budget_transaction_details_subcategoryLabel,
+    .budget_transaction_details_select2,
+    .budget_transaction_details_updateSubcategoryButton {
+        margin-top: 5px;
+    }
+}

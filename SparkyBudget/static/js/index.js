@@ -1013,6 +1013,18 @@ $(document).ready(function() {
     $('.reCategorizeButton').on('click', function () {
         showSubcategoryDropdown(this);
     });
+
+   
+
+    $('.budget_transaction_details_reCategorizeButton').on('click', function () {
+        budget_transaction_details_showSubcategoryDropdown(this);
+    });
+
+    // Add click event for MORE/LESS text
+    $('.budget_transaction_details_status').on('click', function () {
+        
+        budget_transaction_details_toggleDetails(this);
+    });
 });
 
 // Function to populate the subcategory dropdown and show it
@@ -1078,3 +1090,86 @@ function updateSubcategory(transactionKey, event) {
     }
 }
 
+
+
+
+// Function to toggle the visibility of transaction details in mobile view
+function budget_transaction_details_toggleDetails(button) {
+    const card = button.closest('.budget_transaction_details_card');
+    const body = card.querySelector('.budget_transaction_details_body');
+    const statusElement = card.querySelector('.budget_transaction_details_status');
+
+    if (body.style.display === 'none') {
+        // Expand the details
+        body.style.display = 'block';
+        button.textContent = '▲'; // Change to up arrow
+        statusElement.textContent = 'Les ▲'; // Change to "LESS"
+        statusElement.style.color = '#ff4d4d'; // Red for "LESS" (adjust color as needed)
+    } else {
+        // Collapse the details
+        body.style.display = 'none';
+        button.textContent = '▼'; // Change to down arrow
+        statusElement.textContent = 'More ▼'; // Change to "MORE"
+        statusElement.style.color = '#00cc00'; // Green for "MORE" (adjust color as needed)
+    }
+}
+
+// Function to populate and show the subcategory dropdown in mobile view
+function budget_transaction_details_showSubcategoryDropdown(button) {
+    // Hide the "Re-categorize" button
+    $(button).hide();
+
+    // Show the label and dropdown
+    var field = $(button).closest('.budget_transaction_details_field');
+    var dropdownLabel = field.find('.budget_transaction_details_subcategoryLabel');
+    var subcategoryDropdown = field.find('#subcategorySelectMobile');
+    var updateButton = field.find('.budget_transaction_details_updateSubcategoryButton');
+
+    dropdownLabel.show();
+    subcategoryDropdown.show();
+
+    // Fetch subcategories using an AJAX request
+    $.get('/getDistinctSubcategories', function (subcategories) {
+        // Clear existing options
+        subcategoryDropdown.empty();
+
+        // Populate the Select2 dropdown with fetched subcategories
+        subcategoryDropdown.select2({
+            data: subcategories,
+            width: '180px',
+            placeholder: 'Select or type to search',
+            allowClear: true,
+        });
+    });
+
+    // Show the "Update Subcategory" button
+    updateButton.show();
+}
+
+// Function to update the subcategory in the database for mobile view
+function budget_transaction_details_updateSubcategory(transactionKey, event) {
+    var updatedSubcategory = $('#subcategorySelectMobile').select2('data')[0].text;
+
+    console.log("Inside budget_transaction_details_updateSubcategory: transactionKey ", transactionKey, "updatedSubcategory :", updatedSubcategory);
+
+    if (updatedSubcategory) {
+        $.ajax({
+            type: 'POST',
+            url: '/updateSubcategory',
+            data: {
+                transactionId: transactionKey,
+                updatedSubcategory: updatedSubcategory
+            },
+            success: function (response) {
+                console.log('Subcategory updated successfully:', response);
+                updateBudgetSummaryChart();
+                showTransactionDetails(event, previousSubcategory);
+            },
+            error: function (error) {
+                console.error('Error updating subcategory:', error);
+            }
+        });
+    } else {
+        alert('Please select a subcategory before updating.');
+    }
+}
