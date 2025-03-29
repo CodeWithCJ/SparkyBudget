@@ -11,6 +11,7 @@ SparkyBudget
  
 	
  	mv .env-example .env
+  	Update .env with required credentials from Token from SimpleFin.
 	mv SparkyBudget-fresh.db SparkyBudget.db
 	docker compose pull && docker compose up -d
  
