@@ -11,7 +11,7 @@ SparkyBudget
  
 	
  	mv .env-example .env
-	mv SparkyBudget-example.db SparkyBudget.db
+	mv SparkyBudget-fresh.db SparkyBudget.db
 	docker compose pull && docker compose up -d
  
 
@@ -20,7 +20,7 @@ SparkyBudget
 	http://localhost:5050
 
 **Demo files:**
-	``DB file contains demo transactions from SimpleFin. ``
+	``SparkyBudget-demo.db file contains demo transactions from SimpleFin. ``
 
 **How to Reset Token?**
 	``Deleting access_url from container will try to re-use new token. Makesure to update new token under .env before trying this. ``
