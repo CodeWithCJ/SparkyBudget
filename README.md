@@ -1,5 +1,5 @@
-# SparkyBudget
-SparkyBudget
+# 📌 SparkyBudget - Personal Finance Tracker
+A lightweight and self-hosted budget management app built using Python Flask ,SQLite & SimpleFin API
 ![image](https://github.com/user-attachments/assets/cbdd60e7-7451-4977-ae2e-ce57c076ac63)
 
 
@@ -9,91 +9,65 @@ SparkyBudget
 ![image](https://github.com/user-attachments/assets/647119f4-7902-46ec-9be2-3821616ad255)
 
 
+Features
+🔄 Transaction Management
+✅ Auto-Sync with SimpleFin – Automatically fetch bank & credit card transactions.
+✅ Manual & Auto Sync – Choose between automatic updates or manual refresh.
+✅ Split Transactions – Divide transactions into multiple categories.
+✅ Auto-Categorization Rules – Set rules to automatically categorize transactions.
+✅ Custom Categories – Create & manage custom spending categories.
 
+💰 Budgeting & Planning
+✅ Set Future Budgets – Plan ahead with monthly budget setting.
+✅ Customizable Budget Templates – Personalize budgets for every month.
+✅ Customize Budgets – Adjust and personalize budgets as needed.
 
-## How To Run
+📊 Analysis & Insights
+✅ Daily Balance Tracking – View & analyze your daily balance trends.
+✅ Account Management – View account balance & detailed account information.
+✅ Spending Insights – Analyze spending across months, categories, subcategories, with custom date ranges.
+✅ Paycheck Analysis – Track paycheck trends over time.
 
-First clone this repo, then follow the below steps:
+📑 Customization & User Control
+✅ Flexible Sorting – Customize sorting on the account view.
+✅ Mobile-Friendly UI – Optimized for smooth usage on all devices.
 
-### Install dependencies
+📂 Export & Reports
+✅ Export Options – Download data in PDF, Excel, or CSV format.
 
-The minimum version of Python for this project is ???? (I use Python 3.10)
+🛠 How to Run?
 
-It is recommended you set up a virtual environment to keep dependencies from conflicting between projects. I recommend PDM. Since I don't wanna enforce PDM, the below steps can be used to use PDM:
+Create a new directory: mkdir sparkybudget
 
-#### PDM setup
+Download .env-example , SparkyBudget-example.db and docker-compose.yml files
 
-1. [install pdm](https://pdm-project.org/latest/) if not installed already
-2. `pdm install` will install your dependencies
-3. `pdm venv activate` will show you how to activate the venv
+Rename and update the environment file: mv .env-example .env
 
-#### vanilla Python
+Prepare the database: mv SparkyBudget-fresh.db SparkyBudget.db
 
-1. Create a virtual environment using either via virtualenv or venv
-    * virtualenv example: `virtualenv name-of-venv`
-    * venv example: `python -m venv /path/to/new/virtual/environment`
-2. Activate the virtual environment:
-    * virtualenv: OS specific, see: https://virtualenv.pypa.io/en/latest/user_guide.html#quick-start
-    * venv: OS Specific, see: https://docs.python.org/3/library/venv.html#how-venvs-work
-3. install dependencies: `pip install -r requirements.txt`
+Pull and start the Docker containers: docker compose pull && docker compose up -d
 
-### Set up local files
+🌍 How to Access?
+📍 Open your browser and go to:
+👉 http://localhost:5050
 
-1. copy .env-example to .env
-   * TODO: this assumes you're using VSCode to run this as it'll auto-load the .env should we install python-dotenv for non-vscode users?
-2. copy SparkyBudget-example.db to SparyBudget.db
-3. copy token-example.txt to token.txt
+📂 Demo Files
+📌 The SparkyBudget-demo.db file contains sample transactions from SimpleFin for testing.
 
-### Development in VSCode
+🔄 How to Reset the Token?
+If you need to reset your SimpleFin Token, follow these steps:
 
-Make sure to tell VSCode to use your venv: https://code.visualstudio.com/docs/python/environments#_select-and-activate-an-environment
+Open a shell inside the container: docker exec -it sparkybudget sh
 
-### Local HTTPS
+Delete the existing access URL file: rm /SparkyBudget/access_url.txt
 
-To use local HTTPS, create self signed certicate and upload under `SparkyBudget\certs`. Then in your .env set `USE_INTERNAL_HTTPS` and `USE_SECURE_SESSION_COOKIE` both equal to `1`
+Update .env file and restart container docker-compose down && docker-compose up
 
-You can now use `(HTTPS) Python: SparkyBudget app` from VSCode to launch the web application
+⚠️ Important:
 
-TODO: will need to enable dotenv to do this: Run using "python app.py" command. It uses 5000 port.
+The token can only be used once. You will need to generate a new token from SimpleFin and update it in .env before retrying.
 
-### Authentication:
-
-Default User name: Sparky
-Default Password: Sparky
-
-These can be changed in your .env file via `SPARKY_USER` and `SPARKY_PASS`
-
-## Docker
-
-an example dockerfile and docker-compose.yaml are included at the root of the project. The docker version runs using gunicorn in a production build
-
-You can build the image via the following command: `sudo docker build -t sparkybudget .`
-
-And you can run it via docker-compose like so: `sudo docker compose up`
-
-You may need to change the the mounting paths for the database, output directory, and token.txt/access_url.txt. By default I expect them at the root, so you may wish to copy them out of the SparkyBudget directory up to the same level as the docker-compose.yaml
-
-## Information on how it works and SimpleFin
-
-Currently I have configured it to use the demo token from https://www.simplefin.org/. The transactions are dated with 1970-01-01. But as I defautled the App to show current month, default month selection is not working as there is no transaction or budget assinged for it. So you will need to manually select "01" 
-month from the filter. 
-
-
-To use with your bank/simplefin token
-1. Signup using https://www.simplefin.org/    - This is $1.5 per month currently.  I am not charging this. SimpleFin is a bank sync and I am using using their Api to downloading the transactions.
-2. Connect your banks
-3. Generate Token
-4. Update the token.txt file with your token and delete acces_url.txt file
-
-You can "refresh" using the menu bar icon. This will claim your token, generate accessl URL and store it under access_url.txt and use it to download your bank transactions.
-Note the folllowing
-1. Toaken is one time use. If you run into problem, most probably you will need to generate new token again
-2. Once access_url.txt is generated, it will try to re-create again. It will be used for downloading transactions every time you hit refresh icon. I had a code that downloads every 6 hour. But disabled as it was conflicting with inital setup for the first time.
-
-## Contributors Welcomed!
-
-Discord Link: https://discord.gg/BeYVswBC
-If you need any help with installation, configuration or contribute, please join the discord.
+💬 Need Help?
 
 Disclaimer: I am not responsible for any broken code or loss of your data or any other issue. I am doing this as my fun project so treat it accordingly. Though I am happy to help setup this project for you, always have your backup. 
 
