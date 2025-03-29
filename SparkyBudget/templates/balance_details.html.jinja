@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Details</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">
+</head>
+<body>
+    <table id="balanceTable" border="1">
+        <thead>
+            <tr>
+                <th>Account Type</th>
+				<th>Bank</th>                
+                <th>Account Name</th>                
+                <th>Last Refreshed</th>
+                <th>Balance</th>
+                <th>Available Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for balance_details_data in bank_account_name_balance_details %}
+            <tr>
+                <td class="editable-account-type" data-account-key="{{ balance_details_data[0] }}">{{ balance_details_data[1] }}</td> <!-- AccountType -->
+				<td>{{ balance_details_data[2] }}</td> <!-- OrganizationName -->
+                
+                <td class="editable-display-name" data-account-key="{{ balance_details_data[0] }}">{{ balance_details_data[3] or '' }}</td> <!-- DisplayAccountName (using AccountName) -->                
+                <td>{{ balance_details_data[4].strftime("%B ") }}{{ balance_details_data[4].day }}, {{ balance_details_data[4].year }}</td> <!-- BalanceDate -->
+                <td>{{ balance_details_data[5] | tocurrency_whole }}</td> <!-- Balance -->
+                <td>{{ balance_details_data[6] | tocurrency_whole }}</td> <!-- AvailableBalance -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
+    <script src="{{ url_for('static', filename='js/balance_details.js') }}"></script>
+</body>
+</html>

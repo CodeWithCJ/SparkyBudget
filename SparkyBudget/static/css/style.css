@@ -1,0 +1,861 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #282c35;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+h1 {
+    color: #61dafb;
+}
+
+h2 {
+    color: #61dafb;
+    text-align: center;
+}
+
+.center-content {
+    text-align: center;
+    width: 98%;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #61dafb;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #61dafb;
+    color: #282c35;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 20px auto;
+}
+
+select {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+#monthButtons button.active {
+    /* Add your desired background color here */
+    background-color: #61dafb;
+    /* Add your desired text color here */
+    color: #282c35;
+}
+
+a.analyze-link {
+    /* Set the color to match the header */
+    color: #61dafb;
+    /* Set the font size to match the header */
+    font-size: 2.2em;
+    /* Remove underline */
+    text-decoration: none;
+}
+
+a.analyze-link:hover {
+    /* Set the color for the hover effect */
+    color: #61dafb;
+    /* Set the font size to match the header */
+    font-size: 2.2em;
+
+}
+
+
+#spinner {
+    /* Initially hide the spinner */
+    display: none;
+    /* Adjust the width if needed */
+    width: 25px;
+    /* Adjust the height if needed */
+    height: 25px;
+}
+
+/* Add this style for the hyperlink in the Spent column */
+#transactionTable a {
+    /* White font color for the hyperlink */
+    color: #fff;
+
+}
+
+.child-row {
+    display: none;
+}
+
+.hidden-balance-details {
+    display: none;
+}
+
+#balanceDetailsTableToggleButton {
+    background-color: #282c35;
+    color: #61dafb;
+    font-size: 0.75em;
+}
+
+.invalid-date {
+    border: 1px solid red;
+}
+
+#addBudgetForm.hide {
+    display: none;
+}
+
+.select2-container--default .select2-results__option {
+    background-color: black;
+    /* Set the text color to white for better visibility */
+    color: white;
+}
+
+.active {
+    background-color: #336699;
+    color: #ffffff;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Adjust the value as needed */
+    padding-bottom: 50px;
+}
+
+.category-bar {
+    width: 95%;
+    margin-bottom: 1px;
+    position: relative;
+}
+
+.top-content {
+    display: flex;
+    /* Align items vertically centered */
+    align-items: center;
+    /* Add space between left and right content */
+    justify-content: space-between;
+    margin-left: 0;
+    /* Adjust the width as needed */
+    width: 80%;
+}
+
+.subcategory-bar {
+    height: 10px;
+    border-radius: 5px;
+
+}
+
+.left-content {
+    /* Align items to center vertically */
+    align-items: center;
+    left: 10px;
+    font-size: 15px;
+    /* Adjust margin as needed */
+    margin-left: 0;
+    /* Add display flex for button alignment */
+    display: flex;
+}
+
+.right-content {
+
+    /* Add display flex for button alignment */
+    display: flex;
+
+}
+
+.delete-icon {
+    /* Adjust margin for spacing between button and text */
+    margin-right: 10px;
+}
+
+
+.input-group-text {
+    /* Set input group background color to a dark shade */
+    background-color: #333;
+    /* Set input group text color to white */
+    color: #fff;
+    /* Add a border with a slightly lighter color */
+    border: 1px solid #555;
+}
+
+#date-range {
+    width: 200px;
+    /* Set input background color to a slightly lighter shade */
+    background-color: #444;
+    /* Set input text color to white */
+    color: #fff;
+    /* Add a border with a slightly lighter color */
+    border: 1px solid #555;
+}
+
+#selected-dates {
+    margin-top: 20px;
+    /* Set text color to white */
+    color: #fff;
+}
+
+/* Custom styles for DateRangePicker */
+.daterangepicker {
+    /* Set calendar background color */
+    background-color: #333 !important;
+    /* Set calendar text color */
+    color: #fff !important;
+}
+
+.daterangepicker th {
+    /* Set header background color */
+    background-color: #444 !important;
+    /* Set header text color */
+    color: #fff !important;
+}
+
+.daterangepicker th.available:hover,
+.daterangepicker th.available.active {
+    /* Set hover/active header background color */
+    background-color: #555 !important;
+    /* Set hover/active header text color */
+    color: #fff !important;
+}
+
+.daterangepicker td,
+.daterangepicker th {
+    /* Set border color for days */
+    border-color: #555 !important;
+}
+
+.daterangepicker .calendar-time,
+.daterangepicker .calendar-table,
+.daterangepicker .calendar-time select {
+    /* Set timepicker background color */
+    background-color: #444 !important;
+    /* Set timepicker text color */
+    color: #fff !important;
+}
+
+.daterangepicker .calendar-time select {
+    /* Set timepicker border color */
+    border: 1px solid #555 !important;
+}
+
+
+
+.daterangepicker .ranges li.active {
+    /* Set active range background color */
+    background-color: #555 !important;
+    /* Set active range text color */
+    color: #fff !important;
+}
+
+.daterangepicker .ranges li:hover {
+    /* Set hover range background color to light blue */
+    background-color: #3498db !important;
+    /* Set hover range text color to white */
+    color: #fff !important;
+}
+
+
+#balanceSummaryTable {
+    max-width: 500px;
+}
+
+
+
+
+
+#dropdown-container {
+    margin-top: 1vw;
+    /* Adjust the margin as needed */
+    margin-right: 12vw;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 10px solid #1d1d1d;
+    /* Change to your desired dark color */
+    background-color: #333;
+    /* Optional: Set text color to white for better visibility */
+    color: #fff;
+    /* Optional: Set a high z-index value to make sure it's on top */
+    z-index: 1000;
+}
+
+
+
+/* Default behavior for larger screens (header at the top) */
+@media (min-width: 769px) {
+    .header-container {
+        position: relative; /* or static, depending on your layout */
+    }
+}
+
+/* Mobile devices (header at the bottom) */
+@media (max-width: 768px) {
+    .header-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%; /* Ensure it spans the full width */
+        border-bottom: none; /* Optional: Remove the bottom border since it's at the bottom */
+        border-top: 10px solid #1d1d1d; /* Optional: Add a top border for consistency */
+    }
+
+    /* Add padding to the bottom of the body or main content to prevent overlap */
+    body {
+        padding-bottom: 50px; /* Adjust based on the height of your header (40px + 10px border) */
+    }
+}
+
+
+/* Optional: Add some margin to the logout button */
+.logout-button {
+    margin-right: 10px;
+}
+
+.content {
+    height: calc(100% - 50px);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.camera-icon:hover {
+    cursor: pointer;
+}
+
+
+.balance-summary-container {
+    flex: 1;
+    background-color: #1d1d1d;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.main-content {
+    flex: 4;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Updated background color */
+    background-color: #282c35;
+    /* Add this property for vertical scrollbar */
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Media Query for mobile devices */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+
+
+    .balance-summary-container,
+    .main-content {
+        flex: none;
+        width: 100%;
+    }
+}
+
+.month-year-picker-container {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.month-year-picker-container .year-month-picker.hide {
+    display: none;
+}
+
+.month-year-picker-container .year-month-picker {
+    display: block;
+    position: absolute;
+    background-color: black;
+    right: 0px;
+    width: 200px;
+    padding: 4px;
+    z-index: 100;
+}
+
+.month-year-picker-container .year-month-picker .year-picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.month-year-picker-container .year-month-picker .month-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: auto;
+}
+
+
+
+.chart-container canvas {
+    width: 100% !important;
+    max-width: 200px !important; /* Ensure it's a square */
+    height: auto !important;
+    aspect-ratio: 1 / 1; /* Forces a square shape */
+}
+
+
+.chart-total {
+    text-align: center;
+    color: #d6dadf;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+/* Wrapper for side-by-side layout */
+.charts-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between the charts */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    margin-top: 20px;
+}
+
+/* Adjust chart-container for side-by-side display */
+.charts-wrapper .chart-container {
+    flex: 1;
+    max-width: 240px;
+    max-width: 240px;
+    margin: 0; /* Remove auto margins to allow flex alignment */
+}
+
+
+.chartjs-legend ul {
+    font-size: 8px !important;  /* Reduce legend text size */
+    text-align: center;
+    line-height: 1.2; /* Reduce spacing */
+}
+
+.chartjs-legend li {
+    margin: 0 !important;  /* Remove extra spacing */
+    padding: 2px !important;
+}
+
+@media (max-width: 768px) {
+    .chartjs-legend ul {
+        font-size: 6px !important;  /* Smaller on mobile */
+    }
+}
+
+
+
+
+
+.chart-container {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    padding: 15px;
+    background-color: #1A2634;   /*#212121*/
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* For positioning the glow */
+}
+
+
+
+.glow-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;     
+}
+
+/* Thicker glowing border line, minimal outer glow */
+.glow-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -15px; /* Keep the offset to position glow outside */
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border: 4px solid transparent; /* Increased border width for a thicker glow line */
+    border-radius: 20px; /* Matches chart-container's border-radius + offset */
+    border-image: linear-gradient(45deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
+    filter: blur(1px); /* Minimal blur to keep the glow sharp */
+    box-shadow: 
+        0 -1px 5px 0 rgb(186, 66, 255), 
+        0 1px 5px 0 rgb(0, 225, 255); /* Minimal shadow to avoid thickening the outer glow */
+    animation: spinningGradient 1.5s linear infinite;
+    z-index: -2;
+}
+
+/* Animate the gradient to simulate a spinning effect */
+@keyframes spinningGradient {
+    0% {
+        border-image: linear-gradient(45deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
+    }
+    25% {
+        border-image: linear-gradient(135deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
+    }
+    50% {
+        border-image: linear-gradient(225deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
+    }
+    75% {
+        border-image: linear-gradient(315deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
+    }
+    100% {
+        border-image: linear-gradient(405deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
+    }
+}
+
+/* Ensure canvas is centered */
+.chart-container canvas {
+    width: 100% !important;
+    max-width: 200px !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+}
+
+
+@media (max-width: 768px) {
+    .charts-wrapper {
+        flex-direction: column;
+        align-items: center; /* Center the charts horizontally */
+        justify-content: center; /* Center them vertically */
+        min-height: 80vh; /* Ensures full height for proper centering */
+        width: 80%;
+        margin: 10%;
+        
+    }
+
+    .chart-container {
+        max-width: 110px; /* Same as old settings */
+        padding: 1px; /* Reduced from 2px to maximize space for the pie chart */
+        min-height: 180px; /* Already set to increase rectangle height */
+    }
+
+   
+
+    .chart-total {
+        font-size: 0.85rem; /* Slightly smaller than 0.9rem for better proportion */
+    }
+
+    .chartjs-legend ul {
+        font-size: 6px !important; /* Already correct */
+    }
+
+    .glow-wrapper {
+        position: absolute; /* Ensure glow-wrapper matches chart-container dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    .glow-wrapper::before {
+        content: '';
+        position: absolute;
+        top: -3px; /* Already adjusted to bring glow closer to the rectangle */
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        border: 2px solid transparent;
+        border-radius: 10px; /* Already adjusted to match the offset */
+        filter: blur(0.5px);
+        box-shadow: 
+            0 -0.5px 3px 0 rgb(186, 66, 255), 
+            0 0.5px 3px 0 rgb(0, 225, 255);
+        animation: spinningGradient 1.7s linear infinite;
+        z-index: -1;
+    }
+}
+
+
+
+
+
+/* Existing button styles */
+.dailyBalance_account-type-btn.selected-btn {
+    background-color: #77ace0 !important;
+    color: black !important;
+}
+
+.dailyBalance_account-type-btn.default-btn {
+   
+    color: white !important;
+}
+
+
+/* Chart container */
+.daily-balance-container {
+    position: relative;
+    padding: 20px;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+/* Chart wrapper */
+.chart-wrap {
+    --radius: 20px;
+    --perspective: 800px;
+    position: relative;
+    border-radius: var(--radius);
+    perspective: var(--perspective);
+    transform-style: preserve-3d;
+}
+
+/* Subtle shadow beneath the chart */
+.chart-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        0 60px 140px 30px rgba(0, 0, 0, 0.8),
+        0 -60px 120px rgba(102, 106, 135, 0.4);
+    filter: blur(5px);
+    z-index: -1;
+}
+
+/* Glow effects */
+.glow {
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    inset: 0; /* Align the glow directly with the chart's border */
+    z-index: 3;
+    overflow: hidden; /* Prevent the glow from spilling outside */
+}
+
+.glow::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 100%; /* Match the chart's dimensions */
+    height: 100%;
+    background: conic-gradient(
+        #b52f2f 0%,
+        transparent 20%,
+        #cf8030 50%,
+        black 60%,
+        transparent 80%,
+        #b52f2f 100%
+    );
+    filter: blur(5px); /* Tighten the blur to keep the glow close to the border */
+    opacity: 0.5; /* Adjust opacity for subtlety */
+    transition: transform 1.5s ease;
+}
+
+/* Hover effect for glow */
+.chart-wrap:hover .glow::before {
+    transform: translate(-50%, -50%) rotate(410deg);
+}
+
+/* Chart card */
+.chart-card {
+    position: relative;
+    padding: 20px;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, #201c29 40%, #37374b 100%);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.7), inset 0 0 3px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s cubic-bezier(0.03, 1, 0.5, 1);
+    transform-style: preserve-3d;
+    z-index: 2;
+}
+
+/* Header */
+header {
+    line-height: 20px;
+    margin-bottom: 10px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    
+}
+
+header .title {
+    font-size: 12px;
+}
+
+header .views {
+    font-size: 20px;
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+header .icon {
+    border-radius: 50%;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: -6px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 1px 2px rgba(250, 187, 15, 0.7), 0 -3px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+header .icon svg {
+    animation: heart 1.5s linear infinite;
+}
+
+@keyframes heart {
+    5% { transform: scale(0.8); }
+    20% { transform: scale(1.2); }
+    40% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    70% { transform: scale(0.8); }
+    100% { transform: scale(1); }
+}
+
+/* Chart */
+.daily-balance-chart {
+    width: 100%;
+    margin: 20px auto;
+    height: 60%;
+}
+
+#dailyBalance_lineChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+
+/* Container for the chart with border radius and positioning */
+.chart-wrap {
+    --radius: 20px;
+    --perspective: 800px;
+    position: relative;
+    border-radius: var(--radius);
+    perspective: var(--perspective);
+    transform-style: preserve-3d;
+    padding: 5px; /* Add space for the moving border */
+    overflow: hidden; /* Prevent the border from spilling out */
+}
+
+/* Glowing gradient border */
+.chart-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ffd867, #ec526b, #ffd867, #ec526b);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: gradientBorder 5s linear infinite;
+}
+
+/* Keyframes to animate the gradient along the border */
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Existing glow effect */
+.glow {
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+}
+
+.glow::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(
+        #b52f2f 0%,
+        transparent 20%,
+        #cf8030 50%,
+        black 60%,
+        transparent 80%,
+        #b52f2f 100%
+    );
+    filter: blur(5px);
+    opacity: 0.5;
+    transition: transform 1.5s ease;
+}
+
+/* Hover effect for the glow */
+.chart-wrap:hover .glow::before {
+    transform: translate(-50%, -50%) rotate(410deg);
+}
+
+
+/* Ensure the chart container takes full width on mobile */
+@media (max-width: 768px) {
+    .daily-balance-container {
+        max-width: 100% !important; /* Full width on small screens */
+        padding: 0.25%; /* Reduce padding for better fit */
+    }
+
+    .daily-balance-chart {
+        width: 100% !important;
+        height: 250% !important; /* Increase height for better visibility */
+    }
+
+    #dailyBalance_lineChart {
+        width: 100% !important;
+        height: 250% !important;
+    }
+}
+
+/* For larger screens, maintain proportions */
+@media (min-width: 769px) {
+    .daily-balance-chart {
+        width: 90%;
+        height: 350px;
+    }
+}
+

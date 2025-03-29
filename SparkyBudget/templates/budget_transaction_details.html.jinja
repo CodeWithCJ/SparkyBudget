@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/budget_transaction_details.css') }}">
+
+<!-- Desktop Table Container -->
+<div class="budget-transaction-container">
+    <table border="1" class="budget-transaction-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Account</th>
+                <th>Description</th>
+                <th>Payee</th>
+                <th>Amount</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <div class="transaction-details-container">
+                {% for detail in transaction_details %}
+                <tr>
+                    <td>{{ detail[1] }}</td>
+                    <td>{{ detail[2] }}</td>
+                    <td>{{ detail[3] }}</td>
+                    <td>{{ detail[4] }}</td>
+                    <td>{{ detail[5] | tocurrency }}</td>
+                    <td>
+                        <button class="reCategorizeButton" onclick="showSubcategoryDropdown(this)">Re-categorize</button>
+                        <label for="subcategorySelect" class="subcategoryLabel" style="display: none;">Change Category:</label>
+                        <select id="subcategorySelect" class="select2" required style="display: none;">
+                            <option value="" selected disabled>Select or type to search</option>
+                        </select>
+                        <button onclick="updateSubcategory('{{ detail[0] }}', event)" class="updateSubcategoryButton" style="display: none;">Submit</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </div>
+        </tbody>
+    </table>
+</div>
+
+<!-- Mobile View (unchanged as requested) -->
+<div class="budget-transaction-mobile-container">
+    {% for detail in transaction_details %}
+    <div class="budget_transaction_details_card">
+        <div class="budget_transaction_details_header">
+            <div class="budget_transaction_details_info">
+                <span class="budget_transaction_details_payee">{{ detail[4] }}</span>
+                <span class="budget_transaction_details_date">{{ detail[1] }}</span>
+            </div>
+            <div class="budget_transaction_details_amount_container">
+                <span class="budget_transaction_details_amount">{{ detail[5] | tocurrency }}</span>
+                <span class="budget_transaction_details_status" onclick="budget_transaction_details_toggleDetails(this)">More ▼</span>
+            </div>
+        </div>
+        <div class="budget_transaction_details_body" style="display: none;">
+            <div class="budget_transaction_details_field">
+                <span class="budget_transaction_details_label">Account:</span>
+                <span>{{ detail[2] }}</span>
+            </div>
+            <div class="budget_transaction_details_field">
+                <span class="budget_transaction_details_label">Desc:</span>
+                <span>{{ detail[3] }}</span>
+            </div>
+            <div class="budget_transaction_details_field">
+                <button class="budget_transaction_details_reCategorizeButton" onclick="budget_transaction_details_showSubcategoryDropdown(this)">Re-categorize</button>
+                <label for="subcategorySelectMobile" class="budget_transaction_details_subcategoryLabel" style="display: none;">Change Category:</label>
+                <select id="subcategorySelectMobile" class="budget_transaction_details_select2" required style="display: none;">
+                    <option value="" selected disabled>Select or type to search</option>
+                </select>
+                <button onclick="budget_transaction_details_updateSubcategory('{{ detail[0] }}', event)" class="budget_transaction_details_updateSubcategoryButton" style="display: none;">Submit</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Include JavaScript -->
+<script src="{{ url_for('static', filename='js/budget_transaction_details.js') }}"></script>

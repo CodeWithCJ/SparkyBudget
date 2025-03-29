@@ -1,0 +1,11 @@
+services:
+  app:
+    container_name: sparkybudget
+    env_file:
+      - .env
+    image: codewithcj/sparkybudget:latest  # Use your Docker Hub username and image name
+    volumes:
+      - ./SparkyBudget.db:/SparkyBudget/SparkyBudget.db   
+    ports:
+      - 5050:5000  # Map port 5000 in the container to port 5050 on the host
+    restart: unless-stopped

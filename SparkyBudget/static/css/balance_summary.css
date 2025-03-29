@@ -1,0 +1,122 @@
+.balance-summary-list {
+    font-family: Arial, sans-serif;
+    color: #d6dadf;
+    background-color: #173F3F;
+    border-radius: 8px;
+}
+
+.account-type {
+    margin-bottom: 5px;
+}
+
+.account-type-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 10px;
+    cursor: pointer;
+    background-color: #1e4b4b;
+    border-radius: 4px;
+}
+
+/* Remove cursor: pointer for headers without children */
+.account-type-header:not([data-toggle="collapse"]) {
+    cursor: default;
+}
+
+.account-type-header:hover {
+    background-color: #255757;
+}
+
+.account-type-left {
+    display: flex;
+    align-items: center;
+}
+
+.expand-icon {
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.expand-placeholder {
+    width: 24px; /* Match the width of the expand-icon (14px font-size + 10px margin-right) */
+    display: inline-block;
+}
+
+.account-name {
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.account-type-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.balance {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.available-balance {
+    font-size: 12px;
+    color: #77ace0;
+    margin-top: 2px;
+}
+
+.collapse {
+    display: none;
+}
+
+.collapse.show {
+    display: block;
+}
+
+.account-sub-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #1a3c3c;
+    border-top: 1px solid #2a5a5a;
+}
+
+.account-sub-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.account-sub-item .account-name {
+    text-align: left;
+    font-size: 14px;
+}
+
+.account-sub-item .balance {
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.account-sub-item .available-balance {
+    font-size: 11px;
+    color: #77ace0;
+    margin-top: 2px;
+}
+
+
+/* Hide balance summary by default on mobile (screens smaller than 768px) */
+@media (max-width: 768px) {
+    .balance-summary-container {
+        display: none;
+    }
+}
+
+/* Ensure the balance summary is visible on larger screens by default */
+@media (min-width: 769px) {
+    .balance-summary-container {
+        display: block;
+    }
+}
+

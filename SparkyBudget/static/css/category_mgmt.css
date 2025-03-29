@@ -1,0 +1,181 @@
+/* --- General Body Styles --- */
+body {
+    background-color: #1b1e23;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+/* --- Base Table Styles --- */
+table.dataTable {
+    background-color: transparent;
+    color: #eee;
+    width: 100% !important;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    border: none !important;
+}
+
+/* --- Header Styles --- */
+table.dataTable thead th {
+    background-color: #3399cc;
+    color: #24292e; /* MODIFIED: Header font color to black */
+    font-weight: bold;
+    border: 1px solid #3399cc;
+    padding: 10px 15px;
+    text-align: left;
+}
+
+/* --- Row and Cell Styles --- */
+table.dataTable tbody tr,
+table.dataTable tbody td {
+    background-color: #173F3F;
+    color: #eee;
+    border: 1px solid #3399cc;
+    padding: 8px 15px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    text-align: left;
+}
+
+/* --- Input Field Styles --- */
+table.dataTable tbody td input[type="text"] {
+    background-color: #3c444f;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 2px 5px;
+    width: 95%;
+    box-sizing: border-box;
+}
+
+table.dataTable tbody td input[type="text"]:focus {
+    background-color: #444;
+    outline: none;
+}
+
+/* --- Checkbox Styles --- */
+table.dataTable tbody td input[type="checkbox"] {
+    accent-color: #3399cc;
+    transform: scale(0.8);
+}
+
+/* --- Pagination, Info, etc. --- */
+.dataTables_paginate .paginate_button,
+.dataTables_info,
+.dataTables_length label,
+.dataTables_filter label,
+.dataTables_processing,
+.dataTables_paginate span a,
+.dataTables_wrapper .dataTables_paginate .paginate_button,
+.dataTables_wrapper .dataTables_filter input {
+    color: #ffffff !important;
+    background-color: #444444 !important;
+}
+
+.containerCategoryManagement .dataTables_length select,
+.containerRuleManagement .dataTables_length select {
+    background-color: #444444 !important;
+    color: #fff !important;
+    border: 1px solid #555555 !important;
+    border-radius: 4px;
+    padding: 2px 5px;
+    cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    background-color: #555555 !important;
+}
+
+/* --- Delete Button Styles --- */
+#accountTypeTable .delete-btn,
+#categoryTable .delete-btn,
+#categoryRuleTable .delete-btn {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+}
+
+#accountTypeTable .delete-btn:hover,
+#categoryTable .delete-btn:hover,
+#categoryRuleTable .delete-btn:hover {
+    color: #cc0000;
+}
+
+/* --- Container and Table Widths --- */
+.containerAccountTypes,
+.containerCategoryManagement,
+.containerRuleManagement {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.containerAccountTypes .dataTables_wrapper,
+.containerCategoryManagement .dataTables_wrapper,
+.containerRuleManagement .dataTables_wrapper {
+    width: 100% !important;
+}
+
+#accountTypeTable,
+#categoryTable,
+#categoryRuleTable {
+    width: 100% !important;
+}
+
+/* --- Media Queries --- */
+@media (min-width: 768px) {
+    .containerAccountTypes,
+    .containerCategoryManagement,
+    .containerRuleManagement{
+        width: 40% !important;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .containerAccountTypes,
+    .containerCategoryManagement,
+    .containerRuleManagement{
+        width: 100% !important;
+    }
+}
+
+/* Style Datatables Dropdown */
+.dataTables_length select {
+    background-color: #3c444f !important; /* Target background */
+    color: #eee !important; /* Text color */
+    border: 1px solid #555 !important;
+    border-radius: 4px; /* Rounded */
+    padding: 6px !important; /* Adjust padding */
+    -moz-appearance: none; /* Optional: Normalize for Firefox */
+    appearance: none; /* Optional: Normalize for other browsers */
+}
+
+/* Style the options inside the dropdown */
+.dataTables_length select option {
+    background-color: #3c444f !important; /* Match the select background */
+    color: #eee !important; /* Match the select text color */
+}
+
+/* Optional: Hover effect for options (if supported) */
+.dataTables_length select option:hover {
+    background-color: #4a5261 !important; /* Slightly lighter shade for hover */
+    color: #fff !important;
+}
+
+/* Added: Focus style */
+.dataTables_length select:focus {
+    border-color: #3399cc !important; /* Border when dropdown is focused */
+    outline: none !important; /* Remove default */
+}
+
+/* Ensure the parent container doesn’t interfere */
+.dataTables_length {
+    background-color: transparent !important; /* Prevent any white background */
+}

@@ -1,0 +1,320 @@
+/* Change color for Select2 option being highlighted (mouseover) */
+.select2-results__option--highlighted[aria-selected] {
+    /* Darker background for highlighted item */
+    background-color: #555 !important;
+    color: #fff !important;
+}
+
+/* Adjust select2 dropdown to fit dark theme */
+.select2-container--default .select2-results>.select2-results__options {
+    background-color: #333;
+    color: #ddd;
+}
+
+/* Adjust the select2 search within dropdown input box to fit dark theme */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #333;
+    color: #ddd;
+    border-color: #444;
+}
+
+/* Adjust the border and text color of the select2 box itself */
+.select2-container--default .select2-selection--single {
+    border-color: #444;
+    color: #ddd;
+}
+
+/* Adjust the border and text color of the select2 dropdown */
+.select2-dropdown {
+    border-color: #444;
+    color: #ddd;
+}
+
+/* Adjust the text color of the select2 results */
+.select2-container--default .select2-results__option {
+    color: #ddd;
+}
+
+/* Your existing styles */
+body {
+    /* Dark background color */
+    background-color: #1b1e23;
+    /* Light text color */
+    color: #ffffff;
+}
+
+/* Adjust the background and text color of the table */
+table.dataTable {
+    /* Black background color for the table */
+    background-color: #000000;
+    /* Light text color for the table */
+    color: #ffffff;
+}
+
+/* Adjust the color of table headers */
+table.dataTable thead th {
+    /* Light text color for table headers */
+    color: #ffffff;
+}
+
+/* Adjust the color of table rows */
+table.dataTable tbody tr {
+    /* Black background color for all rows */
+    background-color: #000000;
+    /* Light text color for all rows */
+    color: #ffffff;
+}
+
+.custom-row-class {
+    /* Dark background color for highlighted rows */
+    background-color: #444444 !important;
+}
+
+table.dataTable tbody td:first-child {
+    /* Black background color for the first column */
+    background-color: #000000;
+    /* Light text color for the first column */
+    color: #ffffff;
+}
+
+/* Override the default DataTables stripe color */
+table.dataTable tbody tr.odd,
+table.dataTable tbody tr.odd:hover {
+    /* Darker background color for odd rows */
+    background-color: #555555 !important;
+}
+
+/* Adjust the color of DataTables pagination controls */
+.dataTables_paginate .paginate_button {
+    /* Light text color for pagination controls */
+    color: #ffffff !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    /* Light text color for pagination controls on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of other DataTables elements */
+.dataTables_info,
+.dataTables_length label,
+.dataTables_filter label,
+.dataTables_processing,
+.dataTables_paginate,
+.dataTables_paginate span a {
+    /* Light text color for other DataTables elements */
+    color: #ffffff !important;
+}
+
+.dataTables_paginate span .current {
+    /* Darker background color for the current page number */
+    background-color: #555555 !important;
+    /* Light text color for the current page number */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables length menu */
+.dataTables_length label select {
+    /* Light text color for length menu */
+    color: #ffffff !important;
+    /* Dark background color for length menu */
+    background-color: #444444 !important;
+}
+
+/* Adjust the color of DataTables pagination buttons */
+.dataTables_paginate .paginate_button {
+    /* Light text color for pagination buttons */
+    color: #ffffff !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    /* Light text color for pagination buttons on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables pagination controls at the bottom right */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    /* Light text color for pagination controls */
+    color: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    /* Light text color for pagination controls on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables previous button */
+.dataTables_wrapper .dataTables_paginate .previous {
+    /* Light text color for the Previous button */
+    color: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .previous:hover {
+    /* Light text color for the Previous button on hover */
+    color: #ffffff !important;
+}
+
+/* Adjust the color of DataTables search input */
+.dataTables_wrapper .dataTables_filter input {
+    /* Light text color for the search input */
+    color: #ffffff !important;
+    /* Dark background color for the search input */
+    background-color: #444444 !important;
+}
+
+/* Adjust the color of DataTables search input on focus */
+.dataTables_wrapper .dataTables_filter input:focus {
+    /* Light text color for the search input on focus */
+    color: #ffffff !important;
+    /* Darker background color for the search input on focus */
+    background-color: #555555 !important;
+}
+
+#balanceTable {
+    margin: 20px auto;
+}
+
+table.dataTable thead th.sorting,
+table.dataTable thead th.sorting_asc,
+table.dataTable thead th.sorting_desc,
+table.dataTable thead th.sorting_asc_disabled,
+table.dataTable thead th.sorting_desc_disabled {
+    /* Darker background color for the filtered column header */
+    background-color: #000000 !important;
+    /* Light text color for the filtered column header */
+    color: #ffffff !important;
+}
+
+table.dataTable tbody tr.even,
+table.dataTable tbody tr.even:hover,
+table.dataTable tbody tr.odd,
+table.dataTable tbody tr.odd:hover {
+    /* Set the background color as needed */
+    background-color: #000000 !important;
+}
+
+#balanceTable_wrapper {
+    margin: 20px auto;
+    /* Adjust the width as needed */
+    width: 80%;
+}
+
+table.dataTable tbody tr {
+    /* Set the background color as needed */
+    background-color: #000000 !important;
+}
+
+
+/* Adjust the color of table rows during hover */
+table.dataTable tbody tr:hover {
+    /* Set the hover background color as needed */
+    background-color: #333333 !important;
+}
+
+/* Add these styles to customize the Date Range Filter */
+.daterangepicker {
+    /* Black background color */
+    background-color: #000000 !important;
+    /* White text color */
+    color: #ffffff;
+}
+
+.daterangepicker .calendar-table {
+    color: #555555;
+}
+
+.daterangepicker .calendar-time {
+    /* Black background color for time selection */
+    background-color: #000000 !important;
+}
+
+.daterangepicker .daterangepicker_input {
+    /* Black background color for input */
+    background-color: #000000 !important;
+    /* White text color for input */
+    color: #ffffff !important;
+}
+
+.daterangepicker .daterangepicker_input input {
+    /* Border color for input */
+    border-color: #555555 !important;
+}
+
+.daterangepicker .ranges li.active {
+    /* Darker background color for active range */
+    background-color: #555555 !important;
+}
+
+.daterangepicker .ranges li:hover {
+    /* Dark background color for hover effect */
+    background-color: #444444 !important;
+}
+
+.daterangepicker .ranges li.active::before {
+    /* Border color for active range indicator */
+    border-bottom-color: #555555 !important;
+}
+
+.daterangepicker .applyBtn,
+.daterangepicker .cancelBtn {
+    /* Dark background color for buttons */
+    background-color: #555555 !important;
+    /* White text color for buttons */
+    color: #ffffff !important;
+}
+
+.daterangepicker .applyBtn:hover,
+.daterangepicker .cancelBtn:hover {
+    /* Darker background color for button hover effect */
+    background-color: #444444 !important;
+}
+
+table.dataTable tbody tr.filter-row td {
+    /* Black background color for the filtered column */
+    background-color: #000000 !important;
+    /* Light text color for the filtered column */
+    color: #ffffff !important;
+}
+
+.subcategory-select {
+    background-color: black;
+    /* Set the text color to white for better visibility */
+    color: white;
+}
+
+#bar_chart .c3-axis-x-label,
+#bar_chart .c3-axis-y-label,
+#bar_chart .c3-axis-x .tick text,
+#bar_chart .c3-axis-y .tick text {
+    fill: white !important;
+}
+
+#bar_chart .c3-tooltip {
+    background-color: darkgray;
+}
+
+#bar_chart .c3-tooltip tr {
+    /* Set the text color for better visibility on dark background */
+    color: white;
+}
+
+.c3-tooltip-container {
+    background-color: darkgray !important;
+    color: white !important;
+}
+
+.transaction_edit_filter {
+    display: flex;
+    align-items: center;
+}
+
+.spacer-label {
+    /* Adjust the padding as needed */
+    padding: 0 10px;
+}
+
+#transactionTable_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}

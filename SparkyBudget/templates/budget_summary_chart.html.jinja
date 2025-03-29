@@ -1,0 +1,44 @@
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/budget_summary.css') }}">
+</head>
+<div class="container">
+    {% for data in budget_summary_chart %}
+    <div class="subcategory-container"> <!-- New container for each subcategory -->
+        <div class="top-content">
+            <div class="left-content">
+                <i class="fas fa-trash delete-icon" onclick="deleteBudget('{{ data[1] }}')" style="color: #61DAFB;"></i>
+                <p href="#" onclick="showTransactionDetails(event,'{{ data[1] }}','{{ data[3] }}')" style="color: #61DAFB;">
+                    <img src="{{ url_for('static', filename='images/budget_icons/' + data[1] + '.png') }}" style="width:30px; height:30px; vertical-align:middle; margin-right: 8px;">
+                    {{ data[1] }}
+                </p>
+            </div>
+            <div class="right-content">
+                <p>
+                    <span id="budgetValue_{{ loop.index }}" onclick="editBudget(event, '{{ data[1] }}', {{ data[2] }})"
+                        style="text-decoration: underline;">
+                        {{ data[2] | tocurrency }}
+                    </span>
+                </p>
+            </div>
+        </div>
+        <div class="category-bar">
+            <div class="subcategory-bar" style="width: 100%; background: linear-gradient(to right,
+                    {% if data[2] == 0 and data[3] > 0 %}#ff8400 100%, #ff8400 100% 
+                    {% elif data[2] > 0 and data[3] == 0 %}#FFFFFF 100%, #FFFFFF 100% 
+                    {% elif data[2] == data[3] %}#FFD200 100%, #FFD200 100% 
+                    {% elif data[2] > 0 and data[3] > 0 and data[3] > data[2] %}#ff002f 100%, #ff002f 100% 
+                    {% elif data[2] > 0 and data[3] > 0 %}#7ED321 {{ (data[3] / data[2]) * 100 }}%, #FFD200 0%, #FFFFFF 0% 
+                    {% endif %}); text-align: left;">
+            </div>
+        </div>
+        <div class="bottom-content-wrapper">
+            <div class="bottom-left-content">
+                {{ data[3] | tocurrency }}
+            </div>
+            <div class="bottom-right-content">
+                {{ data[4] | tocurrency }}
+            </div>
+        </div>
+    </div> <!-- End of subcategory-container -->
+    {% endfor %}
+</div>
