@@ -3,3 +3,4 @@ flask_login==0.6.3
 Requests==2.32.3
 schedule==1.2.2
 python-dotenv==1.1.0
+gunicorn

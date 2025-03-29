@@ -54,7 +54,7 @@ instance/
 .webassets-cache
 
 # Ignore database and secrets
-**/*.db
+**/SparkyBudget.db
 containers/data/
 **/token.txt
 **/access_url.txt

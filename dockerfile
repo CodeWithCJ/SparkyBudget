@@ -1,18 +1,31 @@
-FROM python:3.10.13-slim-bookworm
-WORKDIR /app
+FROM python:3.13.2-slim-bookworm
 
-COPY LICENSE.txt SparkyBudget/requirements.txt SparkyBudget/*.py ./
-COPY SparkyBudget/templates ./templates
-COPY SparkyBudget/static ./static
-RUN pip install -r ./requirements.txt
+# Set the working directory inside the container
+WORKDIR /SparkyBudget
+
+# Copy requirements.txt into the container
+COPY requirements.txt ./requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r ./requirements.txt
+
+# Copy the entire SparkyBudget folder into the container
+COPY SparkyBudget/ ./
+
+# Install system dependencies and configure locales
 RUN apt-get update && \
     apt-get install -y --no-install-recommends locales && \
     apt-get -y autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
-ENV FLASK_ENV production
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
 
+# Set environment variables
+ENV FLASK_ENV=production
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+
+# Expose the Flask app port
 EXPOSE 5000
-CMD ["gunicorn", "-b", ":5000", "app:app"]
+
+# Command to run the application
+CMD ["gunicorn", "-b", ":5000", "--timeout", "120", "SparkyBudget:app"]
