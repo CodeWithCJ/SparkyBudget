@@ -3,14 +3,6 @@ SparkyBudget
 ![image](https://github.com/user-attachments/assets/05cd8d45-2d55-4520-abee-cc2eda49557a)
 
 
-
-![image](https://github.com/user-attachments/assets/291dd911-466c-4bc1-8524-d10c6fba9425)
-
-
-![image](https://github.com/user-attachments/assets/647119f4-7902-46ec-9be2-3821616ad255)
-
-
-
 **How to run?**
 
 	mkdir sparkybudget
