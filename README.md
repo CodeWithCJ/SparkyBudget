@@ -34,7 +34,7 @@ SparkyBudget
 ``Token can be used only once. If access_url.txt is not created, you will need to regenerate new token from SimpleFin``
 
 
-Discord Link: https://discord.gg/BeYVswBC
+Discord Link: https://discord.gg/XRubfPQa
 If you need any help with installation, configuration or contribute, please join the discord.
 
 Disclaimer: I am not responsible for any broken code or loss of your data or any other issue. I am doing this as my fun project so treat it accordingly. Though I am happy to help setup this project for you, always have your backup. 
