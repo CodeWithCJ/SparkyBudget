@@ -71,47 +71,106 @@
     </div>
     <div class="dt-buttons"> </div>
     <!-- DataTable for displaying transaction details -->
-    <table id="transactionTable" class="display" style="width: 100%">
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Month</th>
-                <th>Formatted Month</th>
-                <th>Transaction Date</th>
-                <th>Description</th>
-                <th>Payee</th>
-                <th>Subcategory</th> <!-- New column for dropdown -->
-                <th>Transaction Key</th>
-                <th>Transaction Amount</th>
-                <th>Action</th>
-				<th>Split</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in transaction_data %}
-            <tr>
-                <td>{{ transaction[0] }}</td>
-                <td>{{ transaction[1] }}</td>
-                <td>{{ transaction[2] }}</td>
-                <td>{{ transaction[3] }}</td>
-                <td>{{ transaction[4] }}</td>
-                <td>{{ transaction[5] }}</td>
-                <td>{{ transaction[6] }}</td>
-                <td>{{ transaction[7] }}</td>
-                <td>{{ transaction[8] | tocurrency }}</td>
-                <td>
-                    <div class="subcategory-cell">
-                        <button class="re-categorize-button">Re-categorize</button>
-                        <div class="subcategory-dropdown" style="display: none;"></div>
-                    </div>
-                </td>
-				<td>
-					<button class="split-button">Split</button> <!-- Split Button -->
-				</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    
+    <!-- Desktop Table Container -->
+    <div class="transaction-table-container">
+        <table id="transactionTable" class="transaction-table" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Formatted Month</th>
+                    <th>Transaction Date</th>
+                    <th>Description</th>
+                    <th>Payee</th>
+                    <th>Subcategory</th>
+                    <th>Transaction Key</th>
+                    <th>Transaction Amount</th>
+                    <th>Action</th>
+                    <th>Split</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transaction_data %}
+                <tr>
+                    <td>{{ transaction[0] }}</td>
+                    <td>{{ transaction[1] }}</td>
+                    <td>{{ transaction[2] }}</td>
+                    <td>{{ transaction[3] }}</td>
+                    <td>{{ transaction[4] }}</td>
+                    <td>{{ transaction[5] }}</td>
+                    <td>{{ transaction[6] }}</td>
+                    <td class="transaction-key" style="display: none;">{{ transaction[7] }}</td>
+                    <td>{{ transaction[8] | tocurrency }}</td>
+                    <td>
+                        <div class="subcategory-cell">
+                            <button class="re-categorize-button">Re-categorize</button>
+                            <div class="subcategory-dropdown" style="display: none;"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="split-button">Split</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile View -->
+    <div class="transaction-table-mobile-container">
+        {% for transaction in transaction_data %}
+        <div class="transaction_details_card">
+            <div class="transaction_details_header">
+                <div class="transaction_details_info">
+                    <span class="transaction_details_payee">{{ transaction[5] }}</span>
+                    <span class="transaction_details_date">{{ transaction[3] }}</span>
+                </div>
+                <div class="transaction_details_amount_container">
+                    <span class="transaction_details_amount">{{ transaction[8] | tocurrency }}</span>
+                    <span class="transaction_details_status" onclick="transaction_details_toggleDetails(this)">More ▼</span>
+                </div>
+            </div>
+            <div class="transaction_details_body" style="display: none;">
+                <div class="transaction_details_field">
+                    <span class="transaction_details_label">Transaction Date:</span>
+                    <span>{{ transaction[3] }}</span>
+                </div>
+                <div class="transaction_details_field">
+                    <span class="transaction_details_label">Description:</span>
+                    <span>{{ transaction[4] }}</span>
+                </div>
+                <div class="transaction_details_field">
+                    <span class="transaction_details_label">Payee:</span>
+                    <span>{{ transaction[5] }}</span>
+                </div>
+                <div class="transaction_details_field">
+                    <span class="transaction_details_label">Subcategory:</span>
+                    <span>{{ transaction[6] }}</span>
+                </div>
+                <div class="transaction_details_field">
+                    <span class="transaction_details_label">Amount:</span>
+                    <span>{{ transaction[8] | tocurrency }}</span>
+                </div>
+                <!-- Hidden Transaction Key for internal use -->
+                <div class="transaction_details_field transaction-key" style="display: none;">
+                    <span class="transaction_details_label">Transaction Key:</span>
+                    <span>{{ transaction[7] }}</span>
+                </div>
+                <div class="transaction_details_field">
+                    <button class="transaction_details_reCategorizeButton re-categorize-button">Re-categorize</button>
+                    <div class="transaction_details_subcategoryDropdown subcategory-dropdown" style="display: none;"></div>
+                </div>
+                <div class="transaction_details_field">
+                    <button class="transaction_details_splitButton split-button">Split</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
     <!-- Include DataTables initialization script with export options and date range filter -->
     <script>
         // merge any existing appState with the new data. since appState can be null, start with empty object as the base

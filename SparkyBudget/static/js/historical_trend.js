@@ -2,12 +2,21 @@ var table; // Define the table variable globally
 var selectedOption = "Subcategory";
 
 
+// Function to toggle details in mobile view
+function transaction_details_toggleDetails(element) {
+    const body = element.parentElement.parentElement.nextElementSibling;
+    if (body.style.display === "none") {
+        body.style.display = "block";
+        element.textContent = "Less ▲";
+    } else {
+        body.style.display = "none";
+        element.textContent = "More ▼";
+    }
+}
 
-
+// Update the DataTable initialization to handle both desktop and mobile views
 $(document).ready(function () {
     table = $('#transactionTable').DataTable({
-        // ... (your existing DataTable configuration)
-
         "orderClasses": false,
         "pageLength": 15,
         "order": [],
@@ -16,7 +25,7 @@ $(document).ready(function () {
             'csv', 'excel', 'pdf'
         ],
         "columnDefs": [
-            { "targets": [0, 1, 2, 7], "visible": false }
+            { "targets": [0, 1, 2, 7], "visible": false } // Hide Year, Month, Formatted Month, Transaction Key
         ],
         "stripeClasses": [],
         "createdRow": function (row, data, index) {
@@ -53,8 +62,7 @@ $(document).ready(function () {
                                 }),
                                 placeholder: 'Select a subcategory',
                                 allowClear: true,
-                                width: '200px'// Set the width to a specific value (e.g., 200 pixels)
-
+                                width: '200px'
                             });
 
                             subcategorySelect.on('select2:open', function (e) {
@@ -63,16 +71,14 @@ $(document).ready(function () {
 
                             // Add custom styles to the head of the document
                             var customStyles = `
-									.dark-theme {
-										background-color: #333 !important;
-										color: #fff !important;
-									}
-
-									.dark-theme .select2-results__option {
-										color: #fff !important;
-									}
-								`;
-
+                                .dark-theme {
+                                    background-color: #333 !important;
+                                    color: #fff !important;
+                                }
+                                .dark-theme .select2-results__option {
+                                    color: #fff !important;
+                                }
+                            `;
                             $('head').append('<style>' + customStyles + '</style>');
 
                             // Add change event listener to the Select2 dropdown
@@ -91,11 +97,9 @@ $(document).ready(function () {
                                     data: {
                                         transactionId: transactionId,
                                         updatedSubcategory: updatedSubcategory
-                                        // Add any other necessary data for the update
                                     },
                                     success: function (response) {
                                         console.log('Subcategory updated successfully:', response);
-
                                     },
                                     error: function (error) {
                                         console.error('Error updating subcategory:', error);
@@ -112,7 +116,6 @@ $(document).ready(function () {
                                 });
                             });
                         },
-
                         error: function (error) {
                             console.error('Error loading subcategories:', error);
                         }
@@ -121,42 +124,151 @@ $(document).ready(function () {
             });
         }
     });
-    
-    // TODO: this guy breaks excel export as there's no header columns. Do we really need this?
-    // // Add individual column filters
-    // $('#transactionTable thead th').each(function (index) {
-    //     var title = $(this).text();
 
-    //     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-    // });
+    // Event listener for Re-categorize button in mobile view
+    $('.transaction-table-mobile-container').on('click', '.re-categorize-button', function () {
+        var card = $(this).closest('.transaction_details_card');
+        var subcategoryDropdown = card.find('.subcategory-dropdown');
+        subcategoryDropdown.toggle();
+        $(this).hide();
 
-    // Apply the individual column filters
-    table.columns().every(function () {
-        var that = this;
+        if (subcategoryDropdown.is(':visible')) {
+            $.ajax({
+                url: '/getDistinctSubcategories',
+                method: 'GET',
+                success: function (response) {
+                    subcategoryDropdown.html('<select class="subcategory-select"></select>');
+                    var subcategorySelect = subcategoryDropdown.find('.subcategory-select');
+                    subcategorySelect.select2({
+                        data: response.map(function (subcategory) {
+                            return { id: subcategory, text: subcategory };
+                        }),
+                        placeholder: 'Select a subcategory',
+                        allowClear: true,
+                        width: '200px'
+                    });
 
-        // Check if the input is not focused to prevent sorting
-        var isInputFocused = false;
+                    subcategorySelect.on('select2:select', function (e) {
+                        var updatedSubcategory = e.params.data.text;
+                        var transactionId = card.find('.transaction-key span:last').text();
 
-        $('input', this.header())
-            .on('focus', function () {
-                isInputFocused = true;
-            })
-            .on('blur', function () {
-                isInputFocused = false;
-            })
-            .on('keyup change', function (e) {
-                // Prevent sorting when the input field is focused
-                if (isInputFocused && e.type === 'keyup' && e.key !== 'Enter') {
-                    return;
-                }
-
-                if (that.search() !== this.value) {
-                    that
-                        .search(this.value)
-                        .draw();
+                        $.ajax({
+                            url: '/updateSubcategory',
+                            method: 'POST',
+                            data: {
+                                transactionId: transactionId,
+                                updatedSubcategory: updatedSubcategory
+                            },
+                            success: function (response) {
+                                console.log('Subcategory updated successfully:', response);
+                            },
+                            error: function (error) {
+                                console.error('Error updating subcategory:', error);
+                            }
+                        });
+                    });
+                },
+                error: function (error) {
+                    console.error('Error loading subcategories:', error);
                 }
             });
+        }
     });
+
+    // Event listener for Split button in mobile view
+    $('.transaction-table-mobile-container').on('click', '.split-button', function () {
+        var card = $(this).closest('.transaction_details_card');
+        var transactionKey = card.find('.transaction-key span:last').text();
+        var transactionAmount = parseFloat(card.find('.transaction_details_field:contains("Amount") span:last').text().replace(/[^0-9.-]+/g, ""));
+
+        var splitAmount = prompt("Enter the amount to split:");
+        splitAmount = parseFloat(splitAmount);
+
+        if (isNaN(splitAmount) || splitAmount <= 0 || Math.abs(splitAmount) >= Math.abs(transactionAmount)) {
+            alert("Invalid amount! It should be a number between 0 and " + Math.abs(transactionAmount));
+            return;
+        }
+
+        if (transactionAmount < 0) {
+            splitAmount = -Math.abs(splitAmount);
+        }
+
+        $.ajax({
+            url: '/getDistinctSubcategories',
+            method: 'GET',
+            success: function (response) {
+                var subcategoryDropdown = $('<div></div>');
+                subcategoryDropdown.html('<select class="subcategory-select"></select>');
+                var subcategorySelect = subcategoryDropdown.find('.subcategory-select');
+
+                subcategorySelect.select2({
+                    data: response.map(function (subcategory) {
+                        return { id: subcategory, text: subcategory };
+                    }),
+                    placeholder: 'Select a subcategory',
+                    allowClear: true,
+                    width: '200px'
+                });
+
+                var subcategoryDialog = $('<div></div>').append(subcategoryDropdown);
+                subcategoryDialog.dialog({
+                    modal: true,
+                    title: "Select Subcategory",
+                    buttons: {
+                        "Submit": function () {
+                            var selectedSubcategory = subcategorySelect.val();
+                            if (!selectedSubcategory) {
+                                alert("Please select a subcategory!");
+                                return;
+                            }
+
+                            $.ajax({
+                                url: '/splitTransaction',
+                                method: 'POST',
+                                data: {
+                                    transactionKey: transactionKey,
+                                    splitAmount: splitAmount,
+                                    newSubcategory: selectedSubcategory
+                                },
+                                success: function (response) {
+                                    alert("Transaction split successfully!");
+                                    location.reload();
+                                },
+                                error: function (error) {
+                                    console.error("Error splitting transaction:", error.responseJSON.error);
+                                    alert("Failed to split transaction!" + error.responseJSON.error);
+                                }
+                            });
+
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    open: function () {
+                        setTimeout(function () {
+                            subcategorySelect.select2('open');
+                            subcategorySelect.focus();
+                        }, 500);
+                    },
+                    close: function () {
+                        subcategorySelect.select2('destroy');
+                    }
+                });
+            },
+            error: function (error) {
+                console.error("Error fetching subcategories:", error);
+                alert("Failed to load subcategories!");
+            }
+        });
+    });
+});
+
+$(document).ready(function () {
+    
+    
+    
 
 
 

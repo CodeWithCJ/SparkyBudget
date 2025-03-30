@@ -43,173 +43,6 @@ body {
     color: #ffffff;
 }
 
-/* Adjust the background and text color of the table */
-table.dataTable {
-    /* Black background color for the table */
-    background-color: #000000;
-    /* Light text color for the table */
-    color: #ffffff;
-}
-
-/* Adjust the color of table headers */
-table.dataTable thead th {
-    /* Light text color for table headers */
-    color: #ffffff;
-}
-
-/* Adjust the color of table rows */
-table.dataTable tbody tr {
-    /* Black background color for all rows */
-    background-color: #000000;
-    /* Light text color for all rows */
-    color: #ffffff;
-}
-
-.custom-row-class {
-    /* Dark background color for highlighted rows */
-    background-color: #444444 !important;
-}
-
-table.dataTable tbody td:first-child {
-    /* Black background color for the first column */
-    background-color: #000000;
-    /* Light text color for the first column */
-    color: #ffffff;
-}
-
-/* Override the default DataTables stripe color */
-table.dataTable tbody tr.odd,
-table.dataTable tbody tr.odd:hover {
-    /* Darker background color for odd rows */
-    background-color: #555555 !important;
-}
-
-/* Adjust the color of DataTables pagination controls */
-.dataTables_paginate .paginate_button {
-    /* Light text color for pagination controls */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination controls on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of other DataTables elements */
-.dataTables_info,
-.dataTables_length label,
-.dataTables_filter label,
-.dataTables_processing,
-.dataTables_paginate,
-.dataTables_paginate span a {
-    /* Light text color for other DataTables elements */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate span .current {
-    /* Darker background color for the current page number */
-    background-color: #555555 !important;
-    /* Light text color for the current page number */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables length menu */
-.dataTables_length label select {
-    /* Light text color for length menu */
-    color: #ffffff !important;
-    /* Dark background color for length menu */
-    background-color: #444444 !important;
-}
-
-/* Adjust the color of DataTables pagination buttons */
-.dataTables_paginate .paginate_button {
-    /* Light text color for pagination buttons */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination buttons on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables pagination controls at the bottom right */
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    /* Light text color for pagination controls */
-    color: #ffffff !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination controls on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables previous button */
-.dataTables_wrapper .dataTables_paginate .previous {
-    /* Light text color for the Previous button */
-    color: #ffffff !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .previous:hover {
-    /* Light text color for the Previous button on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables search input */
-.dataTables_wrapper .dataTables_filter input {
-    /* Light text color for the search input */
-    color: #ffffff !important;
-    /* Dark background color for the search input */
-    background-color: #444444 !important;
-}
-
-/* Adjust the color of DataTables search input on focus */
-.dataTables_wrapper .dataTables_filter input:focus {
-    /* Light text color for the search input on focus */
-    color: #ffffff !important;
-    /* Darker background color for the search input on focus */
-    background-color: #555555 !important;
-}
-
-#balanceTable {
-    margin: 20px auto;
-}
-
-table.dataTable thead th.sorting,
-table.dataTable thead th.sorting_asc,
-table.dataTable thead th.sorting_desc,
-table.dataTable thead th.sorting_asc_disabled,
-table.dataTable thead th.sorting_desc_disabled {
-    /* Darker background color for the filtered column header */
-    background-color: #000000 !important;
-    /* Light text color for the filtered column header */
-    color: #ffffff !important;
-}
-
-table.dataTable tbody tr.even,
-table.dataTable tbody tr.even:hover,
-table.dataTable tbody tr.odd,
-table.dataTable tbody tr.odd:hover {
-    /* Set the background color as needed */
-    background-color: #000000 !important;
-}
-
-#balanceTable_wrapper {
-    margin: 20px auto;
-    /* Adjust the width as needed */
-    width: 80%;
-}
-
-table.dataTable tbody tr {
-    /* Set the background color as needed */
-    background-color: #000000 !important;
-}
-
-
-/* Adjust the color of table rows during hover */
-table.dataTable tbody tr:hover {
-    /* Set the hover background color as needed */
-    background-color: #333333 !important;
-}
 
 /* Add these styles to customize the Date Range Filter */
 .daterangepicker {
@@ -269,12 +102,6 @@ table.dataTable tbody tr:hover {
     background-color: #444444 !important;
 }
 
-table.dataTable tbody tr.filter-row td {
-    /* Black background color for the filtered column */
-    background-color: #000000 !important;
-    /* Light text color for the filtered column */
-    color: #ffffff !important;
-}
 
 .subcategory-select {
     background-color: black;
@@ -544,5 +371,221 @@ table.dataTable tbody tr.filter-row td {
 
     #bar_chart {
         height: 300px !important;
+    }
+}
+
+
+
+
+
+
+/*css needed for Transaction Table */
+
+
+/* Desktop Styles for transactionTable */
+.transaction-table-container {
+    margin: 20px auto;
+    width: 80%;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0;
+}
+
+.transaction-table thead {
+    background: linear-gradient(90deg, #00bcd4, #0288d1);
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.transaction-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+    position: relative;
+}
+
+.transaction-table th::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.transaction-table th:last-child::after {
+    display: none;
+}
+
+.transaction-table tbody {
+    background: transparent;
+}
+
+.transaction-table tr {
+    transition: all 0.3s ease;
+}
+
+.transaction-table tr:hover {
+    background: rgba(0, 188, 212, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+}
+
+.transaction-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e0e7ff;
+    font-weight: 400;
+}
+
+.transaction-table td:last-child {
+    border-right: none;
+}
+
+.transaction-table .re-categorize-button {
+    background: linear-gradient(90deg, #ff6f61, #ff8a65);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.transaction-table .re-categorize-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
+}
+
+.transaction-table .split-button {
+    background: linear-gradient(90deg, #4dd0e1, #81d4fa);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.transaction-table .split-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(77, 182, 172, 0.4);
+}
+
+/* Hide mobile view on desktop */
+.transaction-table-mobile-container {
+    display: none;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    /* Hide desktop table on mobile */
+    .transaction-table-container {
+        display: none;
+    }
+
+    /* Show mobile view */
+    .transaction-table-mobile-container {
+        display: block;
+        margin: 20px auto;
+        width: 90%;
+    }
+
+    /* Card styling */
+    .transaction_details_card {
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        margin: 10px 0;
+        padding: 15px;
+        color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .transaction_details_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .transaction_details_info {
+        flex-grow: 1;
+    }
+
+    .transaction_details_payee {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .transaction_details_date {
+        font-size: 12px;
+        color: #aaa;
+    }
+
+    .transaction_details_amount {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .transaction_details_status {
+        font-size: 12px;
+        color: #00cc00;
+        cursor: pointer;
+    }
+
+    .transaction_details_body {
+        margin-top: 10px;
+    }
+
+    .transaction_details_field {
+        margin: 5px 0;
+    }
+
+    .transaction_details_label {
+        font-weight: bold;
+        color: #aaa;
+    }
+
+    .transaction_details_reCategorizeButton,
+    .transaction_details_splitButton {
+        background: linear-gradient(90deg, #ff6f61, #ff8a65);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        margin: 5px 0;
+    }
+
+    .transaction_details_splitButton {
+        background: linear-gradient(90deg, #4dd0e1, #81d4fa);
+    }
+
+    .transaction_details_reCategorizeButton:hover,
+    .transaction_details_splitButton:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
+    }
+
+    .transaction_details_splitButton:hover {
+        box-shadow: 0 4px 12px rgba(77, 182, 172, 0.4);
     }
 }
