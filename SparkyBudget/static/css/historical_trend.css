@@ -282,21 +282,6 @@ table.dataTable tbody tr.filter-row td {
     color: white;
 }
 
-#bar_chart .c3-axis-x-label,
-#bar_chart .c3-axis-y-label,
-#bar_chart .c3-axis-x .tick text,
-#bar_chart .c3-axis-y .tick text {
-    fill: white !important;
-}
-
-#bar_chart .c3-tooltip {
-    background-color: darkgray;
-}
-
-#bar_chart .c3-tooltip tr {
-    /* Set the text color for better visibility on dark background */
-    color: white;
-}
 
 .c3-tooltip-container {
     background-color: darkgray !important;
@@ -317,4 +302,247 @@ table.dataTable tbody tr.filter-row td {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+}
+
+
+
+
+
+
+
+/*css needed for line chart */
+
+
+
+/* Container for the line chart */
+.line-chart-container {
+    position: relative;
+    width: 80%;
+    max-width: 1000px; /* Limit the maximum width for larger screens */
+    margin: 20px auto; /* Center the chart with some margin */
+    padding: 20px; /* Add padding for the glow effect */
+    height: auto; /* Let the height adjust based on content */
+    box-sizing: border-box;
+}
+
+/* Chart wrapper for the glowing border and perspective */
+.line-chart-wrap {
+    --radius: 20px;
+    --perspective: 800px;
+    position: relative;
+    border-radius: var(--radius);
+    perspective: var(--perspective);
+    transform-style: preserve-3d;
+    padding: 5px; /* Space for the glowing border */
+    overflow: hidden; /* Prevent the border from spilling out */
+}
+
+/* Glowing gradient border for the line chart */
+.line-chart-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ffd867, #ec526b, #ffd867, #ec526b);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: gradientBorder 5s linear infinite;
+}
+
+/* Keyframes for the glowing border animation */
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Subtle shadow beneath the chart */
+.line-chart-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        0 60px 140px 30px rgba(0, 0, 0, 0.8),
+        0 -60px 120px rgba(102, 106, 135, 0.4);
+    filter: blur(5px);
+    z-index: -2;
+}
+
+/* Glow effect for the line chart */
+.line-chart-glow {
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+}
+
+/* Chart card with gradient background */
+.line-chart-card {
+    position: relative;
+    padding: 20px;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, #201c29 40%, #37374b 100%);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.7), inset 0 0 3px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s cubic-bezier(0.03, 1, 0.5, 1);
+    transform-style: preserve-3d;
+    z-index: 2;
+}
+
+/* Ensure the canvas fits properly */
+#lineChartCanvas {
+    width: 100% !important;
+    height: 400px !important; /* Set a fixed height for consistency */
+    display: block;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .line-chart-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #lineChartCanvas {
+        height: 300px !important; /* Smaller height for mobile */
+    }
+}
+
+
+
+
+
+/*css needed for Bar chart */
+
+
+/* Container for the bar chart */
+.bar-chart-container {
+    position: relative;
+    width: 80%;
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    height: auto;
+    box-sizing: border-box;
+    background: none !important; /* Ensure no background override */
+}
+
+/* Chart wrapper for the glowing border and perspective */
+.bar-chart-wrap {
+    --radius: 20px;
+    --perspective: 800  --radius: 20px;
+    --perspective: 800px;
+    position: relative;
+    border-radius: var(--radius);
+    perspective: var(--perspective);
+    transform-style: preserve-3d;
+    padding: 5px;
+    overflow: hidden;
+    z-index: 1; /* Ensure the wrapper is above other elements */
+}
+
+/* Glowing gradient border for the bar chart */
+.bar-chart-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ffd867, #ec526b, #ffd867, #ec526b); /* Match the line chart */
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: gradientBorder 5s linear infinite;
+}
+
+/* Subtle shadow beneath the chart */
+.bar-chart-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        0 60px 140px 30px rgba(0, 0, 0, 0.8),
+        0 -60px 120px rgba(102, 106, 135, 0.4);
+    filter: blur(5px);
+    z-index: -2;
+}
+
+/* Chart card with gradient background */
+.bar-chart-card {
+    position: relative;
+    padding: 20px;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, #201c29 40%, #37374b 100%);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.7), inset 0 0 3px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s cubic-bezier(0.03, 1, 0.5, 1);
+    transform-style: preserve-3d;
+    z-index: 2;
+}
+
+/* Ensure the bar chart fits properly */
+#bar_chart {
+    width: 100% !important;
+    height: 400px !important;
+}
+
+/* Update axis labels and ticks to soft white */
+#bar_chart .c3-axis-x-label,
+#bar_chart .c3-axis-y-label,
+#bar_chart .c3-axis-x .tick text,
+#bar_chart .c3-axis-y .tick text {
+    fill: #E0E0E0 !important;
+}
+
+/* Style the tooltip for a polished look */
+#bar_chart .c3-tooltip {
+    background-color: #2e2e4e;
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
+    opacity: 0.9;
+}
+
+#bar_chart .c3-tooltip tr {
+    color: #E0E0E0;
+}
+
+#bar_chart .c3-tooltip th {
+    background-color: #4CAF50;
+    color: #E0E0E0;
+    padding: 2px 5px;
+}
+
+#bar_chart .c3-tooltip td {
+    padding: 2px 5px;
+}
+
+.c3-tooltip-container {
+    background-color: #2e2e4e !important;
+    color: #E0E0E0 !important;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .bar-chart-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #bar_chart {
+        height: 300px !important;
+    }
 }

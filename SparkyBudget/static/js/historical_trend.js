@@ -223,80 +223,112 @@ $(document).ready(function () {
 
     // Function to update the chart with the aggregated data
     function updateChart(aggregatedData) {
-        var excludedCategories = ["Money Transfer", "Paycheck", "Interest Income", "CC Payment", "Transfer", "Credit Card Payment"];
+        var excludedCategories = ["Money Transfer", "Paycheck", "Interest Income", "CC Payment", "Transfer", "Credit Card Payment","Transfer"];
         var filteredData = Object.entries(aggregatedData)
             .filter(([category, data]) => !excludedCategories.includes(category))
             .reduce((obj, [category, data]) => {
                 obj[category] = data.totalAmount;
                 return obj;
             }, {});
-
+    
         // Extract categories and values needed for the chart
         var categories = Object.keys(filteredData);
         var totalAmounts = Object.values(filteredData);
-
+    
         // Process filteredData object
         for (var i = 0; i < categories.length; i++) {
             var category = categories[i];
-
-            // Check for NaN values in totalAmount field and replace them with 0
             if (isNaN(filteredData[category])) {
                 console.error("NaN value found in totalAmount for category:", category, filteredData[category]);
                 filteredData[category] = 0;
             }
         }
-
+    
         // Generate an array of unique colors for each category
         var categoryColors = generateCategoryColors(categories.length);
-
+    
         // Use C3.js to generate the chart with different colors for each bar
         var chart = c3.generate({
             bindto: '#bar_chart',
             data: {
-                x: 'Category', // x-axis data will be stored under 'Category' in the columns array
+                x: 'Category',
                 columns: [
-                    // Use 'Category' as the label for the x-axis
                     ['Category'].concat(categories),
-                    ['Total Amount'].concat(totalAmounts)
+                    ['Expense Amount'].concat(totalAmounts)
                 ],
                 type: 'bar',
                 color: function (color, d) {
-                    return categoryColors[d.index % categoryColors.length]; // Assign color based on category index
+                    return categoryColors[d.index % categoryColors.length];
                 },
                 labels: {
                     format: function (v, id, i, j) {
-                        return v; // Display the data value as the label
+                        return '$' + Math.round(v);
                     },
-                    color: 'white' // Set the label color to white
+                    color: '#E0E0E0',
+                    font: {
+                        weight: 'bold',
+                        size: 10
+                    },
+
                 }
             },
             axis: {
                 x: {
-                    type: 'category', // Specify that x-axis should be treated as a category
+                    type: 'category',
                     label: {
-                        text: 'Category', // Use 'Category' as the x-axis label
+                        text: 'Category',
                         position: 'outer-center',
-                        color: 'white' // Set x-axis label color to white
+                        color: '#E0E0E0',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
                     }
                 },
                 y: {
                     label: {
-                        text: 'Total Amount', // Y-axis label
+                        text: 'Expense Amount',
                         position: 'outer-middle',
-                        color: 'white' // Set y-axis label color to white
+                        color: '#E0E0E0',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                    },
+                    tick: {
+                        format: function (value) {
+                            return '$' + Math.round(value);
+                        }
                     }
                 }
             },
             grid: {
                 y: {
-                    lines: [{ value: 0 }] // Add a horizontal line at y = 0 for better visibility on a dark background
+                    lines: [{ value: 0 }]
                 }
             },
-            // Your other chart configurations...
+            title: {
+                text: 'Expense Trend',
+                color: '#E0E0E0',
+                font: '16px bold sans-serif',
+                padding: {
+                    top: 10,
+                    bottom: 20
+                },
+                font: {
+                    weight: 'bold',
+                    size: 10
+                },
+            }
         });
-
+    
+        // Ensure axis labels are styled
         d3.selectAll('#bar_chart .c3-axis-x-label, #bar_chart .c3-axis-y-label')
-            .style('fill', 'white');
+            .style('fill', '#E0E0E0');
+    
+        // Manually set the title color using D3.js to ensure it applies
+        d3.select('#bar_chart .c3-title')
+            .style('fill', '#E0E0E0');
     }
 
 
@@ -401,84 +433,105 @@ $(document).ready(function () {
 
     // Function to render the line chart
     function renderLineChart(lineChartData) {
-		const dates = lineChartData.map(entry => entry[0]);
-		const salaries = lineChartData.map(entry => entry[1]);
-
-		const ctx = document.getElementById('lineChartCanvas').getContext('2d');
-
-		const myLineChart = new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: dates,
-				datasets: [{
-					label: 'Salary',
-					data: salaries,
-					borderColor: 'rgba(75, 192, 192, 1)',
-					fill: false,
-					// Adding the 'datapoint' value display
-					datalabels: {
-						color: 'white',  // Set the color of the labels
-						align: 'top',    // Position the label above the data point
-						font: {
-							weight: 'bold',
-							size: 10
-						}
-					}
-				}]
-			},
-			options: {
-				maintainAspectRatio: false,
-				responsive: true,
-				scales: {
-					x: {
-						ticks: {
-							color: 'white', // X-axis tick color
-						},
-						grid: {
-							color: 'rgba(255, 255, 255, 0.1)', // X-axis grid color
-						}
-					},
-					y: {
-						beginAtZero: true,
-						ticks: {
-							color: 'white', // Y-axis tick color
-						},
-						grid: {
-							color: 'rgba(255, 255, 255, 0.1)', // Y-axis grid color
-						},
-						title: {
-							display: true,
-							text: 'Salary',
-							color: 'white', // Y-axis title color
-						},
-						min: 5000
-					}
-				},
-				plugins: {
-					legend: {
-						display: true,
-						position: 'top',
-						labels: {
-							color: 'rgba(255, 255, 255, 1)',
-						}
-					},
-					// Enable the datalabels plugin
-					datalabels: {
-						anchor: 'end',
-						align: 'top',
-						color: 'white',  // Set the color of the labels
-						font: {
-							weight: 'bold',
-							size: 10
-						}
-					}
-				}
-			},
-			plugins: [ChartDataLabels] // Ensure the plugin is applied to the chart
-		});
-
-		console.log("lineChart:", myLineChart);
-	}
+        const dates = lineChartData.map(entry => entry[0]);
+        const salaries = lineChartData.map(entry => entry[1]);
+    
+        const ctx = document.getElementById('lineChartCanvas').getContext('2d');
+    
+        const myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Salary',
+                    data: salaries,
+                    borderColor: '#FFD700', // Light gold color
+                    fill: false,
+                    datalabels: {
+                        color: 'white',
+                        align: 'top',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function(value, context) {
+                            // Round the value to the nearest integer and add the $ symbol
+                            return '$' + Math.round(value);
+                        }
+                    }
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'white',
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'white',
+                            callback: function(value, index, values) {
+                                return '$' + Math.round(value);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Salary',
+                            color: 'white',
+                        },
+                        min: 5000
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Salary Trend', // Add the title here
+                        color: 'white', // Match the color theme
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 1)',
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function(value, context) {
+                            return '$' + Math.round(value);
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    
+        console.log("lineChart:", myLineChart);
+    }
 
 
 

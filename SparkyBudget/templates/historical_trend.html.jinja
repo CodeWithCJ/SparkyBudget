@@ -36,8 +36,13 @@
     <a href="/" title="Go to Home">
         <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
     </a>
-    <div style="width: 80%; height: 200%;">
-        <canvas id="lineChartCanvas" style="width: 100%; height: 200%;"></canvas>
+    <div class="line-chart-container">
+        <div class="line-chart-wrap">
+            <div class="line-chart-glow"></div>
+            <div class="line-chart-card">
+                <canvas id="lineChartCanvas"></canvas>
+            </div>
+        </div>
     </div>
     <div class="transaction_edit_filter">
         <form method="GET" action="/historical_trend">
@@ -57,8 +62,12 @@
             <option value="Payee">Payee</option>
         </select>
     </div>
-    <div id="bar_chart_container">
-        <div id="bar_chart"></div>
+    <div class="bar-chart-container">
+        <div class="bar-chart-wrap">
+            <div class="bar-chart-card">
+                <div id="bar_chart"></div>
+            </div>
+        </div>
     </div>
     <div class="dt-buttons"> </div>
     <!-- DataTable for displaying transaction details -->
