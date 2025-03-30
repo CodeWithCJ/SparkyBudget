@@ -89,5 +89,5 @@ if __name__ == "__main__":
     print(f"Scheduler thread alive: {scheduler_thread.is_alive()}")
 
     # Run the Flask app with the SSL context
-    app.run(host="0.0.0.0", port=5000, ssl_context=ssl_context, debug=False)
+    app.run(host="0.0.0.0", port=5000, ssl_context=ssl_context, debug=True)
     

@@ -1,178 +1,193 @@
-body {
-    /* Dark background color */
-    background-color: #1b1e23;
-    /* Light text color */
-    color: #ffffff;
-}
-
-/* Adjust the background and text color of the table */
-table.dataTable {
-    /* Dark background color for the table */
-    background-color: #333333;
-    /* Light text color for the table */
-    color: #ffffff;
-}
-
-/* Adjust the color of table headers */
-table.dataTable thead th {
-    /* Light text color for table headers */
-    color: #000000;
-}
-
-/* Adjust the color of table rows */
-table.dataTable tbody tr {
-    /* Black background color for all rows */
-    background-color: #000000;
-    /* Light text color for all rows */
-    color: #ffffff;
-}
-
-
-
-/* Override the default DataTables stripe color */
-table.dataTable tbody tr.odd,
-table.dataTable tbody tr.odd:hover {
-    /* Darker background color for odd rows */
-    background-color: #555555 !important;
-}
-
-/* Adjust the color of DataTables pagination controls */
-.dataTables_paginate .paginate_button {
-    /* Light text color for pagination controls */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination controls on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of other DataTables elements */
-.dataTables_info,
-.dataTables_length label,
-.dataTables_filter label,
-.dataTables_processing,
-.dataTables_paginate,
-.dataTables_paginate span a {
-    /* Light text color for other DataTables elements */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate span .current {
-    /* Darker background color for the current page number */
-    background-color: #555555 !important;
-    /* Light text color for the current page number */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables length menu */
-.dataTables_length label select {
-    /* Light text color for length menu */
-    color: #ffffff !important;
-    /* Dark background color for length menu */
-    background-color: #444444 !important;
-}
-
-/* Adjust the color of DataTables pagination buttons */
-.dataTables_paginate .paginate_button {
-    /* Light text color for pagination buttons */
-    color: #ffffff !important;
-}
-
-.dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination buttons on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables pagination controls at the bottom right */
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    /* Light text color for pagination controls */
-    color: #ffffff !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    /* Light text color for pagination controls on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables previous button */
-.dataTables_wrapper .dataTables_paginate .previous {
-    /* Light text color for the Previous button */
-    color: #ffffff !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .previous:hover {
-    /* Light text color for the Previous button on hover */
-    color: #ffffff !important;
-}
-
-/* Adjust the color of DataTables search input */
-.dataTables_wrapper .dataTables_filter input {
-    /* Light text color for the search input */
-    color: #ffffff !important;
-    /* Dark background color for the search input */
-    background-color: #444444 !important;
-}
-
-/* Adjust the color of DataTables search input on focus */
-.dataTables_wrapper .dataTables_filter input:focus {
-    /* Light text color for the search input on focus */
-    color: #ffffff !important;
-    /* Darker background color for the search input on focus */
-    background-color: #555555 !important;
-}
-
-div.dt-container div.dt-layout-cell {
-    padding: 0;
-}
-
-#balanceTable {
-    margin-bottom: 20px;
-}
-
-table.dataTable thead .sorting,
-table.dataTable thead .sorting_asc,
-table.dataTable thead .sorting_desc,
-table.dataTable thead .sorting_asc_disabled,
-table.dataTable thead .sorting_desc_disabled {
-    /* Adjust the background color as needed */
-    background-color: #61dafb;
-    /* Adjust the text color as needed */
-    color: #000000 !important;
-}
-
-#balanceTable_wrapper {
+/* Container with glowing effect */
+.balance-details-wrapper {
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    padding: 20px;
+    border-radius: 16px;
     margin: 20px auto;
-    /* Adjust the width as needed */
     width: 80%;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+    animation: glow 2s ease-in-out infinite alternate;
 }
 
+/* Glowing animation keyframes */
+@keyframes glow {
+    0% { box-shadow: 0 0 10px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.2); }
+    100% { box-shadow: 0 0 15px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.3); }
+}
 
-/* static/css/balance_details.css */
+/* Desktop Table Styles (unchanged) */
+.balance-details-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0;
+}
 
-/* Style for editable cells */
+.balance-details-table thead {
+    background: linear-gradient(90deg, #00bcd4, #0288d1);
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.balance-details-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+    position: relative;
+}
+
+.balance-details-table th::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.balance-details-table th:last-child::after {
+    display: none;
+}
+
+.balance-details-table tbody {
+    background: transparent;
+}
+
+.balance-details-table tr {
+    transition: all 0.3s ease;
+}
+
+.balance-details-table tr:hover {
+    background: rgba(0, 188, 212, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+}
+
+.balance-details-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e0e7ff;
+    font-weight: 400;
+}
+
+/* Editable Cell Styles */
 .editable-display-name, .editable-account-type {
     cursor: pointer;
 }
 
 .editable-display-name:hover, .editable-account-type:hover {
-    background-color: #666666;
+    background-color: rgba(0, 188, 212, 0.2);
 }
 
-/* Style for the input field */
-.display-name-input {
+.display-name-input, .account-type-select {
     width: 100%;
     background-color: #444444;
     color: #ffffff;
     border: 1px solid #61dafb;
     padding: 5px;
+    border-radius: 6px;
 }
 
-/* Style for the dropdown */
-.account-type-select {
-    width: 100%;
-    background-color: #444444;
-    color: #ffffff;
-    border: 1px solid #61dafb;
-    padding: 5px;
+/* DataTables Overrides */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    background-color: transparent;
+    color: #ffffff !important;
+}
+
+/* Hide Mobile View on Desktop */
+.balance-details-mobile-container {
+    display: none;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .balance-details-container {
+        display: none;
+    }
+
+    .balance-details-mobile-container {
+        display: block;
+        margin: 20px;
+    }
+
+    .bank-group {
+        margin-bottom: 20px;
+    }
+
+    .bank-title {
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        padding-left: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .balance_details_card {
+        background: linear-gradient(145deg, #2E3440, #353b48);
+        border-radius: 8px;
+        margin: 10px 0;
+        padding: 15px;
+        color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 188, 212, 0.2);
+    }
+
+    .balance_details_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .balance_details_info {
+        flex-grow: 1;
+    }
+
+    .balance_details_account_name {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .balance_details_last_refreshed {
+        font-size: 12px;
+        color: #aaa;
+        display: block;
+    }
+
+    .balance_details_balance {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .balance_details_status {
+        font-size: 12px;
+        color: #00cc00;
+        cursor: pointer;
+    }
+
+    .balance_details_body {
+        margin-top: 10px;
+    }
+
+    .balance_details_field {
+        margin: 5px 0;
+    }
+
+    .balance_details_label {
+        font-weight: bold;
+        color: #aaa;
+    }
 }

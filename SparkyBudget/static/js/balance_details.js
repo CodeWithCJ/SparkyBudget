@@ -151,3 +151,25 @@ $(document).ready(function() {
         e.stopPropagation();
     });
 });
+
+
+
+// Add to existing $(document).ready()
+$(document).ready(function() {
+    // ... existing code ...
+
+    // Mobile toggle function
+    window.balance_details_toggleDetails = function(button) {
+        const card = $(button).closest('.balance_details_card');
+        const body = card.find('.balance_details_body');
+        const statusElement = card.find('.balance_details_status');
+
+        if (body.is(':hidden')) {
+            body.slideDown();
+            statusElement.text('Less ▲').css('color', '#ff4d4d');
+        } else {
+            body.slideUp();
+            statusElement.text('More ▼').css('color', '#00cc00');
+        }
+    };
+});
