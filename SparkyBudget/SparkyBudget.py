@@ -1,18 +1,15 @@
-#app.py
+#SparkyBudget.py
 
-import locale,os, sqlite3, re, secrets
-from datetime import datetime, timedelta, timezone
+import locale,os, secrets
+from datetime import timedelta
 from threading import Lock
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for, Blueprint
-from flask_login import LoginManager, current_user, login_required
+from flask import Flask, jsonify
+from flask_login import LoginManager, login_required
 
 #py_utils
-from py_utils.auth import load_user, login, logout, before_request, unauthorized, User
-from py_utils.currency_utils import format_money, format_money_whole, format_currency
+from py_utils.auth import load_user, login, logout, before_request, unauthorized
 from py_utils.currency_utils import app as currency_app
-from py_utils.daily_balance_history import daily_balance_history_insert
 from py_utils.manage_categories import manage_categories_bp
-from py_utils.monthly_budget_insert import month_budget_update_using_template
 from py_utils.scheduler import start_scheduler
 from py_utils.SimpleFinToDB import process_accounts_data
 from py_utils.subcategory_update import subcategory_update_bp
@@ -89,7 +86,8 @@ if __name__ == "__main__":
 
     
     scheduler_thread = start_scheduler()
+    print(f"Scheduler thread alive: {scheduler_thread.is_alive()}")
 
     # Run the Flask app with the SSL context
-    app.run(host="0.0.0.0", port=5000, ssl_context=ssl_context, debug=True)
+    app.run(host="0.0.0.0", port=5000, ssl_context=ssl_context, debug=False)
     
