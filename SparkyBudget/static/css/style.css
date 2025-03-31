@@ -859,3 +859,112 @@ header .icon svg {
     }
 }
 
+
+
+/* Updated Month-Year Picker Styles */
+.month-year-picker-container {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.month-year-picker-container .year-month-picker.hide {
+    display: none;
+}
+
+.month-year-picker-container .year-month-picker {
+    display: block;
+    position: absolute;
+    background: linear-gradient(145deg, #2a2f38, #1e2228); /* Subtle gradient background */
+    right: 0px;
+    width: 200px;
+    padding: 8px;
+    z-index: 100;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid #61dafb;
+}
+
+.month-year-picker-container .year-month-picker .year-picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #d6dadf;
+    font-weight: bold;
+}
+
+.month-year-picker-container .year-month-picker .year-picker button {
+    background-color: #3a404c;
+    color: #d6dadf;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.month-year-picker-container .year-month-picker .year-picker button:hover {
+    background-color: #61dafb;
+    color: #1e2228;
+}
+
+.month-year-picker-container .year-month-picker .month-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: auto;
+    gap: 4px;
+}
+
+.month-year-picker-container .year-month-picker .month-picker button {
+    background-color: #3a404c;
+    color: #d6dadf;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.month-year-picker-container .year-month-picker .month-picker button:hover {
+    background-color: #61dafb;
+    color: #1e2228;
+}
+
+.month-year-picker-container .year-month-picker .month-picker button.selected {
+    background-color: #61dafb;
+    color: #1e2228;
+    font-weight: bold;
+}
+
+.month-year-picker-container input {
+    background-color: #2a2f38;
+    color: #d6dadf;
+    border: 1px solid #61dafb;
+    padding: 5px 10px;
+    border-radius: 4px;
+    width: 150px;
+    cursor: pointer;
+}
+
+.picker-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0 0 0;
+    border-top: 1px solid #444;
+    margin-top: 8px;
+}
+
+.clear-button, .this-month-button {
+    background-color: #3a404c;
+    color: #d6dadf;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.clear-button:hover, .this-month-button:hover {
+    background-color: #61dafb;
+    color: #1e2228;
+}

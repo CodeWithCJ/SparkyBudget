@@ -1,12 +1,7 @@
 $(document).ready(function () {
     // Fetch subcategories using an AJAX request
-
     $.get('/getDistinctSubcategories', function (subcategories) {
-        // Clear existing options
-
         $('#subCategoryInput').empty();
-
-        // Populate the Select2 dropdown with fetched subcategories
         $('#subCategoryInput').select2({
             data: subcategories,
             width: '180px',
@@ -14,11 +9,139 @@ $(document).ready(function () {
             allowClear: true,
         });
     });
+
+    // Initialize the custom month-year picker for the .filters section
+    const filtersPickerContainer = document.querySelector('.filters .month-year-picker-container');
+    const filtersPicker = document.querySelector('.filters .year-month-picker');
+    const calendarPickerInput = document.getElementById('calendarPicker');
+    const yearContainer = document.querySelector('.filters .selected-year');
+    const prevYear = document.querySelector('.filters .previous-year');
+    const nextYear = document.querySelector('.filters .next-year');
+    const clearButton = document.querySelector('.filters .clear-button');
+    const thisMonthButton = document.querySelector('.filters .this-month-button');
+
+    let year = new Date().getFullYear(); // Default to current year (2025)
+    yearContainer.textContent = year;
+
+    // Function to close the picker when clicking outside
+    function closePicker(e) {
+        e.stopPropagation();
+        if (!filtersPickerContainer.contains(e.target)) {
+            filtersPicker.classList.add('hide');
+            document.removeEventListener('click', closePicker);
+            document.addEventListener('focusin', closePicker);
+        }
+    }
+
+    // Show the picker on focus/click
+    filtersPickerContainer.addEventListener('click', () => {
+        filtersPicker.classList.remove('hide');
+        document.addEventListener('click', closePicker);
+        document.addEventListener('focusin', closePicker);
+    });
+
+    // Previous year button
+    prevYear.addEventListener('click', (e) => {
+        e.preventDefault();
+        year -= 1;
+        yearContainer.textContent = year;
+    });
+
+    // Next year button
+    nextYear.addEventListener('click', (e) => {
+        e.preventDefault();
+        year += 1;
+        yearContainer.textContent = year;
+    });
+
+    // Month buttons
+    filtersPicker.querySelectorAll('.month-picker button').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const transactionMonth = e.currentTarget.dataset.month;
+            const transactionYear = year;
+            calendarPickerInput.value = `${transactionYear}-${transactionMonth}`;
+            filtersPicker.classList.add('hide');
+
+            // Highlight the selected month
+            filtersPicker.querySelectorAll('.month-picker button').forEach((button) => {
+                button.classList.remove('selected');
+            });
+            btn.classList.add('selected');
+
+            // Trigger update with the selected year and month
+            updateTransactionTable(transactionMonth, transactionYear);
+        });
+    });
+
+    // "This month" button
+    thisMonthButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const now = new Date();
+        year = now.getFullYear();
+        const transactionMonth = String(now.getMonth() + 1).padStart(2, '0'); // Current month (e.g., "03" for March)
+        const transactionYear = year;
+        yearContainer.textContent = year;
+        calendarPickerInput.value = `${transactionYear}-${transactionMonth}`;
+        filtersPicker.classList.add('hide');
+
+        // Highlight the current month
+        filtersPicker.querySelectorAll('.month-picker button').forEach((button) => {
+            button.classList.remove('selected');
+            if (button.dataset.month === transactionMonth) {
+                button.classList.add('selected');
+            }
+        });
+
+        // Trigger update
+        updateTransactionTable(transactionMonth, transactionYear);
+    });
+
+    // "Clear" button
+    clearButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        calendarPickerInput.value = ''; // Clear the input
+        filtersPicker.classList.add('hide');
+
+        // Remove highlighting from all month buttons
+        filtersPicker.querySelectorAll('.month-picker button').forEach((button) => {
+            button.classList.remove('selected');
+        });
+
+        // Optionally, reset your app to a default state
+        // For now, let's not trigger an update since the input is cleared
+    });
+
+    // Highlight the default month (current month) on load
+    const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0'); // e.g., "03" for March
+    filtersPicker.querySelectorAll('.month-picker button').forEach((button) => {
+        if (button.dataset.month === currentMonth) {
+            button.classList.add('selected');
+        }
+    });
+
+    // Download button handler
+    $('#downloadButton').on('click', function () {
+        $('#spinner').show();
+        $.ajax({
+            url: '/download_data',
+            type: 'POST',
+            success: function (response) {
+                $('#spinner').hide();
+                if (response.success) {
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (error) {
+                $('#spinner').hide();
+                alert('Error: ' + error.statusText);
+            }
+        });
+    });
 });
-
-
-
-
 
 function balanceDetailsTableToggleVisibility() {
     var balanceDetailsTable = document.getElementById('balanceDetailsTable');
@@ -31,23 +154,16 @@ function balanceDetailsTableToggleVisibility() {
     }
 }
 
+var SortAscDesc = false; // Set your default value
 
 
 
 
-
-
-var SortAscDesc = false;  // Set your default value, replace false with your desired default
-
-function updateBudgetSummaryChart() {
-    var xhr = new XMLHttpRequest();
-
-    var selectedYear = document.getElementById("transactionYear").value;
-    var activeButton = document.querySelector("#monthButtons button.active");
-    var selectedMonth = activeButton.getAttribute("data-month");
+function updateBudgetSummaryChart(transactionYear, transactionMonth) {
+    
+    console.log("Updating budget summary chart for year:", transactionYear, "and month:", transactionMonth);
+    var xhr = new XMLHttpRequest();    
     var sortCriteria = document.getElementById("sortCriteria").value;
-
-
     var SortAscDesc = document.getElementById("SortAscDesc").value.toLowerCase() === "true"; // Convert to boolean
 
     xhr.onreadystatechange = function () {
@@ -58,7 +174,7 @@ function updateBudgetSummaryChart() {
     };
 
     // Use the SortAscDesc parameter in the request URL
-    xhr.open("GET", "/budget_summary_chart?year=" + selectedYear + "&month=" + selectedMonth + "&sort_criteria=" + sortCriteria + "&SortAscDesc=" + SortAscDesc, true);
+    xhr.open("GET", "/budget_summary_chart?year=" + transactionYear + "&month=" + transactionMonth + "&sort_criteria=" + sortCriteria + "&SortAscDesc=" + SortAscDesc, true);
 
     xhr.send();
 
@@ -67,71 +183,48 @@ function updateBudgetSummaryChart() {
 
 
 
-function updateTransactionTable(selectedMonth) {
-    var selectedYear = document.getElementById("transactionYear").value;
+
+function updateTransactionTable(transactionMonth, transactionYear) {
     var sortCriteria = document.getElementById("sortCriteria").value;
     document.getElementById("transactionDetails").style.display = 'none';
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const transactionTableBody = document.getElementById("transactionTableBody");
-            if(transactionTableBody) {
+            if (transactionTableBody) {
                 transactionTableBody.innerHTML = xhr.responseText;
             }
         }
     };
-    xhr.open("GET", "/update_transaction_table?year=" + selectedYear + "&month=" + selectedMonth, true);
+    xhr.open("GET", "/update_transaction_table?year=" + transactionYear + "&month=" + transactionMonth, true);
     xhr.send();
 
-    // Remove the 'active' class from all buttons
-    var buttons = document.querySelectorAll("#monthButtons button");
-    buttons.forEach(function (button) {
-        button.classList.remove("active");
-    });
-
-    // Add the 'active' class to the clicked button
-    var activeButton = document.querySelector("#monthButtons button[data-month='" + selectedMonth + "']");
-    activeButton.classList.add("active");
-
-    updateBudgetSummaryChart();
+    updateBudgetSummaryChart(transactionYear, transactionMonth);
     setTimeout(() => {
         updatePieCharts(true); // Force refresh both charts
     }, 500);
-
 }
 
-
+var previousSubcategory = '';
 function showTransactionDetails(event, selectedSubcategory, spentAmount) {
-    // Prevent the default behavior of the anchor tag
     event.preventDefault();
     previousSubcategory = selectedSubcategory;
-
     document.getElementById("transactionDetails").style.display = 'block';
 
+    var calendarValue = document.getElementById("calendarPicker").value;
+    var [transactionYear, transactionMonth] = calendarValue.split("-");
 
-    var selectedYear = document.getElementById("transactionYear").value;
-    var activeButton = document.querySelector("#monthButtons button.active");
+    console.log("Function called:", transactionYear, transactionMonth, selectedSubcategory);
 
-    // Get the selected month from the 'data-month' attribute of the active button
-    var selectedMonth = activeButton.getAttribute("data-month");
-
-    console.log("Function called:", selectedYear, selectedMonth, selectedSubcategory);
-
-    // Set the selected subcategory as the header
     var header = document.createElement("h4");
     const usdFormatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
-        // minimumFractionDigits: 2, // Usually defaults to 2 for USD, but can be explicit
-      });
-      
-      // Format the amount and set the text content
+    });
     header.textContent = selectedSubcategory + " Expenses: " + usdFormatter.format(spentAmount);
-
     header.style.color = "white";
     header.style.textAlign = "center";
 
-    
     document.getElementById("transactionDetails").innerHTML = "";
     document.getElementById("transactionDetails").appendChild(header);
 
@@ -139,73 +232,20 @@ function showTransactionDetails(event, selectedSubcategory, spentAmount) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             document.getElementById("transactionDetails").innerHTML += xhr.responseText;
-
-            // Scroll to the Transaction Details table
             document.getElementById("transactionDetails").scrollIntoView({ behavior: "smooth" });
         }
     };
-    xhr.open("GET", "/get_budget_transaction_details?year=" + selectedYear + "&month=" + selectedMonth + "&subcategory=" + selectedSubcategory, true);
+    xhr.open("GET", "/get_budget_transaction_details?year=" + transactionYear + "&month=" + transactionMonth + "&subcategory=" + selectedSubcategory, true);
     xhr.send();
 }
 
-
-
-
 window.onload = function () {
-    // Get the current date to set the default month
     var currentDate = new Date();
-    var currentYear = currentDate.getFullYear();
-    var currentMonth = currentDate.getMonth() + 1; // Month is zero-based, so add 1
+    var transactionYear = currentDate.getFullYear(); // e.g., 2025
+    var transactionMonth = String(currentDate.getMonth() + 1).padStart(2, '0'); // e.g., "03" for March
 
-    // Format the current month as 'MM'
-    var formattedCurrentMonth = currentMonth < 10 ? '0' + currentMonth : currentMonth;
-
-    // Set the default month value
-    var defaultMonth = currentYear + '-' + formattedCurrentMonth;
-
-    // Trigger the updateTransactionTable function with the default month
-    updateTransactionTable(formattedCurrentMonth);
-
-    // Add the 'active' class to the default month button
-    var defaultButton = document.querySelector("#monthButtons button[data-month='" + formattedCurrentMonth + "']");
-    defaultButton.classList.add("active");
+    updateTransactionTable(transactionMonth, transactionYear);
 };
-
-
-
-$(document).ready(function () {
-    $('#downloadButton').on('click', function () {
-        // Show the spinner
-        $('#spinner').show();
-
-        $.ajax({
-            url: '/download_data',
-            type: 'POST',
-            success: function (response) {
-                // Hide the spinner on success
-                $('#spinner').hide();
-
-                if (response.success) {
-                    alert(response.message);
-                    // Reload the page after successful download
-                    location.reload();
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function (error) {
-                // Hide the spinner on error
-                $('#spinner').hide();
-
-                alert('Error: ' + error.statusText);
-            }
-        });
-    });
-
-
-});
-
-
 
 function editBudget(event, subcategory, currentBudget) {
     const USDollar = new Intl.NumberFormat('en-US', {
@@ -215,98 +255,76 @@ function editBudget(event, subcategory, currentBudget) {
     console.log("Editing budget...", subcategory);
 
     const budgetValueElement = event.target;
-
-    // Create a container div
     const container = document.createElement('div');
-
-    // Create an input element
     const inputElement = document.createElement('input');
     inputElement.type = 'text';
     inputElement.pattern = "^(\d)+(\.\d{1,2})?$";
     inputElement.inputmode = "decimal";
     inputElement.value = currentBudget;
-
-    // Create a span element
     const spanElement = document.createElement('span');
     spanElement.textContent = USDollar.format(currentBudget);
-
-    // Append the input and span elements to the container
     container.appendChild(inputElement);
     container.appendChild(spanElement);
-
-    // Replace the entire container with the original budgetValueElement
     budgetValueElement.parentNode.replaceChild(container, budgetValueElement);
-
-    // Focus on the input element
     inputElement.focus();
 
-    // Add event listeners to handle blur and focusout events
     inputElement.addEventListener('blur', handleUpdate);
-    //inputElement.addEventListener('focusout', (e) => handleUpdate(e));
 
     function handleUpdate() {
         const budgetAmount = Number(inputElement.value);
-
         if (Number.isNaN(budgetAmount) || budgetAmount === 0) {
-            // too lazy to do a modal
             const resp = confirm('Invalid budget amount. Would you like to go back and fix or cancel?');
-            if(resp) {
+            if (resp) {
                 setTimeout(() => {
                     inputElement.focus();
                 }, 0);
                 return false;
             } else {
-                updateBudgetSummaryChart();
+                var calendarValue = document.getElementById("calendarPicker").value;
+                var [transactionYear, transactionMonth] = calendarValue.split("-");
+                updateBudgetSummaryChart(transactionYear, transactionMonth);
                 setTimeout(() => {
-                    updatePieCharts(true); // Force refresh both charts
+                    updatePieCharts(true);
                 }, 500);
                 return false;
             }
         } else {
-            // Use function scope to access variables
             updateBudget(subcategory, inputElement.value);
         }
 
-        // Replace the container with the original budgetValueElement
         if (budgetValueElement.parentNode) {
             budgetValueElement.parentNode.replaceChild(budgetValueElement, container);
         }
     }
 
-    // Add event listener to handle keypress (Enter) events
     inputElement.addEventListener('keypress', function (e) {
-        // Use function scope to access variables
         if (e.key === 'Enter') {
             handleUpdate();
         }
     });
 }
 
-
-
-
 function updateBudget(subcategory, newBudget) {
     console.log("Editing budget: subcategory is ", subcategory, " newBudget is ", newBudget);
 
-    var selectedYear = document.getElementById("transactionYear").value;
-    var activeButton = document.querySelector("#monthButtons button.active");
-    var selectedMonth = activeButton.getAttribute("data-month");
+    var calendarValue = document.getElementById("calendarPicker").value;
+    var [transactionYear, transactionMonth] = calendarValue.split("-");
 
     $.ajax({
         url: '/inline_edit_budget',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-            year: selectedYear,
-            month: selectedMonth,
+            year: transactionYear,
+            month: transactionMonth,
             subcategory: subcategory,
             budget: newBudget
         }),
         success: function (data, textStatus, jqXHR) {
             console.log('Budget updated successfully:', data);
-            updateBudgetSummaryChart();
+            updateBudgetSummaryChart(transactionYear, transactionMonth);
             setTimeout(() => {
-                updatePieCharts(true); // Force refresh both charts
+                updatePieCharts(true);
             }, 500);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -318,75 +336,43 @@ function updateBudget(subcategory, newBudget) {
 let showBudgetForm = false;
 function toggleAddBudgetForm() {
     const addBudgetForm = document.getElementById('addBudgetForm');
-
-    // Assuming you have selectedYear and selectedMonth variables
-    var selectedYear = document.getElementById("transactionYear").value;
-    var activeButton = document.querySelector("#monthButtons button.active");
-    var selectedMonth = activeButton.getAttribute("data-month");
-    // Set the default value for the budgetMonth input
-    document.getElementById("budgetMonth").value = selectedYear + '-' + selectedMonth;
-
     showBudgetForm = !showBudgetForm;
     if (showBudgetForm) {
         addBudgetForm.classList.remove('hide');
     } else {
         addBudgetForm.classList.add('hide');
     }
-
 }
 
 function addBudget() {
     const addBudgetForm = document.getElementById('addBudgetForm');
-    const budgetMonthInput = document.getElementById('budgetMonth');
-    const budgetMonth = budgetMonthInput.value.trim();
-    console.log("Inside add budget")
+    const calendarPickerValue = document.getElementById("calendarPicker").value;
+    const [transactionYear, transactionMonth] = calendarPickerValue.split("-"); // Split "YYYY-MM" into year and month
 
-    // Validate the date format using a regular expression
-    const dateFormatRegex = /^\d{4}-\d{2}$/;
-
-    if (!dateFormatRegex.test(budgetMonth)) {
-        // Display an error message and apply the red border style
-        budgetMonthInput.setCustomValidity('Invalid date format. Please use YYYY-MM.');
-        budgetMonthInput.classList.add('invalid-date');
-        return;
-    } else {
-        // If the date is valid, remove the error message and style
-        budgetMonthInput.setCustomValidity('');
-        budgetMonthInput.classList.remove('invalid-date');
-    }
-
-    // Continue with the rest of your logic for adding the budget
-
-    // Get other input values (subcategory, budget amount, etc.)
     const subCategorySelect = document.getElementById('subCategoryInput');
     const subCategory = $('#subCategoryInput').val();
-
-    if(!subCategory) {
+    if (!subCategory) {
         subCategorySelect.setCustomValidity('Please select a budget category');
         addBudgetForm.reportValidity();
         return false;
     }
 
-
     const budgetAmountInput = document.getElementById('budgetAmountInput');
     const budgetAmount = Number(budgetAmountInput.value.trim());
-
     if (Number.isNaN(budgetAmount) || budgetAmount === 0) {
         budgetAmountInput.setCustomValidity('Please enter a budget amount');
         addBudgetForm.reportValidity();
         return false;
     }
 
-    // You can perform additional validation for subcategory and budget amount if needed
-
-    // Prepare the data to be sent to the server
     const requestData = {
-        budgetMonth: budgetMonth,
+        budgetMonth: `${transactionYear}-${transactionMonth}`, // Combine year and month for consistency
         subCategory: subCategory,
         budgetAmount: budgetAmount
     };
 
-    // Perform an AJAX request to send the data to the server
+    console.log("Adding new budget: subcategory is ", subCategory, " year:", transactionYear, " month:",transactionMonth);
+
     $.ajax({
         url: '/add_budget',
         type: 'POST',
@@ -394,23 +380,16 @@ function addBudget() {
         data: JSON.stringify(requestData),
         success: function (data, textStatus, jqXHR) {
             console.log('Budget added successfully:', data);
-            // Perform any UI updates or redirection as needed
-
-            // Optionally, hide the form after successful submission
             toggleAddBudgetForm();
-
-            updateBudgetSummaryChart();
+            updateBudgetSummaryChart(transactionYear, transactionMonth);
             setTimeout(() => {
-                updatePieCharts(true); // Force refresh both charts
+                updatePieCharts(true);
             }, 500);
-            // Clear input fields
-            budgetMonthInput.value = '';
             subCategoryInput.value = '';
             budgetAmountInput.value = '';
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error('Error adding budget:', textStatus, errorThrown);
-
             if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
                 alert('Error: ' + jqXHR.responseJSON.error);
             } else {
@@ -420,64 +399,39 @@ function addBudget() {
     });
 }
 
-
-
-
-
-
 function deleteBudget(subCategory) {
-    // Get the selected year and month from the button filters
-    var selectedYear = document.getElementById("transactionYear").value;
-    var activeButton = document.querySelector("#monthButtons button.active");
-    var selectedMonth = activeButton.getAttribute("data-month");
+    var calendarValue = document.getElementById("calendarPicker").value;
+    var [transactionYear, transactionMonth] = calendarValue.split("-");
 
-
-    // Check if the user wants to delete the budget
-    if (confirm("Are you sure you want to delete the budget for " + subCategory + " in " + selectedYear + "-" + selectedMonth + "?")) {
-        // Prepare data for the AJAX request
+    if (confirm("Are you sure you want to delete the budget for " + subCategory + " in " + transactionYear + "-" + transactionMonth + "?")) {
         var requestData = {
             subCategory: subCategory,
-            year: selectedYear,
-            month: selectedMonth
+            year: transactionYear,
+            month: transactionMonth
         };
-
-        // Make the AJAX request
 
         $.ajax({
             type: 'POST',
             url: '/delete_budget',
-            contentType: 'application/json',  // Set content type to JSON
-            data: JSON.stringify(requestData),  // Convert data to JSON
+            contentType: 'application/json',
+            data: JSON.stringify(requestData),
             success: function (response) {
-                // Handle success response
                 console.log(response);
-                // You may want to update the UI or take further actions
-                console.log("Inside Delete budget")
-                updateBudgetSummaryChart();
+                console.log("Inside Delete budget");
+                updateBudgetSummaryChart(transactionYear, transactionMonth);
                 setTimeout(() => {
-                    updatePieCharts(true); // Force refresh both charts
+                    updatePieCharts(true);
                 }, 500);
             },
             error: function (error) {
-                // Handle error
                 console.error(error);
             }
         });
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// start modernizing this, baby steps with iife
+// Modernized IIFE for the budgetMonth picker in addBudgetForm
+// Modernized IIFE for the budgetMonth picker in addBudgetForm
 (function () {
     const hasTouchScreen = navigator && navigator.maxTouchPoints > 2;
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -492,12 +446,11 @@ function deleteBudget(subCategory) {
     const nextYear = addBudgetForm.querySelector('.next-year');
     const currentDate = new Date();
     let year = currentDate.getFullYear();
-    // only desktop safari and desktop firefox don't support month picker
-    // debating adding to desktop chrome bc desktop chrome's selector kinda sucks
-    if(((isSafari && !hasTouchScreen) || (isFirefox && !hasTouchScreen)) && addBudgetForm && monthInputField && monthSelectContainer && picker && yearContainer && prevYear && nextYear) {
+
+    if (((isSafari && !hasTouchScreen) || (isFirefox && !hasTouchScreen)) && addBudgetForm && monthInputField && monthSelectContainer && picker && yearContainer && prevYear && nextYear) {
         function closePicker(e) {
             e.stopPropagation();
-            if(!monthSelectContainer.contains(e.target)) {
+            if (!monthSelectContainer.contains(e.target)) {
                 picker.classList.add('hide');
                 document.removeEventListener('click', closePicker);
                 document.addEventListener('focusin', closePicker);
@@ -528,44 +481,29 @@ function deleteBudget(subCategory) {
     }
 })();
 
-
-
-
 function dailybalanceDetailsToggleVisibility() {
     var dailyBalanceContainer = document.getElementById('dailyBalanceContainer');
-    
-    // Toggle visibility
-    dailyBalanceContainer.style.display = (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') 
-        ? 'block' 
-        : 'none';
+    dailyBalanceContainer.style.display = (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') ? 'block' : 'none';
 }
 
-// Ensure it's hidden on the first load
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('dailyBalanceContainer').style.display = 'none';
 });
 
-
-$(document).ready(function() {
-    // Get daily_balance_data from the HTML data attribute
+$(document).ready(function () {
     var daily_balance_data = JSON.parse($('#dailyBalanceData').attr('data-json'));
     console.log("Loaded Daily Balance Data:", daily_balance_data);
 
-    // Store selected Account Types and Account Names
     var selectedAccountTypes = [];
     var selectedAccountNames = [];
 
-    // Initialize select2 for Account Name filter (Dropdown with Multi-Select)
     $('#dailyBalance_accountNameFilter').select2({
         placeholder: "Select Account Names",
         allowClear: true
     });
 
-    // Account Type button click handler
-    $('.dailyBalance_account-type-btn').on('click', function() {
+    $('.dailyBalance_account-type-btn').on('click', function () {
         var accountType = $(this).data('account-type');
-        
-        // Toggle selection of the clicked Account Type
         if (selectedAccountTypes.includes(accountType)) {
             selectedAccountTypes = selectedAccountTypes.filter(item => item !== accountType);
             $(this).removeClass('selected-btn').addClass('default-btn');
@@ -573,14 +511,12 @@ $(document).ready(function() {
             selectedAccountTypes.push(accountType);
             $(this).removeClass('default-btn').addClass('selected-btn');
         }
-
         console.log("Selected Account Types:", selectedAccountTypes);
         updateAccountNameFilter(selectedAccountTypes);
         updateChart();
     });
 
-    // Account Name dropdown selection handler
-    $('#dailyBalance_accountNameFilter').on('change', function() {
+    $('#dailyBalance_accountNameFilter').on('change', function () {
         selectedAccountNames = $(this).val() || [];
         console.log("Selected Account Names:", selectedAccountNames);
         updateChart();
@@ -602,19 +538,17 @@ $(document).ready(function() {
         $('#dailyBalance_accountNameFilter').trigger('change');
     }
 
-    // Initialize Chart.js
     var ctx = document.getElementById('dailyBalance_lineChart').getContext('2d');
     var dailyBalanceChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [], // Will be updated by updateChart()
-            // Inside your Chart.js configuration (no changes needed)
+            labels: [],
             datasets: [{
                 label: 'Daily Balance',
                 data: [],
-                borderColor: function(context) {
+                borderColor: function (context) {
                     const chart = context.chart;
-                    const {ctx, chartArea} = chart;
+                    const { ctx, chartArea } = chart;
                     if (!chartArea) return;
                     const gradient = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 100);
                     gradient.addColorStop(0, '#ffc800');
@@ -631,14 +565,14 @@ $(document).ready(function() {
         options: {
             layout: {
                 padding: {
-                    right: 50 // Keep your padding
+                    right: 50
                 }
             },
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false // Hide legend to match target design
+                    display: false
                 },
                 tooltip: {
                     enabled: true,
@@ -649,10 +583,10 @@ $(document).ready(function() {
                     borderWidth: 1
                 },
                 datalabels: {
-                    align: 'end', // Position label at the end of the line
-                    anchor: 'end', // Keep it inside the chart area
+                    align: 'end',
+                    anchor: 'end',
                     color: 'white',
-                    formatter: function(value, context) {
+                    formatter: function (value, context) {
                         var index = context.dataIndex;
                         var totalPoints = context.chart.data.labels.length;
                         var isMobile = window.innerWidth <= 768;
@@ -667,9 +601,9 @@ $(document).ready(function() {
                                 return '$' + value.toLocaleString();
                             }
                         }
-                        return ''; // Hide other labels
+                        return '';
                     },
-                    clip: false // Prevent cutting off outside chart boundaries
+                    clip: false
                 },
                 zoom: {
                     pan: {
@@ -692,15 +626,15 @@ $(document).ready(function() {
                 x: {
                     display: true,
                     grid: {
-                        display: false // Hide x-axis grid lines to match target design
+                        display: false
                     },
                     ticks: {
-                        color: 'rgba(255, 255, 255, 0.6)', // Softer color
-                        maxTicksLimit: 6, // Limit the number of labels to avoid clutter
-                        callback: function(value, index, values) {
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        maxTicksLimit: 6,
+                        callback: function (value, index, values) {
                             const date = dailyBalanceChart.data.labels[index];
                             if (date) {
-                                return date.split('-').slice(1).join('-'); // Format as "MM-DD"
+                                return date.split('-').slice(1).join('-');
                             }
                             return '';
                         }
@@ -709,19 +643,19 @@ $(document).ready(function() {
                 y: {
                     display: true,
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)', // Subtle grid lines
+                        color: 'rgba(255, 255, 255, 0.1)',
                         drawBorder: false
                     },
                     ticks: {
-                        color: 'rgba(255, 255, 255, 0.6)', // Softer color
-                        callback: function(value) {
-                            return '$' + value.toLocaleString(); // Format with $ and comma separator
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        callback: function (value) {
+                            return '$' + value.toLocaleString();
                         }
                     }
                 }
             }
         },
-        plugins: [ChartDataLabels] // Enable Data Labels Plugin
+        plugins: [ChartDataLabels]
     });
 
     function aggregateData(selectedAccountTypes, selectedAccountNames) {
@@ -759,7 +693,6 @@ $(document).ready(function() {
             dailyBalanceChart.data.labels = aggregatedData.labels;
             dailyBalanceChart.data.datasets[0].data = aggregatedData.data;
 
-            // Update the header with the latest balance
             const latestBalance = aggregatedData.data[aggregatedData.data.length - 1] || 0;
             document.querySelector('.chart-card .views .number').textContent = `$${latestBalance.toLocaleString()}`;
 
@@ -770,30 +703,18 @@ $(document).ready(function() {
     updateChart();
 });
 
-
-
-
-
-
-
-
-
-
-// Register Chart.js plugins
 Chart.register(ChartDataLabels);
 
-// Global variables for Chart.js instances
 let incomePieChart = null;
 let incomeVsBudgetPieChart = null;
 
 function updatePieCharts(forceRefresh = false) {
     console.log('Updating both pie charts...');
 
-    var selectedYear = document.getElementById("transactionYear").value;
-    var activeButton = document.querySelector("#monthButtons button.active");
-    var selectedMonth = activeButton ? activeButton.getAttribute("data-month") : '01';
+    var calendarValue = document.getElementById("calendarPicker").value;
+    var [transactionYear, transactionMonth] = calendarValue.split("-");
 
-    if (!selectedYear || !selectedMonth) {
+    if (!transactionYear || !transactionMonth) {
         console.error('Missing year or month selection');
         return;
     }
@@ -802,16 +723,14 @@ function updatePieCharts(forceRefresh = false) {
         url: '/budget_summary_pie_chart',
         type: 'GET',
         data: {
-            year: selectedYear,
-            month: selectedMonth
+            year: transactionYear,
+            month: transactionMonth
         },
         success: function (data) {
-            // Extract data from JSON response
             const income = data.income || 0;
             const budget = data.budget || 0;
             const spent = Math.abs(data.spent) || 0;
 
-            // Format currency for display
             const USDollar = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD'
@@ -819,7 +738,6 @@ function updatePieCharts(forceRefresh = false) {
             document.getElementById('incomeTotal').textContent = `Income - ${USDollar.format(income)}`;
             document.getElementById('budgetTotal').textContent = `Budget - ${USDollar.format(budget)}`;
 
-            // Update first pie chart (Budget vs. Spent vs. Remaining)
             const remainingBudget = budget - spent;
             console.log('Budget:', budget, 'Spent:', spent, 'Remaining:', remainingBudget);
 
@@ -898,7 +816,6 @@ function updatePieCharts(forceRefresh = false) {
                 });
             }
 
-            // Update second pie chart (Income vs. Budget vs. Remaining)
             const remainingIncome = income - budget;
             console.log('Income:', income, 'Budget:', budget, 'Remaining:', remainingIncome);
 
@@ -925,7 +842,7 @@ function updatePieCharts(forceRefresh = false) {
                 labels: ['Income', 'Budget', 'Remaining'],
                 datasets: [{
                     data: [0, budget, remainingIncome],
-                    backgroundColor: ['rgba(0, 0, 0, 0)', gradientBudget, gradientRemainingIncome],  
+                    backgroundColor: ['rgba(0, 0, 0, 0)', gradientBudget, gradientRemainingIncome],
                     borderWidth: 0
                 }]
             };
@@ -985,7 +902,6 @@ function updatePieCharts(forceRefresh = false) {
     });
 }
 
-// Replace individual chart functions with the combined one
 function updateIncomePieChart(forceRefresh = false) {
     updatePieCharts(forceRefresh);
 }
@@ -994,57 +910,26 @@ function updateIncomeVsBudgetPieChart(forceRefresh = false) {
     updatePieCharts(forceRefresh);
 }
 
-// Initial render and event listeners
 document.addEventListener('DOMContentLoaded', function () {
     debouncedUpdatePieCharts();
-    const transactionYear = document.getElementById('transactionYear');
-    const monthButtons = document.querySelectorAll('#monthButtons button');
-
-    if (transactionYear) {
-        transactionYear.addEventListener('change', () => debouncedUpdatePieCharts());
-    }
-
-    monthButtons.forEach(button => {
-        button.addEventListener('click', () => debouncedUpdatePieCharts());
-    });
 });
 
-
-
-
-
-
-
-
-
-
-
-// budget_transaction_details.js
-$(document).ready(function() {
-    // Attach the showSubcategoryDropdown function to the "Re-categorize" button
+$(document).ready(function () {
     $('.reCategorizeButton').on('click', function () {
         showSubcategoryDropdown(this);
     });
-
-   
 
     $('.budget_transaction_details_reCategorizeButton').on('click', function () {
         budget_transaction_details_showSubcategoryDropdown(this);
     });
 
-    // Add click event for MORE/LESS text
     $('.budget_transaction_details_status').on('click', function () {
-        
         budget_transaction_details_toggleDetails(this);
     });
 });
 
-// Function to populate the subcategory dropdown and show it
 function showSubcategoryDropdown(button) {
-    // Hide the "Re-categorize" button
     $(button).hide();
-
-    // Show the label and dropdown
     var row = $(button).closest('tr');
     var dropdownLabel = row.find('.subcategoryLabel');
     var subcategoryDropdown = row.find('#subcategorySelect');
@@ -1053,12 +938,8 @@ function showSubcategoryDropdown(button) {
     dropdownLabel.show();
     subcategoryDropdown.show();
 
-    // Fetch subcategories using an AJAX request
     $.get('/getDistinctSubcategories', function (subcategories) {
-        // Clear existing options
         subcategoryDropdown.empty();
-
-        // Populate the Select2 dropdown with fetched subcategories
         subcategoryDropdown.select2({
             data: subcategories,
             width: '180px',
@@ -1067,15 +948,11 @@ function showSubcategoryDropdown(button) {
         });
     });
 
-    // Show the "Update Subcategory" button
     updateButton.show();
 }
 
-var previousSubcategory = '';
-// Function to update the subcategory in the database
 function updateSubcategory(transactionKey, event) {
     var updatedSubcategory = $('#subcategorySelect').select2('data')[0].text;
-
     console.log("Inside updateSubcategory: transactionKey ", transactionKey, "updatedSubcategory :", updatedSubcategory);
 
     if (updatedSubcategory) {
@@ -1088,10 +965,10 @@ function updateSubcategory(transactionKey, event) {
             },
             success: function (response) {
                 console.log('Subcategory updated successfully:', response);
-                updateBudgetSummaryChart();
+                var calendarValue = document.getElementById("calendarPicker").value;
+                var [transactionYear, transactionMonth] = calendarValue.split("-");
+                updateBudgetSummaryChart(transactionYear, transactionMonth);
                 showTransactionDetails(event, previousSubcategory);
-                // Note: Removed updateBudgetSummaryChart and showTransactionDetails calls
-                // as they weren't in your original table-specific code
             },
             error: function (error) {
                 console.error('Error updating subcategory:', error);
@@ -1102,36 +979,26 @@ function updateSubcategory(transactionKey, event) {
     }
 }
 
-
-
-
-// Function to toggle the visibility of transaction details in mobile view
 function budget_transaction_details_toggleDetails(button) {
     const card = button.closest('.budget_transaction_details_card');
     const body = card.querySelector('.budget_transaction_details_body');
     const statusElement = card.querySelector('.budget_transaction_details_status');
 
     if (body.style.display === 'none') {
-        // Expand the details
         body.style.display = 'block';
-        button.textContent = '▲'; // Change to up arrow
-        statusElement.textContent = 'Less ▲'; // Change to "LESS"
-        statusElement.style.color = '#ff4d4d'; // Red for "LESS" (adjust color as needed)
+        button.textContent = '▲';
+        statusElement.textContent = 'Less ▲';
+        statusElement.style.color = '#ff4d4d';
     } else {
-        // Collapse the details
         body.style.display = 'none';
-        button.textContent = '▼'; // Change to down arrow
-        statusElement.textContent = 'More ▼'; // Change to "MORE"
-        statusElement.style.color = '#00cc00'; // Green for "MORE" (adjust color as needed)
+        button.textContent = '▼';
+        statusElement.textContent = 'More ▼';
+        statusElement.style.color = '#00cc00';
     }
 }
 
-// Function to populate and show the subcategory dropdown in mobile view
 function budget_transaction_details_showSubcategoryDropdown(button) {
-    // Hide the "Re-categorize" button
     $(button).hide();
-
-    // Show the label and dropdown
     var field = $(button).closest('.budget_transaction_details_field');
     var dropdownLabel = field.find('.budget_transaction_details_subcategoryLabel');
     var subcategoryDropdown = field.find('#subcategorySelectMobile');
@@ -1140,12 +1007,8 @@ function budget_transaction_details_showSubcategoryDropdown(button) {
     dropdownLabel.show();
     subcategoryDropdown.show();
 
-    // Fetch subcategories using an AJAX request
     $.get('/getDistinctSubcategories', function (subcategories) {
-        // Clear existing options
         subcategoryDropdown.empty();
-
-        // Populate the Select2 dropdown with fetched subcategories
         subcategoryDropdown.select2({
             data: subcategories,
             width: '180px',
@@ -1154,14 +1017,11 @@ function budget_transaction_details_showSubcategoryDropdown(button) {
         });
     });
 
-    // Show the "Update Subcategory" button
     updateButton.show();
 }
 
-// Function to update the subcategory in the database for mobile view
 function budget_transaction_details_updateSubcategory(transactionKey, event) {
     var updatedSubcategory = $('#subcategorySelectMobile').select2('data')[0].text;
-
     console.log("Inside budget_transaction_details_updateSubcategory: transactionKey ", transactionKey, "updatedSubcategory :", updatedSubcategory);
 
     if (updatedSubcategory) {
@@ -1174,7 +1034,9 @@ function budget_transaction_details_updateSubcategory(transactionKey, event) {
             },
             success: function (response) {
                 console.log('Subcategory updated successfully:', response);
-                updateBudgetSummaryChart();
+                var calendarValue = document.getElementById("calendarPicker").value;
+                var [transactionYear, transactionMonth] = calendarValue.split("-");
+                updateBudgetSummaryChart(transactionYear, transactionMonth);
                 showTransactionDetails(event, previousSubcategory);
             },
             error: function (error) {

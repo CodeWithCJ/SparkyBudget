@@ -146,31 +146,15 @@
             <div id="balanceDetailsTable" class="hidden-balance-details">                
                 {% include 'balance_details.html.jinja' %}
             </div>
+            
             <div class="filters">
-                <label for="transactionYear">Year:</label>
-                <select id="transactionYear" onchange="updateTransactionTable('01')">
-                    {% for year in transaction_years %}
-                    <option value="{{ year }}" {% if year==transaction_years[0] %}selected{% endif %}>{{ year }}
-                    </option>
-                    {% endfor %}
-                </select>
-                <label>Month:</label>
-                <div id="monthButtons">
-                    {% for month in transaction_months %}
-                    <button onclick="updateTransactionTable('{{ month }}')" {% if month==transaction_months[0]
-                        %}class="active" {% endif %} data-month="{{ month }}">{{ month }}</button>
-                    {% endfor %}
-                </div>
-            </div>
-            <button id="addBudgetButton" onclick="toggleAddBudgetForm()">Add Budget</button>
-            <form id="addBudgetForm" class="hide">
-                <label class="month-year-picker-container" for="budgetMonth">Budget Month:
-                    <input type="month" id="budgetMonth" value="{{ now.year }}-{{ now.strftime('%m') }}" required
-                        pattern="[0-9]{4}-[0-9]{2}">
+                <label class="month-year-picker-container" for="calendarPicker">Select Month:
+                    <input type="text" id="calendarPicker" value="{{ now.year }}-{{ now.strftime('%m') }}" readonly>
                     <div class="year-month-picker hide">
                         <div class="year-picker">
-                            <button class="previous-year">&lt;</button><span class="selected-year">{{ now.year
-                                }}</span><button class="next-year">&gt;</button>
+                            <button class="previous-year"><</button>
+                            <span class="selected-year">{{ now.year }}</span>
+                            <button class="next-year">></button>
                         </div>
                         <div class="month-picker">
                             <button data-month="01">Jan</button>
@@ -186,8 +170,18 @@
                             <button data-month="11">Nov</button>
                             <button data-month="12">Dec</button>
                         </div>
+                        <div class="picker-actions">
+                            <button class="clear-button">Clear</button>
+                            <button class="this-month-button">This month</button>
+                        </div>
                     </div>
                 </label>
+            </div>
+
+
+            <button id="addBudgetButton" onclick="toggleAddBudgetForm()">Add Budget</button>
+            
+            <form id="addBudgetForm" class="hide">
                 <label for="subCategoryInput">Subcategory:</label>
                 <select id="subCategoryInput" class="select2" required>
                     <option value="" selected disabled>Select a subcategory</option>
