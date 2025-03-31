@@ -157,7 +157,15 @@ function balanceDetailsTableToggleVisibility() {
 var SortAscDesc = false; // Set your default value
 
 
-
+function updateBudgetSummaryChartFromDropdown() {
+    var calendarValue = document.getElementById("calendarPicker").value;
+    if (!calendarValue) {
+        console.error("Calendar picker value is empty. Cannot update budget summary chart.");
+        return;
+    }
+    var [transactionYear, transactionMonth] = calendarValue.split("-");
+    updateBudgetSummaryChart(transactionYear, transactionMonth);
+}
 
 function updateBudgetSummaryChart(transactionYear, transactionMonth) {
     

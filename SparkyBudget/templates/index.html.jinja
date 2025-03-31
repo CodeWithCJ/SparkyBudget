@@ -209,14 +209,14 @@
 
             <div id="dropdown-container">
                 <label for="sortCriteria">Sort by:</label>
-                <select id="sortCriteria" onchange="updateBudgetSummaryChart()">
+                <select id="sortCriteria" onchange="updateBudgetSummaryChartFromDropdown()">
                     <option value="budget">Budget</option>
                     <option value="category">Category</option>
                     <option value="subcategory">Subcategory</option>
                     <option value="spent">Spent</option>
                     <option value="balance">Balance</option>
                 </select>
-                <select id="SortAscDesc" onchange="updateBudgetSummaryChart()">
+                <select id="SortAscDesc" onchange="updateBudgetSummaryChartFromDropdown()">
                     <option value="True">Desc</option>
                     <option value="False">Asc</option>
                 </select>
