@@ -3,7 +3,7 @@
 import sqlite3
 from flask import Blueprint, render_template, jsonify, request 
 from flask_login import login_required
-from datetime import datetime, timezone
+from datetime import datetime
 
 home_bp = Blueprint('home', __name__)
 
@@ -141,7 +141,8 @@ def index():
         bank_account_name_balance_details=bank_account_name_balance_details,
         transaction_years=transaction_years,
         transaction_months=transaction_months,
-        now=datetime.now(timezone.utc),
+        #now=datetime.now(timezone.utc),
+        now = datetime.now(),
         labels=labels,
         balances=balances,
         daily_balance_data=daily_balance_data  # Add the new daily balance data

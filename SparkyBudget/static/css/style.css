@@ -335,7 +335,7 @@ a.analyze-link:hover {
 }
 
 .content {
-    height: calc(100% - 50px);
+    height: calc(100% - 60px);
     display: flex;
     flex-wrap: wrap;
 }
@@ -350,17 +350,24 @@ a.analyze-link:hover {
     background-color: #1d1d1d;
     padding: 5px;
     box-sizing: border-box;
+    height: 100%; /* Match the height of .content */
+    overflow-y: auto; /* Optional: Add a scrollbar if its content overflows */
+}
+
+html, body {
+    height: 100vh; /* Full viewport height */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Disable browser scrolling */
 }
 
 .main-content {
     flex: 4;
     padding: 20px;
     box-sizing: border-box;
-    /* Updated background color */
     background-color: #282c35;
-    /* Add this property for vertical scrollbar */
-    overflow-y: auto;
-    height: 100%;
+    overflow-y: auto; /* Keep the inner scrollbar */
+    height: 100%; /* Take the full height of .content */
 }
 
 /* Media Query for mobile devices */
@@ -967,4 +974,75 @@ header .icon svg {
 .clear-button:hover, .this-month-button:hover {
     background-color: #61dafb;
     color: #1e2228;
+}
+
+.calendar-picker-display {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #77ace0;
+    border-radius: 4px;
+    background-color: #333;
+    color: #d6dadf;
+    font-size: 14px;
+    cursor: pointer;
+}
+.clear-button {
+    display: none;
+}
+
+
+
+#scrollToTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #61dafb;
+    color: #282c35;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+}
+
+#scrollToTopBtn i {
+    font-size: 24px;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #77ace0;
+    transform: scale(1.1);
+    opacity: 1 !important;
+}
+
+#scrollToTopBtn:focus {
+    outline: 2px solid #77ace0;
+    outline-offset: 2px;
+    opacity: 1 !important;
+}
+
+@keyframes gradualDim {
+    0% { opacity: 1; }
+    20% { opacity: 0.8; }
+    40% { opacity: 0.6; }
+    60% { opacity: 0.5; }
+    80% { opacity: 0.4; }
+    100% { opacity: 0.2; }
+}
+
+.dim-button {
+    animation: gradualDim 2s ease forwards;
+}
+
+@media (max-width: 768px) {
+    #scrollToTopBtn {
+        bottom: 80px;
+    }
 }

@@ -23,8 +23,12 @@ $(document).ready(function () {
     let year = new Date().getFullYear(); // Default to current year (2025)
     yearContainer.textContent = year;
 
-    // Function to close the picker when clicking outside
-    function closePicker(e) {
+    const monthNames = {
+        '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun',
+        '07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'
+    };
+
+   function closePicker(e) {
         e.stopPropagation();
         if (!filtersPickerContainer.contains(e.target)) {
             filtersPicker.classList.add('hide');
@@ -61,6 +65,7 @@ $(document).ready(function () {
             const transactionMonth = e.currentTarget.dataset.month;
             const transactionYear = year;
             calendarPickerInput.value = `${transactionYear}-${transactionMonth}`;
+            calendarPickerDisplay.textContent = `${transactionYear}-${monthNames[transactionMonth]}`;
             filtersPicker.classList.add('hide');
 
             // Highlight the selected month
@@ -83,6 +88,7 @@ $(document).ready(function () {
         const transactionYear = year;
         yearContainer.textContent = year;
         calendarPickerInput.value = `${transactionYear}-${transactionMonth}`;
+        calendarPickerDisplay.textContent = `${transactionYear}-${monthNames[transactionMonth]}`;
         filtersPicker.classList.add('hide');
 
         // Highlight the current month
@@ -100,8 +106,9 @@ $(document).ready(function () {
     // "Clear" button
     clearButton.addEventListener('click', (e) => {
         e.preventDefault();
-        calendarPickerInput.value = ''; // Clear the input
-        filtersPicker.classList.add('hide');
+        calendarPickerInput.value = '';
+        calendarPickerDisplay.textContent = '';
+       filtersPicker.classList.add('hide');
 
         // Remove highlighting from all month buttons
         filtersPicker.querySelectorAll('.month-picker button').forEach((button) => {
@@ -1055,3 +1062,76 @@ function budget_transaction_details_updateSubcategory(transactionKey, event) {
         alert('Please select a subcategory before updating.');
     }
 }
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    const mainContent = document.querySelector('.main-content');
+    const dropdownContainer = document.getElementById('dropdown-container');
+
+    if (scrollToTopBtn && mainContent && dropdownContainer) {
+        // Initially dim the button
+        scrollToTopBtn.classList.add('dim-button');
+
+        // Variable to track if the user is scrolling
+        let isScrolling;
+
+        // Function to check if the device is mobile (≤ 768px)
+        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+        // Listen for scroll events on main-content
+        mainContent.addEventListener('scroll', () => {
+            // Remove the dim-button class to reset the animation
+            scrollToTopBtn.classList.remove('dim-button');
+            // Make the button fully visible while scrolling
+            scrollToTopBtn.style.opacity = '1';
+
+            // Clear any existing timeout
+            clearTimeout(isScrolling);
+
+            // Set a timeout to detect when scrolling has stopped
+            isScrolling = setTimeout(() => {
+                // After scrolling stops, reapply the dim-button class to trigger the animation
+                scrollToTopBtn.classList.add('dim-button');
+            }, 150); // 150ms delay to determine scrolling has stopped
+        });
+
+        // Make the button fully visible on mouseover
+        scrollToTopBtn.addEventListener('mouseover', () => {
+            scrollToTopBtn.classList.remove('dim-button');
+            scrollToTopBtn.style.opacity = '1';
+        });
+
+        // Allow the button to dim again when the mouse leaves
+        scrollToTopBtn.addEventListener('mouseout', () => {
+            if (!isScrolling) {
+                scrollToTopBtn.classList.add('dim-button');
+            }
+        });
+
+        // Make the button fully visible on touchstart (for mobile)
+        scrollToTopBtn.addEventListener('touchstart', () => {
+            scrollToTopBtn.classList.remove('dim-button');
+            scrollToTopBtn.style.opacity = '1';
+        });
+
+        // Scroll behavior based on device type
+        scrollToTopBtn.addEventListener('click', () => {
+            if (isMobile()) {
+                // On mobile: Scroll to just above the dropdown-container
+                const dropdownPosition = dropdownContainer.getBoundingClientRect().top + mainContent.scrollTop - 20;
+                mainContent.scrollTo({
+                    top: dropdownPosition,
+                    behavior: 'smooth'
+                });
+            } else {
+                // On desktop: Scroll to the top of main-content
+                mainContent.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }
+});

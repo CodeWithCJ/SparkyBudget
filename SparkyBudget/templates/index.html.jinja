@@ -149,7 +149,8 @@
             
             <div class="filters">
                 <label class="month-year-picker-container" for="calendarPicker">Select Month:
-                    <input type="text" id="calendarPicker" value="{{ now.year }}-{{ now.strftime('%m') }}" readonly>
+                    <input type="text" id="calendarPicker" value="{{ now.year }}-{{ now.strftime('%m') }}" readonly style="display: none;">
+                    <span id="calendarPickerDisplay" class="calendar-picker-display">{{ now.year }}-{{ now.strftime('%b') }}</span>
                     <div class="year-month-picker hide">
                         <div class="year-picker">
                             <button class="previous-year"><</button>
@@ -230,6 +231,12 @@
             <div class="budget_transaction_details_wrapper">
                 <div id="transactionDetails"></div>
             </div>
+
+
+            <button id="scrollToTopBtn" title="Scroll to Top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
