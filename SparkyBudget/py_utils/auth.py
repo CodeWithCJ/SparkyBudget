@@ -1,9 +1,13 @@
 #py_utils/auth.py
-
 import os
+import logging  # Ensure logging is imported
 from flask import request, redirect, url_for, session, render_template
-from flask_login import login_user, logout_user, current_user, login_required, UserMixin
+from flask_login import login_user, logout_user, current_user, UserMixin
 from datetime import timedelta  # Ensure this line is included
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Simple hardcoded user class (replace with your user model if you have one)
 class User(UserMixin):
@@ -17,7 +21,7 @@ def load_user(user_id):
     return User(user_id)
 
 def login():
-    print("Login route reached.")
+    logger.debug("Login route reached.")
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -26,11 +30,12 @@ def login():
             login_user(user)
             session["user"] = sparky_username
             session.permanent = True  # Make the session permanent
-            print(f"User {username} successfully logged in.")
+            logger.debug(f"User {username} successfully logged in.")
             return redirect(url_for("home.index"))  # Correct the endpoint reference
     return render_template("login.html.jinja")
 
 def logout():
+    logger.debug("Logging out user.")
     logout_user()
     return redirect(url_for("login"))
 
@@ -41,5 +46,6 @@ def before_request(app):
         session["user"] = current_user.id
 
 def unauthorized():
+    logger.warning("Unauthorized access attempt.")
     # Redirect the user to the login page when unauthorized
     return redirect(url_for("login"))

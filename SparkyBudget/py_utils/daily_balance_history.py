@@ -1,11 +1,21 @@
 #py_utils/daily_balance_history.py
 
-import sqlite3
+import sqlite3, os, logging
 from datetime import datetime
+
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=log_level,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Logs to the console
+    ]
+)
+logger = logging.getLogger(__name__)
 
 
 def daily_balance_history_insert(db_name="SparkyBudget.db"):
-    print(f"daily_balance_history_insert executed at {datetime.now()}")
+    logger.info(f"daily_balance_history_insert executed at {datetime.now()}")
     from SparkyBudget import db_lock  # Import the db_lock from your app or shared module
     with db_lock:  # Synchronize database access
         try:
@@ -43,7 +53,7 @@ def daily_balance_history_insert(db_name="SparkyBudget.db"):
                 conn.commit()
 
         except sqlite3.Error as e:
-            print(f"An error occurred: {e}")
+            logger.error(f"An error occurred: {e}")
 
 # Call the function
 #daily_balance_history_insert()

@@ -1,11 +1,17 @@
 #py_utils/monthly_budget_insert.py
 
-import sqlite3
+import sqlite3,  os, logging
 from datetime import datetime
 
 
+# Get log level from environment, default to INFO if not set
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logger = logging.getLogger(__name__)
+
+
+
 def month_budget_update_using_template():
-    print(f"month_budget_update_using_template executed at {datetime.now()}")
+    logger.info(f"month_budget_update_using_template executed at {datetime.now()}")
     from SparkyBudget import db_lock  # Import the db_lock from your app or shared module
     # Ensure that only one thread/process can access the DB at a time
     with db_lock:

@@ -1,8 +1,22 @@
 # py_utils/subcategory_mgmt.py
 
-import sqlite3
+import sqlite3, os, logging
 from flask import Blueprint, jsonify, request
 from flask_login import login_required
+
+
+
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=log_level,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Logs to the console
+    ]
+)
+logger = logging.getLogger(__name__)
+
+
 
 subcategory_update_bp = Blueprint('subcategory_update', __name__)
 
@@ -25,7 +39,7 @@ def get_distinct_subcategories():
 
     except Exception as e:
         # Print the exception details
-        print(f"An error occurred while fetching distinct subcategories: {str(e)}")
+        logger.error(f"An error occurred while fetching distinct subcategories: {str(e)}")
 
         return jsonify({"error": "Failed to fetch distinct subcategories"}), 500
 
@@ -44,7 +58,7 @@ def update_subcategory():
     subcategory_update_query = "UPDATE F_Transaction SET SubCategory = ? WHERE TransactionKey = ?"
     subcategory_update_parameters = (new_subcategory, transaction_key)
 
-    print("SQL Query of updateSubcategory:", subcategory_update_query, " Paramters:", subcategory_update_parameters)
+    logger.debug("SQL Query of updateSubcategory:", subcategory_update_query, " Paramters:", subcategory_update_parameters)
 
     cursor.execute(subcategory_update_query, subcategory_update_parameters)
 
@@ -54,6 +68,6 @@ def update_subcategory():
     # Close the database connection
     conn.close()
 
-    print("Subcategory updated successfully")
+    logger.debug("Subcategory updated successfully")
 
     return jsonify({"status": "success"})

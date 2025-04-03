@@ -1,6 +1,6 @@
 #py_utils/SimpleFinToDB.py
 
-import base64
+import base64, os, logging
 import csv
 import datetime
 import os
@@ -13,6 +13,16 @@ import requests
 #from threading import Lock
 #db_lock = Lock()
 
+
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=log_level,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler()  # Logs to the console
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Function to convert timestamp to datetime
 def ts_to_datetime(ts):
@@ -27,7 +37,7 @@ def get_access_url():
     #    with open(token_file_path, "r") as token_file:
     #        setup_token = token_file.read().strip()
     #except FileNotFoundError:
-    #    print(f"Token file '{token_file_path}' not found.")
+    #    logger.info(f"Token file '{token_file_path}' not found.")
     #    return None
     setup_token = os.getenv("SIMPLEFIN_TOKEN")
 
@@ -37,9 +47,9 @@ def get_access_url():
     try:
         with open(access_url_file, "r") as file:
             access_url = file.read().strip()
-        print(f"Loaded Access URL: {access_url}")
+        logger.info(f"Loaded Access URL: XXXXXXXXX") #{access_url}
     except FileNotFoundError:
-        print("Access URL not found. Trying to claim a new one.")
+        logger.info("Access URL not found. Trying to claim a new one.")
 
         # Claim an Access URL
         # claim_url = setup_token  # Modify this line accordingly if the actual logic differs
@@ -52,14 +62,14 @@ def get_access_url():
         with open(access_url_file, "w") as file:
             file.write(access_url)
 
-        print("Access URL is ", access_url)
+        
 
     return access_url
 
 
 def process_accounts_data():
     server_local_timestamp = datetime.datetime.now()
-    print(f"process_accounts_data executed at {server_local_timestamp}")
+    logger.info(f"process_accounts_data executed at {server_local_timestamp}")
     from SparkyBudget import db_lock  # Import inside the function to avoid circular import
     with db_lock:  # Synchronize database access
         # Create the output folder if it doesn't exist
@@ -203,7 +213,7 @@ def process_accounts_data():
                     conn.commit()
 
                 # Indicate successful processing
-                print("Data processed and saved to database.")
+                logger.info("Data processed and saved to database.")
                 
                 
                 
@@ -221,7 +231,7 @@ def process_accounts_data():
                     for balance_org_data in balance_org_data_list:
                         csv_writer.writerow([balance_org_data.get(key, "") for key in header])
 
-                print(f"Balance and organization data saved to {balance_org_csv_filename}")
+                logger.info(f"Balance and organization data saved to {balance_org_csv_filename}")
 
                 # Save transactions data to CSV file
                 transactions_csv_filename = os.path.join(output_folder, "transactions_data.csv")
@@ -236,14 +246,14 @@ def process_accounts_data():
                     for transaction_data in transactions_data_list:
                         csv_writer.writerow([transaction_data.get(key, "") for key in header])
 
-                print(f"Transactions data saved to {transactions_csv_filename}")
+                logger.info(f"Transactions data saved to {transactions_csv_filename}")
 
-                print("Data saved to the database and CSV files.")
+                logger.info("Data saved to the database and CSV files.")
 
 
             # Handle potential request exceptions
             except requests.exceptions.RequestException as err:
-                print(f"Error during API call: {err}")
+                logger.error(f"Error during API call: {err}", exc_info=True)
 
 
 

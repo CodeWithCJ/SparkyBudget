@@ -1,14 +1,16 @@
 #py_utils/manage_categories.py
 
-import locale
-import os
-import secrets
+import os, logging
 import sqlite3
-import schedule, time
-from datetime import datetime, timedelta, timezone
 
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for, Blueprint  
-from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
+from flask import jsonify, render_template, request, Blueprint  
+from flask_login import login_required
+
+
+
+# Get log level from environment, default to INFO if not set
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logger = logging.getLogger(__name__)
 
 
 manage_categories_bp = Blueprint('manage_categories', __name__)
@@ -44,11 +46,11 @@ def category_subcategory_data():
         formatted_data = [
             {"SubCategoryKey": row[0], "SubCategory": row[1], "Category": row[2]} for row in category_subcategory_data
         ]
-        # print(formatted_data)  # Debug print
+        logger.debug(formatted_data)  # Debug print
         return jsonify({"data": formatted_data})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -79,10 +81,11 @@ def category_data():
         ]  # Assuming 'Category' is the column name in your table
 
         # Return the categories as JSON
+        logger.debug(categories_list)
         return jsonify(categories_list)
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -95,7 +98,7 @@ def add_subcategory():
         conn = sqlite3.connect("SparkyBudget.db")
         cursor = conn.cursor()
 
-        print("Adding New Subcategory: From Python", subcategory, "  ", category)
+        logger.debug(f"Adding New Subcategory: {subcategory}, Category: {category}")
 
         add_category_query = """
             INSERT INTO D_Category (SubCategory, Category)
@@ -110,7 +113,7 @@ def add_subcategory():
         return jsonify({"success": True, "message": "Category added successfully"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -143,7 +146,7 @@ def add_subcategory_rule():
         return jsonify({"success": True, "message": "Category rule added successfully"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": str(e)}), 500
      
      
@@ -168,7 +171,7 @@ def delete_subcategory(subcategory_key):
         return jsonify({"success": True, "message": "Category deleted successfully"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -195,7 +198,7 @@ def update_category():
         return jsonify({"success": True, "message": "Category updated successfully"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -231,7 +234,7 @@ def subcategory_data():
         return jsonify(subcategories_list)
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -271,11 +274,11 @@ def subcategory_rule_data():
             for row in subcategory_rule_data
         ]
 
-        # print(formatted_data)  # Debug print
+        logger.debug(formatted_data)  # Debug print
         return jsonify({"data": formatted_data})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
    
         
@@ -298,11 +301,11 @@ def update_rule():
         cursor.execute(update_rule_query, update_rule_data)
         conn.commit()
         conn.close()
-        print(update_rule_data)  # Debug print
+        logger.debug(update_rule_data)  # Debug print
         return jsonify({"success": True, "message": "Rule updated successfully"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
@@ -326,7 +329,7 @@ def delete_rule(RuleKey):
         return jsonify({"success": True, "message": "Category deleted successfully"})
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
         
         
@@ -360,7 +363,7 @@ def account_type_data():
         # Return the account types as JSON
         return jsonify({"data": account_types_list})
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 @manage_categories_bp.route('/addAccountType', methods=['POST'])
@@ -389,7 +392,7 @@ def add_account_type():
         # Return success message
         return jsonify({"success": True, "message": "Account type added successfully"})
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 @manage_categories_bp.route('/updateAccountTypes', methods=['POST'])
@@ -397,14 +400,14 @@ def add_account_type():
 def update_account_types():
     try:
         data = request.get_json()
-        print("Received data:", data)  # Already present
+        logger.debug("Received data:", data)  # Already present
         conn = sqlite3.connect("SparkyBudget.db")
         cursor = conn.cursor()
 
         # Verify table structure
-        cursor.execute("PRAGMA table_info(D_AccountTypes)")
+        cursor.execute("PRAGMA table_debug(D_AccountTypes)")
         columns = [col[1] for col in cursor.fetchall()]
-        print("D_AccountTypes columns:", columns)  # Debug table structure
+        logger.debug("D_AccountTypes columns:", columns)  # Debug table structure
 
         for item in data:
             account_type = item.get('AccountType')
@@ -425,16 +428,16 @@ def update_account_types():
             # Verify the update
             cursor.execute("SELECT SortOrder FROM D_AccountTypes WHERE AccountType = ?", (account_type,))
             updated_sort_order = cursor.fetchone()
-            print(f"After update, {account_type} SortOrder: {updated_sort_order}")
+            logger.debug(f"After update, {account_type} SortOrder: {updated_sort_order}")
 
         conn.commit()
         conn.close()
         return jsonify({"success": True, "message": "Account types updated successfully"})
     except sqlite3.Error as e:
-        print(f"Database error: {str(e)}")
+        logger.error(f"Database error: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": f"Database error: {str(e)}"}), 500
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": str(e)}), 500
         
         
@@ -454,5 +457,5 @@ def delete_account_type(account_type):
         conn.close()
         return jsonify({"success": True, "message": "Account type deleted successfully"})
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
