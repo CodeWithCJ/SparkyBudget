@@ -7,13 +7,6 @@ from flask_login import login_required
 
 
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(
-    level=log_level,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Logs to the console
-    ]
-)
 logger = logging.getLogger(__name__)
 
 

@@ -2,7 +2,7 @@ import locale, os, logging
 from datetime import timedelta
 from datetime import datetime
 from threading import Lock
-from flask import Flask, jsonify
+from flask import Flask, jsonify  
 from flask_login import LoginManager, login_required
 
 

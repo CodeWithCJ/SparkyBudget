@@ -1,9 +1,14 @@
 # py_routes/historical_trend.py
 
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, request, render_template  
 from flask_login import login_required
 import sqlite3, re
 from datetime import datetime,timedelta
+import os, logging
+
+
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logger = logging.getLogger(__name__)
 
 historical_trend_bp = Blueprint('historical_trend', __name__)
 
@@ -91,7 +96,7 @@ def historical_trend():
     query_params = [start_date, end_date]
 
     # Execute the SQL query
-    print("query:", query_params)
+    logger.debug("query:", query_params)
     cursor.execute(custom_report_query, query_params)
 
     # Fetch the query result
@@ -137,7 +142,7 @@ def salary_chart_data():
 
     except Exception as e:
         # Print the exception details
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 @historical_trend_bp.route("/splitTransaction", methods=["POST"])
@@ -149,7 +154,7 @@ def split_transaction():
         split_amount = float(request.form.get("splitAmount"))
         new_subcategory = request.form.get("newSubcategory")
         
-        print("Split Transaction:", transaction_key, split_amount, new_subcategory)
+        logger.debug("Split Transaction:", transaction_key, split_amount, new_subcategory)
         
         if not transaction_key or not split_amount or not new_subcategory:
             return jsonify({"error": "Invalid data received!"}), 400
@@ -205,5 +210,5 @@ def split_transaction():
         return jsonify({"success": True, "message": "Transaction split successfully!"})
 
     except Exception as e:
-        print(f"Error splitting transaction: {str(e)}")
+        logger.error(f"Error splitting transaction: {str(e)}", exc_info=True)
         return jsonify({"error": f"Failed to split transaction! {str(e)}"}), 500

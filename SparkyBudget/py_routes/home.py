@@ -1,9 +1,13 @@
 #py_routes/home.py
 
-import sqlite3
+import sqlite3, os, logging
 from flask import Blueprint, render_template, jsonify, request 
 from flask_login import login_required
 from datetime import datetime
+
+
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logger = logging.getLogger(__name__)
 
 home_bp = Blueprint('home', __name__)
 
@@ -163,6 +167,7 @@ def get_account_types():
         conn.close()
         return jsonify({"success": True, "account_types": [{"key": row[0], "type": row[1]} for row in account_types]})
     except Exception as e:
+        logger.error(f"Error fetching account types: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": str(e)})
 
 # Route to update DisplayAccountName (updated to use AccountKey)
@@ -172,7 +177,7 @@ def update_display_account_name():
     try:
         # Log the incoming request data
         data = request.get_json()
-        print("Received data for update_display_account_name:", data)
+        logger.debug("Received data for update_display_account_name:", data)
         
         # Validate input
         account_key = data.get("account_key")
@@ -185,12 +190,13 @@ def update_display_account_name():
         # Convert empty string to None to set NULL in the database
         if new_display_name.strip() == '':
             new_display_name = None
-            print("Converted empty string to None for DisplayAccountName")
+            logger.debug("Converted empty string to None for DisplayAccountName")
 
         # Ensure account_key is the correct type (assuming it's an integer in the database)
         try:
             account_key = int(account_key)
         except (ValueError, TypeError):
+            logger.error("Invalid account_key type:", account_key, exc_info=True)
             raise ValueError("account_key must be a valid integer")
 
         # Connect to the database
@@ -208,7 +214,7 @@ def update_display_account_name():
         )
         
         # Log the number of affected rows
-        print(f"Rows updated: {cursor.rowcount}")
+        logger.debug(f"Rows updated: {cursor.rowcount}")
         
         # Commit the transaction
         conn.commit()
@@ -220,7 +226,7 @@ def update_display_account_name():
     
     except Exception as e:
         # Log the error for debugging
-        print(f"Error in update_display_account_name: {str(e)}")
+        logger.error(f"Error in update_display_account_name: {str(e)}", exc_info=True)
         # Ensure the connection is closed even in case of an error
         if 'conn' in locals():
             conn.close()
@@ -249,4 +255,5 @@ def update_account_type():
         conn.close()
         return jsonify({"success": True, "message": "AccountType updated successfully."})
     except Exception as e:
+        logger.error(f"Error in update_account_type: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": str(e)})

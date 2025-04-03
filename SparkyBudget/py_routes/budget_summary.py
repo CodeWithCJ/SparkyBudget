@@ -1,8 +1,14 @@
 #py_routes/budget_summary.py
 
-import sqlite3
+import sqlite3, os, logging
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required
+
+
+
+
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logger = logging.getLogger(__name__)
 
 budget_sumary_bp  = Blueprint('budget_sumary_bp', __name__)
 
@@ -99,7 +105,7 @@ def budget_summary_pie_chart():
             "spent": spent
         })
     except Exception as e:
-        print(f"An error occurred while fetching budget summary data: {str(e)}")
+        logger.error(f"An error occurred while fetching budget summary data: {str(e)}", exc_info=True)
         return jsonify({"error": "Failed to fetch budget summary data"}), 500
         
         
@@ -195,15 +201,9 @@ def budget_summary_chart():
         )
 
     # Log debugging information
-    print(
-        "Budget Summary Chart - year: ",
-        selected_year,
-        " Month: ",
-        selected_month,
-        "Sorted by: ",
-        sort_criteria,
-        "Descending: ",
-        SortAscDesc,
+    logger.debug(
+        f"Budget Summary Chart - year: {selected_year}, Month: {selected_month}, "
+        f"Sorted by: {sort_criteria}, Descending: {SortAscDesc}"
     )
 
     # Render the template with the fetched data for the third table
@@ -234,7 +234,7 @@ def inline_edit_budget():
 
         """
         budget_inline_update_parameters = (selected_year, selected_month, subcategory, new_budget)
-        # print("SQL Query: Inline Budget Edit", budget_inline_update_query , "Paramters: ", budget_inline_update_parameters)
+        logger.debug("SQL Query: Inline Budget Edit", budget_inline_update_query , "Paramters: ", budget_inline_update_parameters)
 
         cursor.execute(budget_inline_update_query, budget_inline_update_parameters)
 
@@ -245,7 +245,7 @@ def inline_edit_budget():
         # Return a response (optional)
         return jsonify({"success": True, "message": "Budget updated successfully"})
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": f"An error occurred while updating the budget: {str(e)}"})
 
 
@@ -265,7 +265,7 @@ def add_budget():
         add_budget_query = "INSERT OR REPLACE INTO F_Budget (BudgetMonth, SubCategory, BudgetAmount) VALUES (?, ?, ?)"
         add_budget_params = (budget_month, subCategory, budget_amount)
 
-        # print("SQL Query of Add New budget:", add_budget_query , " paramter" , add_budget_params)
+        logger.info("SQL Query of Add New budget:", add_budget_query , " paramter" , add_budget_params)
 
         cursor.execute(add_budget_query, add_budget_params)  # Fix: Correct variable names here
 
@@ -276,7 +276,7 @@ def add_budget():
         # Return a response (optional)
         return jsonify({"success": True, "message": "Python:Budget added successfully"})
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"success": False, "error": str(e)})
 
 
@@ -293,7 +293,7 @@ def delete_budget():
         # Connect to the SQLite database
         conn = sqlite3.connect("SparkyBudget.db")
         cursor = conn.cursor()
-        print("delete_budget: From Python")
+        logger.debug("delete_budget: From Python")
         # Formulate the SQL query to delete the budget
         delete_budget_query = """
             DELETE FROM F_Budget
@@ -302,7 +302,7 @@ def delete_budget():
         delete_budget_params = (sub_category, selected_year, selected_month)
 
         # Print the SQL query and parameters for debugging
-        print("SQL Query of Delete Budget:", delete_budget_query, delete_budget_params)
+        logger.debug("SQL Query of Delete Budget:", delete_budget_query, delete_budget_params)
 
         # Execute the SQL query
         cursor.execute(delete_budget_query, delete_budget_params)
@@ -315,7 +315,7 @@ def delete_budget():
         return jsonify({"success": True, "message": "Budget deleted successfully"})
     except Exception as e:
         # Return an error response
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"success": False, "error": str(e)})
 
 
@@ -357,8 +357,8 @@ def get_budget_transaction_details():
     """
     # Fetch transaction data for the transaction table based on selected filters
 
-    # print("SQL Query:", sql_query1)
-    print("Get Transaction details :", (selected_year, selected_month, selected_subcategory))
+    logger.debug("SQL Query:", sql_query1)
+    logger.debug("Get Transaction details :", (selected_year, selected_month, selected_subcategory))
     cursor.execute(
         sql_query1,
         (
