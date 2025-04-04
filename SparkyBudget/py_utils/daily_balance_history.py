@@ -29,7 +29,7 @@ def daily_balance_history_insert(db_name="SparkyBudget.db"):
                     INSERT INTO F_Balance_History (
                         Date, AccountID, AccountName, BalanceDate, Balance, AvailableBalance, 
                         OrganizationDomain, OrganizationName, OrganizationSFInURL, 
-                        DisplayAccountName, AccountType
+                        DisplayAccountName, AccountTypeKey
                     )
                     SELECT 
                         DATE('now'), -- Current date
@@ -42,10 +42,8 @@ def daily_balance_history_insert(db_name="SparkyBudget.db"):
                         OrganizationName, 
                         OrganizationSFInURL, 
                         DisplayAccountName, 
-                        AccountType
-                    FROM F_Balance a11
-                    LEFT JOIN D_AccountTypes a12
-                    ON a11.AccountTypeKey = a12.AccountTypeKey
+                        AccountTypeKey
+                    FROM F_Balance
                     """
                 )
 

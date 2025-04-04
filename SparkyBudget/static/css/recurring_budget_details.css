@@ -1,0 +1,243 @@
+/* Dark theme background for the entire page */
+body {
+    background: linear-gradient(145deg, #1e1e2f, #2a2a3d);
+    color: #e0e7ff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for the recurring budget table with glowing effect */
+.recurring-budget-container {
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    padding: 20px;
+    border-radius: 16px;
+    margin: 20px auto;
+    max-width: 900px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+   
+}
+
+/* Glowing animation keyframes */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.3);
+    }
+}
+
+/* Table styles */
+.recurring-budget-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 20px;
+    border: 2px solid rgba(0, 188, 212, 0.5); /* Add border around the table */
+}
+
+.recurring-budget-container thead {
+    background: linear-gradient(90deg, #00bcd4, #0288d1);
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.recurring-budget-container th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+    position: relative;
+}
+
+.recurring-budget-container th::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.recurring-budget-container th:last-child::after {
+    display: none;
+}
+
+.recurring-budget-container tbody {
+    background: transparent;
+}
+
+.recurring-budget-container tr {
+    transition: all 0.3s ease;
+}
+
+.recurring-budget-container tr:hover {
+    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
+}
+
+.recurring-budget-container td {
+    padding: 15px 20px;
+    text-align: left;
+    border: 1px solid rgba(95, 101, 102, 0.3); /* Add border to body cells */
+    
+    color: #e0e7ff;
+    font-weight: 400;
+}
+
+.recurring-budget-container td:last-child {
+    border-right: none;
+}
+
+/* Center the "No data" message */
+.recurring-budget-container .text-center {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+/* Header styles */
+.recurring-budget-container h1 {
+    text-align: center;
+    color: #61dafb;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+}
+
+
+
+
+
+/* Styles for the delete button */
+.delete-column {
+    text-align: center;
+    width: 50px;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.delete-btn:hover {
+    color: #ff4c4c;
+    transform: scale(1.2);
+}
+
+.delete-btn:focus {
+    outline: none;
+}
+
+.select2-container--default .select2-results__option {
+    background-color: black;
+    /* Set the text color to white for better visibility */
+    color: white;
+}
+
+/* Limit the width of the select2 dropdown to 40% */
+#subCategoryInput {
+    width: 40% !important; /* Ensure the width is enforced */
+    min-width: 200px; /* Optional: Set a minimum width */
+    display: inline-block; /* Ensure it doesn't take up the full width */
+}
+
+
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    /* Adjust the table styles */
+    table {
+        width: 100%;
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+
+    table thead {
+        display: none; /* Already hidden, which is good */
+    }
+
+    table tbody tr {
+        display: flex;
+        flex-direction: row; /* Use row to align items horizontally */
+        align-items: center; /* Center items vertically */
+        justify-content: space-between; /* Space out the content */
+        margin-bottom: 10px;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 8px;
+        background: #2E3440;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-left: 5px;
+        margin-right: 5px;
+        width: calc(100% - 10px);
+        box-sizing: border-box;
+    }
+
+    table tbody tr td {
+        padding: 5px 8px;
+        border: none;
+        box-sizing: border-box;
+    }
+
+    /* Subcategory and amount in a single container */
+    table tbody tr .subcategory-amount {
+        display: flex;
+        flex-direction: column; /* Stack subcategory and amount vertically */
+        flex-grow: 1; /* Allow this section to take available space */
+        margin-left: 10px;
+    }
+
+    table tbody tr .subcategory {
+        font-weight: bold;
+        color: #61dafb;
+        margin-bottom: 3px; /* Small space between subcategory and amount */
+    }
+
+    table tbody tr .amount {
+        font-size: 16px;
+        color: #e0e7ff;
+    }
+
+    /* Delete button styling */
+    table tbody tr .delete-column {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px; /* Fixed width for the delete button column */
+        margin-left: 10px;
+    }
+
+    table tbody tr .delete-btn {
+        background: none;
+        border: none;
+        color: #ff6b6b;
+        cursor: pointer;
+        font-size: 18px;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    table tbody tr .delete-btn:hover {
+        color: #ff4c4c;
+        transform: scale(1.2);
+    }
+
+    table tbody tr .delete-btn:focus {
+        outline: none;
+    }
+}

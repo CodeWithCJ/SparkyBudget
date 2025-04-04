@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recurring Budget Details</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/recurring_budget_details.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> <!-- Load jQuery first -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> <!-- Load select2 -->
+        <script src="{{ url_for('static', filename='js/recurring_budget_details.js') }}"></script> <!-- Load your custom script -->
+    </head>
+<body>
+    <a href="/" title="Go to Home">
+        <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
+    </a>
+    <div class="recurring-budget-container">
+        <h1>Recurring Budget Details</h1>
+        <form id="addBudgetForm">
+            <div class="form-group">
+                <label for="subCategoryInput">Subcategory:</label>
+                <select id="subCategoryInput" class="select2" required>
+                    <option value="" selected disabled>Select a subcategory</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="budgetAmountInput">Budget Amount:</label>
+                <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput" placeholder="Enter budget amount" required>
+            </div>
+            <button type="button" onclick="addRecurringBudget()">Submit Budget</button>
+        </form>
+
+        {% if error %}
+            <div class="error-message">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+        <table id="recurringBudgetTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>SubCategory</th>
+                    <th>Budget Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if data %}
+                    {% for row in data %}
+                        <tr data-subcategory="{{ row.SubCategory }}">
+                            <!-- Action column (Delete button) -->
+                            <td class="delete-column">
+                                <button class="delete-btn" onclick="deleteRecurringBudget('{{ row.SubCategory }}')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                            <!-- SubCategory column -->
+                            <td class="subcategory-column">
+                                {{ row.SubCategory }}
+                            </td>
+                            <!-- Budget Amount column -->
+                            <td class="amount-column">
+                                ${{ "%.2f"|format(row.BudgetAmount) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">No recurring budget details found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

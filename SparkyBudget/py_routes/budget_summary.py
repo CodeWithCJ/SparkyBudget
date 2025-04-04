@@ -376,3 +376,118 @@ def get_budget_transaction_details():
     # Render the template with the fetched data for transaction details
     # TODO: is this supposed to be a partial or full html?
     return render_template("budget_transaction_details.html.jinja", transaction_details=transaction_details)
+
+
+@budget_sumary_bp.route("/get_recurring_budget_details")
+@login_required
+def get_recurring_budget_details():
+    try:
+        # Connect to the SQLite database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # SQL query to fetch SubCategory and BudgetAmount from D_Budget
+        sql_query = """
+            SELECT 
+                SubCategory, 
+                BudgetAmount
+            FROM 
+                D_Budget
+            ORDER BY 
+                SubCategory ASC
+        """
+
+        # Log the SQL query for debugging
+        logger.debug(f"Executing SQL Query: {sql_query}")
+
+        # Execute the query
+        cursor.execute(sql_query)
+        budget_details = cursor.fetchall()
+
+        # Log the number of rows fetched
+        logger.debug(f"Fetched {len(budget_details)} rows from D_Budget")
+
+        # Close the database connection
+        conn.close()
+
+        # Format the data for rendering
+        formatted_budget_details = [
+            {"SubCategory": row[0], "BudgetAmount": row[1]} for row in budget_details
+        ]
+
+        # Render the template with the fetched data
+        return render_template("recurring_budget_details.html.jinja", data=formatted_budget_details)
+
+    except Exception as e:
+        # Log the error and return an error response
+        logger.error(f"An error occurred while fetching budget details: {str(e)}", exc_info=True)
+        return render_template("recurring_budget_details.html.jinja", data=[], error=str(e))
+    
+
+@budget_sumary_bp.route("/delete_recurring_budget", methods=["POST"])
+@login_required
+def delete_recurring_budget():
+    try:
+        # Get the SubCategory from the request
+        data = request.get_json()
+        sub_category = data.get("subCategory")
+
+        if not sub_category:
+            return jsonify({"success": False, "message": "SubCategory is required."})
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # Delete the record from the D_Budget table
+        delete_query = "DELETE FROM D_Budget WHERE SubCategory = ?"
+        cursor.execute(delete_query, (sub_category,))
+        conn.commit()
+
+        # Check if a record was deleted
+        if cursor.rowcount == 0:
+            return jsonify({"success": False, "message": "No record found to delete."})
+
+        # Close the database connection
+        conn.close()
+
+        return jsonify({"success": True, "message": f"Record for SubCategory '{sub_category}' deleted successfully."})
+
+    except Exception as e:
+        logger.error(f"An error occurred while deleting the record: {str(e)}", exc_info=True)
+        return jsonify({"success": False, "message": "An error occurred while deleting the record."})
+    
+
+@budget_sumary_bp.route("/add_recurring_budget", methods=["POST"])
+@login_required
+def add_recurring_budget():
+    try:
+        # Get the data from the request
+        data = request.get_json()
+        sub_category = data.get("subCategory")
+        budget_amount = data.get("budgetAmount")
+
+        if not sub_category or budget_amount is None:
+            return jsonify({"success": False, "message": "SubCategory and BudgetAmount are required."})
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # Insert or update the record in the D_Budget table
+        query = """
+            INSERT INTO D_Budget (SubCategory, BudgetAmount)
+            VALUES (?, ?)
+            ON CONFLICT(SubCategory) DO UPDATE SET BudgetAmount = excluded.BudgetAmount
+        """
+        cursor.execute(query, (sub_category, budget_amount))
+        conn.commit()
+
+        # Close the database connection
+        conn.close()
+
+        return jsonify({"success": True, "message": f"Recurring budget for '{sub_category}' added/updated successfully."})
+
+    except Exception as e:
+        logger.error(f"An error occurred while adding the recurring budget: {str(e)}", exc_info=True)
+        return jsonify({"success": False, "message": "An error occurred while adding the recurring budget."})
