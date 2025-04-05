@@ -4,25 +4,48 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/SparkyBudget.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* Add this to your login.css or in a <style> tag */
+        .login {
+            max-width: 400px; /* Limit the width of the login container */
+        }
+        .loginfield {
+            max-width: 200px; /* Limit the width of the input fields */
+        }
+    </style>
 </head>
 <body>
     <div class="background"></div>
     <form class="login" method="post" action="{{ url_for('login') }}">
-        <h1>SparkyBudget</h1>
-        <h2>Login</h2>
-        <fieldset>
+        <div style="display: flex; align-items: center;">            
+            <img id="SparkyBudgetLogo" src="{{ url_for('static', filename='images/SparkyBudget.png') }}" style="width: 25%;">
+            <h1>SparkyBudget</h1>
+        </div>
+        
+        <fieldset class="input-group">
             <label for="username">Username:</label>
-            <input class="loginfield" type="text" name="username" required autofocus>
+            <div class="input-icon-wrapper">
+                <i class="fas fa-user"></i>
+                <input class="loginfield" type="text" name="username" placeholder="Username" required autofocus>
+            </div>
         </fieldset>
-        <fieldset>
-        <label for="password">Password:</label>
-        <input class="loginfield" type="password" name="password" required>
+        
+        <fieldset class="input-group">
+            <label for="password">Password:</label>
+            <div class="input-icon-wrapper">
+                <i class="fas fa-lock"></i>
+                <input class="loginfield" type="password" name="password" placeholder="Password" required >
+            </div>
         </fieldset>
+        
+        
         <button class="loginfield submit" type="submit">Login</button>
     </form>
 </body>

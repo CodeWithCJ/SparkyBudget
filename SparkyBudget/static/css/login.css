@@ -44,8 +44,8 @@ body, html {
 }
 
 h1 {
-    color: #77ace0;
-    margin-top: 1.25rem;
+    color: #f57c00;
+    margin-top: 1.25rem;  
     margin-bottom: 0;
     padding: 0;
 }
@@ -87,4 +87,48 @@ fieldset {
 
 .submit:hover {
     background-color: #abaeb2;
+}
+
+
+.input-icon-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon-wrapper i {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    color: #333;
+    font-size: 1rem; /* Consistent icon size */
+    height: 1rem;
+    width: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.input-icon-wrapper input {
+    width: 100%;
+    padding-left: 2.5rem; /* Leave room for icon */
+    padding-right: 0.5rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    line-height: 1rem;
+}
+
+
+@media (max-width: 600px) {
+    h1 {
+        height: 100%;
+        width: 100%;
+        font-size: Larger;
+    }
+    .login {
+        height: 50%;
+        width: 90%;
+    }
 }
