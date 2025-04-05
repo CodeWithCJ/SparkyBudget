@@ -1,5 +1,7 @@
 # SparkyBudget
-SparkyBudget
+<img src="SparkyBudget.png" alt="Logo" width="60">  
+
+
 ![image](https://github.com/user-attachments/assets/05cd8d45-2d55-4520-abee-cc2eda49557a)
 
 
