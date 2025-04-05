@@ -10,14 +10,20 @@ def format_money(number):
         return "--"
     else:
         rounded_number = round(number, 2)  # Round to two decimal places
-        return f"${rounded_number:,}"  # Format without decimals
+        # Format the number with a $ sign and handle negative values
+        if rounded_number < 0:
+            return f"-${abs(rounded_number):,}"  # Add $ after the negative sign
+        return f"${rounded_number:,}"  # Format for positive numbers
 
 def format_money_whole(number):
     if number is None:
         return "--"
     else:
         rounded_number = round(number)  # Round to whole number
-        return f"${rounded_number:,}"  # Format without decimals
+        # Format the number with a $ sign and handle negative values
+        if rounded_number < 0:
+            return f"-${abs(rounded_number):,}"  # Add $ after the negative sign
+        return f"${rounded_number:,}"  # Format for positive numbers
 
 def format_currency(value):
     # Convert value to float
