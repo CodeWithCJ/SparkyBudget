@@ -8,13 +8,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="/static/css/category_mgmt.css">
+    <link rel="stylesheet" href="/static/css/navigation_bar.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.jqueryui.css">
+    
 </head>
-<body>
-    <a href="/" title="Go to Home">
-        <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
-    </a>
+<body>     
+
+    <div class="header-container">
+        <a href="/" title="Go to Home">
+            <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
+        </a>
+        
+		
+        <a class="custom_report" href="{{ url_for('budget_sumary_bp.get_recurring_budget_details') }}" style="color: #61DAFB; font-size: 24px;" title="Recurring Budget Details">
+            <i class="fas fa-calendar-alt"></i> <!-- Icon for recurring budget details -->
+        </a>
+		
+        <a class="custom_report" href="{{ url_for('historical_trend.historical_trend') }}" style="color: #61DAFB; font-size: 24px;"
+            title="All Transaction">
+            <i class="fas fa-chart-bar"></i>
+        </a>
+        <a class="custom_report" href="{{ url_for('manage_categories.manage_categories') }}" style="color: #61DAFB; font-size: 24px;"
+            title="Category Management">
+            <i class="fas fa-tags"></i> <!-- Assuming you want to use a tags icon for category management -->
+        </a>
+        <i id="downloadButton" style="margin-left: 5px; background: transparent; display: inline-block;">
+            <img src="static/images/refresh.svg" alt="Refresh" title="Sync">
+            <img id="spinner" src="{{ url_for('static', filename='Spinner-0.4s-57px.gif') }}" alt="Loading..."
+                style="width: 50px; height: auto; display: none;" />
+        </i>
+        {% if current_user.is_authenticated %}
+        <!-- Include the rendered budget summary HTML here 
+		<p>Welcome, {{ current_user.id }}!</p>
+		-->
+        <a href="{{ url_for('logout') }}" style="color: #61DAFB; font-size: 24px;">
+            <i class="fas fa-sign-out-alt" title="Logout"></i>
+        </a>
+        {% endif %}
+    </div>
+
     <main>
         <section>
             <h2>Account Types</h2>
@@ -86,5 +119,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="/static/js/category_mgmt.js"></script>
+    <script src="/static/js/navigation_bar.js"></script>
+    
 </body>
 </html>

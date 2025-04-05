@@ -1,0 +1,40 @@
+/* This CSS file is for the navigation bar at the top of the page */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 10px solid #1d1d1d;
+    /* Change to your desired dark color */
+    background-color: #333;
+    /* Optional: Set text color to white for better visibility */
+    color: #fff;
+    /* Optional: Set a high z-index value to make sure it's on top */
+    z-index: 1000;
+}
+
+
+
+/* Default behavior for larger screens (header at the top) */
+@media (min-width: 769px) {
+    .header-container {
+        position: relative; /* or static, depending on your layout */
+    }
+}
+
+/* Mobile devices (header at the bottom) */
+@media (max-width: 768px) {
+    .header-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%; /* Ensure it spans the full width */
+        border-bottom: none; /* Optional: Remove the bottom border since it's at the bottom */
+        border-top: 10px solid #1d1d1d; /* Optional: Add a top border for consistency */
+    }
+
+    /* Add padding to the bottom of the body or main content to prevent overlap */
+    body {
+        padding-bottom: 50px; /* Adjust based on the height of your header (40px + 10px border) */
+    }
+}

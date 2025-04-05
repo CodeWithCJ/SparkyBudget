@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/navigation_bar.css">
 
     <!-- JavaScript Dependencies -->
     <!-- Load jQuery first -->
@@ -62,7 +63,7 @@
         <i id="downloadButton" style="margin-left: 5px; background: transparent; display: inline-block;">
             <img src="static/images/refresh.svg" alt="Refresh" title="Sync">
             <img id="spinner" src="{{ url_for('static', filename='Spinner-0.4s-57px.gif') }}" alt="Loading..."
-                style="width: 50px; height: auto;" />
+                style="width: 50px; height: auto; display: none;" />
         </i>
         {% if current_user.is_authenticated %}
         <!-- Include the rendered budget summary HTML here 
