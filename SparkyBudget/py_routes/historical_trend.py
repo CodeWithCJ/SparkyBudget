@@ -151,23 +151,35 @@ def salary_chart_data():
 @login_required
 def split_transaction():
     try:
-        # Get data from the frontend
-        transaction_key = request.form.get("transactionKey")  # transactionKey is passed from the form
-        split_amount = float(request.form.get("splitAmount"))
-        new_subcategory = request.form.get("newSubcategory")
+        # Get JSON data from the request body
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON data received!"}), 400
+
+        # Extract fields from JSON
+        transaction_key = data.get("transactionKey")
+        split_amount = data.get("splitAmount")
+        new_subcategory = data.get("newSubcategory")
         
         logger.debug("Split Transaction:", transaction_key, split_amount, new_subcategory)
         
-        if not transaction_key or not split_amount or not new_subcategory:
+        # Validate inputs
+        if not transaction_key or split_amount is None or not new_subcategory:
             return jsonify({"error": "Invalid data received!"}), 400
+
+        # Convert split_amount to float and handle potential issues
+        try:
+            split_amount = float(split_amount)
+        except (ValueError, TypeError):
+            return jsonify({"error": "Split amount must be a valid number!"}), 400
 
         # Connect to the database
         conn = sqlite3.connect("SparkyBudget.db")
         cursor = conn.cursor()
 
-        # Fetch the original transaction details using TransactionKey (since it's the column name)
+        # Fetch the original transaction details using TransactionKey
         cursor.execute(
-            "SELECT AccountID,AccountName,TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee FROM F_Transaction WHERE TransactionKey = ?", 
+            "SELECT AccountID, AccountName, TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee FROM F_Transaction WHERE TransactionKey = ?", 
             (transaction_key,)
         )
         original_transaction = cursor.fetchone()
@@ -175,7 +187,7 @@ def split_transaction():
         if not original_transaction:
             return jsonify({"error": "Transaction not found!"}), 404
 
-        account_id,account_name,original_transaction_id, original_amount, original_subcategory, transaction_date, description, payee = original_transaction
+        account_id, account_name, original_transaction_id, original_amount, original_subcategory, transaction_date, description, payee = original_transaction
 
         # Ensure the split amount has the correct sign
         if (original_amount < 0 and split_amount > 0) or (original_amount > 0 and split_amount < 0):
@@ -197,8 +209,8 @@ def split_transaction():
 
         # Insert the new transaction for the split amount
         cursor.execute(
-            "INSERT INTO F_Transaction (AccountID,AccountName,TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (account_id,account_name,new_transaction_id, split_amount, new_subcategory, transaction_date, description, payee)
+            "INSERT INTO F_Transaction (AccountID, AccountName, TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (account_id, account_name, new_transaction_id, split_amount, new_subcategory, transaction_date, description, payee)
         )
 
         # Update the original transaction amount (subtract the split amount)

@@ -175,94 +175,7 @@ $(document).ready(function () {
         }
     });
 
-    // Event listener for Split button in mobile view
-    $('.transaction-table-mobile-container').on('click', '.split-button', function () {
-        var card = $(this).closest('.transaction_details_card');
-        var transactionKey = card.find('.transaction-key span:last').text();
-        var transactionAmount = parseFloat(card.find('.transaction_details_field:contains("Amount") span:last').text().replace(/[^0-9.-]+/g, ""));
-
-        var splitAmount = prompt("Enter the amount to split:");
-        splitAmount = parseFloat(splitAmount);
-
-        if (isNaN(splitAmount) || splitAmount <= 0 || Math.abs(splitAmount) >= Math.abs(transactionAmount)) {
-            alert("Invalid amount! It should be a number between 0 and " + Math.abs(transactionAmount));
-            return;
-        }
-
-        if (transactionAmount < 0) {
-            splitAmount = -Math.abs(splitAmount);
-        }
-
-        $.ajax({
-            url: '/getDistinctSubcategories',
-            method: 'GET',
-            success: function (response) {
-                var subcategoryDropdown = $('<div></div>');
-                subcategoryDropdown.html('<select class="subcategory-select"></select>');
-                var subcategorySelect = subcategoryDropdown.find('.subcategory-select');
-
-                subcategorySelect.select2({
-                    data: response.map(function (subcategory) {
-                        return { id: subcategory, text: subcategory };
-                    }),
-                    placeholder: 'Select a subcategory',
-                    allowClear: true,
-                    width: '200px'
-                });
-
-                var subcategoryDialog = $('<div></div>').append(subcategoryDropdown);
-                subcategoryDialog.dialog({
-                    modal: true,
-                    title: "Select Subcategory",
-                    buttons: {
-                        "Submit": function () {
-                            var selectedSubcategory = subcategorySelect.val();
-                            if (!selectedSubcategory) {
-                                alert("Please select a subcategory!");
-                                return;
-                            }
-
-                            $.ajax({
-                                url: '/splitTransaction',
-                                method: 'POST',
-                                data: {
-                                    transactionKey: transactionKey,
-                                    splitAmount: splitAmount,
-                                    newSubcategory: selectedSubcategory
-                                },
-                                success: function (response) {
-                                    alert("Transaction split successfully!");
-                                    location.reload();
-                                },
-                                error: function (error) {
-                                    console.error("Error splitting transaction:", error.responseJSON.error);
-                                    alert("Failed to split transaction!" + error.responseJSON.error);
-                                }
-                            });
-
-                            $(this).dialog("close");
-                        },
-                        "Cancel": function () {
-                            $(this).dialog("close");
-                        }
-                    },
-                    open: function () {
-                        setTimeout(function () {
-                            subcategorySelect.select2('open');
-                            subcategorySelect.focus();
-                        }, 500);
-                    },
-                    close: function () {
-                        subcategorySelect.select2('destroy');
-                    }
-                });
-            },
-            error: function (error) {
-                console.error("Error fetching subcategories:", error);
-                alert("Failed to load subcategories!");
-            }
-        });
-    });
+   
 });
 
 $(document).ready(function () {
@@ -648,124 +561,6 @@ $(document).ready(function () {
 
 
 
-$(document).ready(function () {
-    // Event listener for the Split button click
-    $('#transactionTable').on('click', '.split-button', function () {
-        var row = $(this).closest('tr');        
-		var rowData = table.row($(row)).data();
-        var transactionKey = rowData[7];
-		
-        var transactionAmount = parseFloat(row.find('td:nth-child(9)').text().replace(/[^0-9.-]+/g, ""));
-
-        var splitAmount = prompt("Enter the amount to split:");
-        splitAmount = parseFloat(splitAmount);
-
-        if (isNaN(splitAmount) || splitAmount <= 0 || Math.abs(splitAmount) >= Math.abs(transactionAmount)) {
-            alert("Invalid amount! It should be a number between 0 and " + Math.abs(transactionAmount));
-            return;
-        }
-
-        // Ensure the split amount keeps the same sign as the original transaction
-        if (transactionAmount < 0) {
-            splitAmount = -Math.abs(splitAmount); // Convert to negative if the transaction is an expense
-        }
-
-        $.ajax({
-            url: '/getDistinctSubcategories',
-            method: 'GET',
-            success: function (response) {
-                var subcategoryDropdown = $('<div></div>'); // Create a container for the dropdown
-                subcategoryDropdown.html('<select class="subcategory-select"></select>'); // Add a select element
-                
-                var subcategorySelect = subcategoryDropdown.find('.subcategory-select'); // Get the select element
-
-                // Initialize Select2 for the dropdown with search functionality
-                subcategorySelect.select2({
-                    data: response.map(function (subcategory) {
-                        return { id: subcategory, text: subcategory }; // Ensure the response is in the correct format
-                    }),
-                    placeholder: 'Select a subcategory',
-                    allowClear: true,
-                    width: '200px' // Set the width to a specific value (optional)
-                });
-
-                subcategorySelect.on('select2:open', function (e) {
-                    $('.select2-dropdown--below').addClass('dark-theme');
-                });
-
-                // Custom styles for dark theme in the dropdown
-                var customStyles = `
-                    .dark-theme {
-                        background-color: #333 !important;
-                        color: #fff !important;
-                    }
-                    .dark-theme .select2-results__option {
-                        color: #fff !important;
-                    }
-                `;
-                $('head').append('<style>' + customStyles + '</style>'); // Add the custom styles to the document head
-
-                // Append the dropdown to the dialog
-                var subcategoryDialog = $('<div></div>').append(subcategoryDropdown);
-
-                subcategoryDialog.dialog({
-                    modal: true,
-                    title: "Select Subcategory",
-                    buttons: {
-                        "Submit": function () {
-                            var selectedSubcategory = subcategorySelect.val();
-                            if (!selectedSubcategory) {
-                                alert("Please select a subcategory!");
-                                return;
-                            }
-
-                            // Send the split transaction to backend
-                            $.ajax({
-                                url: '/splitTransaction',
-                                method: 'POST',
-                                data: {
-                                    transactionKey: transactionKey,
-                                    splitAmount: splitAmount,
-                                    newSubcategory: selectedSubcategory
-                                },
-                                success: function (response) {
-                                    alert("Transaction split successfully!");
-                                    location.reload(); // Reload to reflect changes
-                                },
-                                error: function (error) {
-                                    console.error("Error splitting transaction:", error.responseJSON.error);
-                                    alert("Failed to split transaction!" + error.responseJSON.error);
-                                }
-                            });
-
-                            $(this).dialog("close");
-                        },
-                        "Cancel": function () {
-                            $(this).dialog("close");
-                        }
-                    },
-                    open: function () {
-                        // Give enough time for the dialog to open and Select2 to initialize
-                        setTimeout(function () {
-                            subcategorySelect.select2('open'); // Open Select2 dropdown when dialog is opened
-                            subcategorySelect.focus(); // Focus on the input field inside the Select2 dropdown
-                        }, 500); // Increased delay (500ms)
-                    },
-                    close: function () {
-                        // Clean up Select2 when dialog closes
-                        subcategorySelect.select2('destroy');
-                    }
-                });
-            },
-            error: function (error) {
-                console.error("Error fetching subcategories:", error);
-                alert("Failed to load subcategories!");
-            }
-        });
-    });
-});
-
-
 
 
 
@@ -929,5 +724,120 @@ $(document).ready(function () {
         error: function (xhr, status, error) {
             console.error('Error fetching subcategories:', error);
         }
+    });
+});
+
+
+
+
+$(document).ready(function () {
+    // Pre-load subcategories for the Split Transaction dropdown
+    let splitSubcategoryData = [];
+
+    // Fetch subcategories once and store them
+    $.ajax({
+        url: '/getDistinctSubcategories',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            splitSubcategoryData = data.map(subcategory => ({
+                id: subcategory,
+                text: subcategory
+            }));
+            // Initialize Select2 after data is loaded
+            $('#splitTransactionSubcategorySelect').select2({
+                data: splitSubcategoryData,
+                placeholder: 'Select a subcategory',
+                allowClear: true,
+                matcher: function (params, data) {
+                    // Custom matcher for filtering
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+                    if (data.text.toLowerCase().includes(params.term.toLowerCase())) {
+                        return data;
+                    }
+                    return null;
+                }
+            });
+        },
+        error: function (error) {
+            console.error('Error fetching subcategories for split transaction:', error);
+        }
+    });
+
+    // Show the Split Transaction popup
+    $('#transactionTable').on('click', '.split-button', function () {
+        const row = $(this).closest('tr');
+        const rowData = table.row(row).data();
+        const transactionKey = rowData[7];
+        const transactionAmount = parseFloat(row.find('td:nth-child(9)').text().replace(/[^0-9.-]+/g, ""));
+
+        // Store transaction details in the popup for later use
+        $('#splitTransactionPopup').data('transactionKey', transactionKey);
+        $('#splitTransactionPopup').data('transactionAmount', transactionAmount);
+
+        // Show the popup
+        $('#splitTransactionPopup').fadeIn();
+    });
+
+    // Close the popup when clicking the close button or cancel button
+    $('#splitTransactionCloseButton, #splitTransactionCancelButton').on('click', function () {
+        $('#splitTransactionPopup').fadeOut();
+    });
+
+    // Close the popup when clicking outside the form
+    $('#splitTransactionPopup').on('click', function (e) {
+        if ($(e.target).is('#splitTransactionPopup')) {
+            $('#splitTransactionPopup').fadeOut();
+        }
+    });
+
+    // Handle Split Transaction form submission
+    $('#splitTransactionForm').on('submit', function (e) {
+        e.preventDefault();
+    
+        const transactionKey = $('#splitTransactionPopup').data('transactionKey');
+        const transactionAmount = $('#splitTransactionPopup').data('transactionAmount');
+        const splitAmountInput = $('#splitTransactionAmountInput').val().trim();
+        const splitAmount = parseFloat(splitAmountInput);
+        const subcategory = $('#splitTransactionSubcategorySelect').val();
+    
+        // Enhanced validation
+        if (!splitAmountInput || isNaN(splitAmount) || splitAmount <= 0 || Math.abs(splitAmount) >= Math.abs(transactionAmount)) {
+            alert("Invalid amount! Please enter a number between 0 and " + Math.abs(transactionAmount));
+            return;
+        }
+    
+        if (!subcategory) {
+            alert("Please select a subcategory!");
+            return;
+        }
+    
+        // Ensure the split amount keeps the same sign as the original transaction
+        const adjustedSplitAmount = transactionAmount < 0 ? -Math.abs(splitAmount) : Math.abs(splitAmount);
+    
+        // Send the split transaction to the backend
+        $.ajax({
+            url: '/splitTransaction',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                transactionKey: transactionKey,
+                splitAmount: adjustedSplitAmount,
+                newSubcategory: subcategory
+            }),
+            success: function (response) {
+                alert("Transaction split successfully!");
+                location.reload();
+            },
+            error: function (error) {
+                console.error("Error splitting transaction:", error.responseJSON?.error || error);
+                alert("Failed to split transaction: " + (error.responseJSON?.error || "Unknown error"));
+            }
+        });
+    
+        // Close the popup
+        $('#splitTransactionPopup').fadeOut();
     });
 });

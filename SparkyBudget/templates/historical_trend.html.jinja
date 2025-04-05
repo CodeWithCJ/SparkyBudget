@@ -85,14 +85,14 @@
             </div>
             <form id="addTransactionForm">
                 <div class="form-group">
-                    <label for="transactionDateInput">Date</label>
-                    <input type="date" id="transactionDateInput" name="transactionDateInput" value="{{ current_date }}" required>
-                </div>
-                <div class="form-group">
                     <label for="accountSelectInput">Account</label>
                     <select id="accountSelectInput" name="accountSelectInput" class="select2" required>
                         <option value="" disabled selected>Select an account</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="transactionDateInput">Date</label>
+                    <input type="date" id="transactionDateInput" name="transactionDateInput" value="{{ current_date }}" required>
                 </div>
                 <div class="form-group">
                     <label for="transactionDescriptionInput">Description</label>
@@ -100,12 +100,10 @@
                 </div>
                 <div class="form-group">
                     <label for="transactionPayeeInput">Payee</label>
-                    <input type="text" id="transactionPayeeInput" name="transactionPayeeInput" placeholder="Payee (optional)">
+                    <input type="text" id="transactionPayeeInput" name="transactionPayeeInput" placeholder="Payee" required>
                 </div>
-                <div class="form-group">
-                    <label for="transactionMemoInput">Memo</label>
-                    <input type="text" id="transactionMemoInput" name="transactionMemoInput" placeholder="Memo (optional)">
-                </div>
+                
+                
                 <div class="form-group">
                     <label for="transactionAmountInput">Amount</label>
                     <input type="number" id="transactionAmountInput" name="transactionAmountInput" placeholder="Enter amount" step="0.01" required>
@@ -116,9 +114,14 @@
                         <option value="" disabled selected>Select a subcategory</option>
                     </select>
                 </div>
-                <div class="form-actions">
-                    <button type="button" id="cancelTransactionButton" class="btn btn-secondary">Cancel</button>
+                
+                <div class="form-group">
+                    <label for="transactionMemoInput">Memo</label>
+                    <input type="text" id="transactionMemoInput" name="transactionMemoInput" placeholder="Memo (optional)">
+                </div>                
+                <div class="form-actions">                    
                     <button type="submit" id="submitTransactionButton" class="btn btn-primary">Add Transaction</button>
+                    <button type="button" id="cancelTransactionButton" class="btn btn-secondary">Cancel</button>
                 </div>
             </form>
         </div>
@@ -179,6 +182,35 @@
             </tbody>
         </table>
     </div>
+
+        <!-- Split Transaction Popup -->
+    <div id="splitTransactionPopup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-header">
+                <button id="splitTransactionCloseButton" class="close-button" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>Split Transaction</h2>             
+            </div>
+            <form id="splitTransactionForm">
+                <div class="form-group">
+                    <label for="splitTransactionAmountInput">Amount</label>
+                    <input type="number" id="splitTransactionAmountInput" name="splitTransactionAmountInput" placeholder="Enter split amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="splitTransactionSubcategorySelect">Subcategory</label>
+                    <select id="splitTransactionSubcategorySelect" name="splitTransactionSubcategorySelect" class="select2" required>
+                        <option value="" disabled selected>Select a subcategory</option>
+                    </select>
+                </div>
+                <div class="form-actions">                    
+                    <button type="submit" id="splitTransactionSubmitButton" class="btn btn-primary">Split</button>
+                    <button type="button" id="splitTransactionCancelButton" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Mobile View -->
     <div class="transaction-table-mobile-container">
