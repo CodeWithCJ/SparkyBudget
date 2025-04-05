@@ -257,3 +257,42 @@ def update_account_type():
     except Exception as e:
         logger.error(f"Error in update_account_type: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": str(e)})
+    
+
+
+@home_bp.route("/addAccount", methods=["POST"])
+@login_required
+def add_account():
+    try:
+        data = request.get_json()
+        logger.info(f"Adding new account: {data}")
+
+        query = """
+            INSERT INTO F_Balance (
+                AccountName, Balance, AvailableBalance, OrganizationDomain,
+                OrganizationName, OrganizationSFInURL, BalanceDate, AccountTypeKey
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        values = (
+            data['accountName'],
+            data['balance'],
+            data['availableBalance'],
+            data['organizationDomain'],
+            data['organizationName'],
+            None,  # OrganizationSFInURL is not provided
+            data['balanceDate'],
+            data['accountTypeKey']
+        )
+
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+        conn.close()
+
+        logger.info("Account added successfully.")
+        return jsonify({"success": True, "message": "Account added successfully."})
+
+    except Exception as e:
+        logger.error(f"Error adding account: {str(e)}", exc_info=True)
+        return jsonify({"success": False, "message": str(e)}), 400

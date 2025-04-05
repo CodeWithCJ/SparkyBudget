@@ -191,3 +191,75 @@ table.dataTable thead .sorting_desc {
         color: #aaa;
     }
 }
+
+
+
+
+/* AddAccount Popup Overlay */
+#addAccountPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Popup Content */
+#addAccountPopup .popup-content {
+    background: #1e1e2f;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: #e0e7ff;
+}
+
+/* Form Styles */
+#addAccountForm .form-group {
+    margin-bottom: 15px;
+}
+
+#addAccountForm .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #aaa;
+}
+
+#addAccountForm .form-group input,
+#addAccountForm .form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: #2a2a3d;
+    color: #e0e7ff;
+    font-size: 14px;
+}
+
+#addAccountForm .form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+#addAccountForm .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#addAccountForm .btn-primary {
+    background: #61dafb;
+    color: #1e1e2f;
+}
+
+#addAccountForm .btn-secondary {
+    background: #444;
+    color: #e0e7ff;
+}

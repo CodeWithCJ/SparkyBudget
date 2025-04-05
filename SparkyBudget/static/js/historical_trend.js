@@ -477,7 +477,6 @@ $(function () {
     var currentMonthStart = moment().startOf('month');
     var currentMonthEnd = moment().endOf('month');
     $('#date_range').daterangepicker({
-
         startDate: currentMonthStart,
         endDate: currentMonthEnd,
         locale: {
@@ -497,16 +496,14 @@ $(function () {
     });
 
     $('#date_range').on('apply.daterangepicker', function (ev, picker) {
-        // Separate start and end dates and set them as separate input values
+        // Update hidden fields with start and end dates
         $('#start_date').val(picker.startDate.format('MM/DD/YYYY'));
         $('#end_date').val(picker.endDate.format('MM/DD/YYYY'));
 
-
-        // Remove the date_range parameter if it's empty
+        // Submit only the date range form
         if (!picker.startDate.isSame(picker.endDate)) {
             $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-            $('form').submit();
-
+            $('#dateRangeForm').submit(); // Submit the specific form
         } else {
             $('#date_range').removeAttr('name');
         }
@@ -516,16 +513,12 @@ $(function () {
         $(this).val('');
         $('#start_date').val('');
         $('#end_date').val('');
-        // Remove the date_range parameter when canceled
         $('#date_range').removeAttr('name');
     });
-
-
-
-
-
-
 });
+
+
+
 
 $(document).ready(function () {
     // Function to fetch line chart data
@@ -775,3 +768,166 @@ $(document).ready(function () {
 
 
 
+
+
+//JS Code for Add Transaction
+
+$(document).ready(function () {
+    // Show the popup and set today's date as the default value
+    $('#addTransactionButton').on('click', function () {
+        const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        $('#transactionDateInput').val(today); // Set the default value
+        $('#addTransactionPopup').fadeIn();
+    });
+
+    // Close the popup when clicking the close button or cancel button
+    $('#closeTransactionPopupButton, #cancelTransactionButton').on('click', function () {
+        $('#addTransactionPopup').fadeOut();
+    });
+
+    // Close the popup when clicking outside the form
+    $('#addTransactionPopup').on('click', function (e) {
+        if ($(e.target).is('#addTransactionPopup')) {
+            $('#addTransactionPopup').fadeOut();
+        }
+    });
+});
+
+
+$(document).ready(function () {
+   
+    $('#subcategorySelectInput').select2({
+        ajax: {
+            url: '/getDistinctSubcategories', // Backend endpoint to fetch subcategories
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.map(subcategory => ({
+                        id: subcategory,
+                        text: subcategory
+                    }))
+                };
+            }
+        }
+    });
+
+    
+});
+
+
+
+$(document).ready(function () {
+    $('#addTransactionForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const formData = {
+            transactionDate: $('#transactionDateInput').val(),
+            accountID: $('#accountSelectInput').val(),
+            accountName: $('#accountSelectInput option:selected').text(),
+            description: $('#transactionDescriptionInput').val(),
+            payee: $('#transactionPayeeInput').val(),
+            memo: $('#transactionMemoInput').val(),
+            amount: parseFloat($('#transactionAmountInput').val()),
+            subcategory: $('#subcategorySelectInput').val()
+        };
+
+        if (formData.amount === 0 || isNaN(formData.amount)) {
+            alert('Amount must be a non-zero number.');
+            return;
+        }
+
+        $.ajax({
+            url: '/addTransaction',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function (response) {
+                if (response.success) {
+                    alert('Transaction added successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to add transaction: ' + response.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + xhr.responseText);
+            }
+        });
+    });
+});
+
+
+
+$(document).ready(function () {
+    // Fetch all accounts once and store them locally
+    let accountData = [];
+
+    $.ajax({
+        url: '/getAccounts', // Backend endpoint to fetch all accounts
+        dataType: 'json',
+        success: function (data) {
+            accountData = data; // Store the fetched data locally
+
+            // Initialize select2 for Account dropdown with client-side filtering
+            $('#accountSelectInput').select2({
+                data: accountData, // Use the locally stored data
+                placeholder: 'Select an account',
+                allowClear: true,
+                matcher: function (params, data) {
+                    // Custom matcher for filtering
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+
+                    if (data.text.toLowerCase().includes(params.term.toLowerCase())) {
+                        return data;
+                    }
+
+                    return null;
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching accounts:', error);
+        }
+    });
+    
+});
+
+$(document).ready(function () {
+    // Fetch all subcategories once and store them locally
+    let subcategoryData = [];
+
+    $.ajax({
+        url: '/getDistinctSubcategories', // Backend endpoint to fetch all subcategories
+        dataType: 'json',
+        success: function (data) {
+            subcategoryData = data.map(subcategory => ({
+                id: subcategory,
+                text: subcategory
+            })); // Format the data for select2
+
+            // Initialize select2 for Subcategory dropdown with client-side filtering
+            $('#subcategorySelectInput').select2({
+                data: subcategoryData, // Use the locally stored data
+                placeholder: 'Select a subcategory',
+                allowClear: true,
+                matcher: function (params, data) {
+                    // Custom matcher for filtering
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+
+                    if (data.text.toLowerCase().includes(params.term.toLowerCase())) {
+                        return data;
+                    }
+
+                    return null;
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching subcategories:', error);
+        }
+    });
+});

@@ -8,6 +8,59 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">
 </head>
 <body>
+
+        <!-- Add Account Button -->
+    <button id="addAccountButton" class="btn btn-primary">+ Add Account</button>
+    
+    <!-- Add Account Popup -->
+    <div id="addAccountPopup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2>Add Account</h2>
+                <p>Enter the details of the new account.</p>
+                <button id="addAccountCloseButton" class="close-button">&times;</button>
+            </div>
+            <form id="addAccountForm">
+                <div class="form-group">
+                    <label for="addAccountTypeSelect">Account Type</label>
+                    <select id="addAccountTypeSelect" name="addAccountTypeSelect" class="select2" required>
+                        <option value="" disabled selected>Select an account type</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addAccountNameInput">Account Name</label>
+                    <input type="text" id="addAccountNameInput" name="addAccountNameInput" placeholder="Enter account name" required>
+                </div>
+                <div class="form-group">
+                    <label for="addAccountBalanceInput">Balance</label>
+                    <input type="number" id="addAccountBalanceInput" name="addAccountBalanceInput" placeholder="Enter balance" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="addAccountAvailableBalanceInput">Available Balance (Optional)</label>
+                    <input type="number" id="addAccountAvailableBalanceInput" name="addAccountAvailableBalanceInput" placeholder="Enter available balance" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="addAccountOrganizationDomainInput">Organization Domain (Optional)</label>
+                    <input type="text" id="addAccountOrganizationDomainInput" name="addAccountOrganizationDomainInput" placeholder="Enter organization domain">
+                </div>
+                <div class="form-group">
+                    <label for="addAccountOrganizationNameInput">Organization Name (Optional)</label>
+                    <input type="text" id="addAccountOrganizationNameInput" name="addAccountOrganizationNameInput" placeholder="Enter organization name">
+                </div>
+                <div class="form-group">
+                    <label for="addAccountBalanceDateInput">Balance Date</label>
+                    <input type="date" id="addAccountBalanceDateInput" name="addAccountBalanceDateInput" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="addAccountCancelButton" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" id="addAccountSubmitButton" class="btn btn-primary">Add Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
     <!-- Desktop Table Container (unchanged) -->
     <div class="balance-details-wrapper">
         <H4 style="text-align: center;"><i class="fas fa-piggy-bank"></i> Balance Details</H4>

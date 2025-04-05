@@ -173,3 +173,78 @@ $(document).ready(function() {
         }
     };
 });
+
+
+
+
+$(document).ready(function () {
+    // Show the popup and set today's date as the default value
+    $('#addAccountButton').on('click', function () {
+        const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        $('#addAccountBalanceDateInput').val(today); // Set the default value
+        $('#addAccountPopup').fadeIn();
+    });
+
+    // Close the popup when clicking the close button or cancel button
+    $('#addAccountCloseButton, #addAccountCancelButton').on('click', function () {
+        $('#addAccountPopup').fadeOut();
+    });
+
+    // Close the popup when clicking outside the form
+    $('#addAccountPopup').on('click', function (e) {
+        if ($(e.target).is('#addAccountPopup')) {
+            $('#addAccountPopup').fadeOut();
+        }
+    });
+
+    // Initialize select2 for Account Type dropdown
+    $('#addAccountTypeSelect').select2({
+        ajax: {
+            url: '/get_account_types', // Backend endpoint to fetch account types
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.account_types.map(accountType => ({
+                        id: accountType.key,
+                        text: accountType.type
+                    }))
+                };
+            }
+        },
+        placeholder: 'Select an account type',
+        allowClear: true
+    });
+
+    // Handle Add Account form submission
+    $('#addAccountForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = {
+            accountTypeKey: $('#addAccountTypeSelect').val(),
+            accountName: $('#addAccountNameInput').val(),
+            balance: parseFloat($('#addAccountBalanceInput').val()),
+            availableBalance: parseFloat($('#addAccountAvailableBalanceInput').val()) || null,
+            organizationDomain: $('#addAccountOrganizationDomainInput').val() || null,
+            organizationName: $('#addAccountOrganizationNameInput').val() || null,
+            balanceDate: $('#addAccountBalanceDateInput').val()
+        };
+
+        $.ajax({
+            url: '/addAccount',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function (response) {
+                if (response.success) {
+                    alert('Account added successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to add account: ' + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred: ' + xhr.responseText);
+            }
+        });
+    });
+});

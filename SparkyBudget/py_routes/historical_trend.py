@@ -4,7 +4,9 @@ from flask import Blueprint, jsonify, request, render_template
 from flask_login import login_required
 import sqlite3, re
 from datetime import datetime,timedelta
+from flask import request, jsonify
 import os, logging
+import hashlib
 
 
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -212,3 +214,86 @@ def split_transaction():
     except Exception as e:
         logger.error(f"Error splitting transaction: {str(e)}", exc_info=True)
         return jsonify({"error": f"Failed to split transaction! {str(e)}"}), 500
+    
+
+
+@historical_trend_bp.route("/getAccounts", methods=["GET"])
+@login_required
+def get_accounts():
+    try:
+        # Connect to the database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # Query to fetch DisplayAccountName or AccountName
+        query = """
+            SELECT 
+                AccountID, 
+                CASE 
+                    WHEN DisplayAccountName IS NOT NULL AND DisplayAccountName != '' THEN DisplayAccountName 
+                    ELSE AccountName 
+                END AS AccountDisplayName
+            FROM F_Balance
+        """
+        cursor.execute(query)
+        accounts = cursor.fetchall()
+
+        # Close the database connection
+        conn.close()
+
+        # Format the data for select2
+        account_list = [{"id": account[0], "text": account[1]} for account in accounts]
+
+        # Log the retrieved accounts
+        logger.info(f"Retrieved {len(account_list)} accounts for select2 dropdown.")
+
+        # Return the data as JSON
+        return jsonify(account_list)
+
+    except Exception as e:
+        logger.error(f"Error retrieving accounts: {str(e)}", exc_info=True)
+        return jsonify({"error": f"Failed to retrieve accounts! {str(e)}"}), 500
+    
+
+
+@historical_trend_bp.route("/addTransaction", methods=["POST"])
+@login_required
+def add_transaction():
+    try:
+        # Parse the JSON data from the request
+        data = request.json
+
+        # Generate a unique TransactionID based on the provided data
+        transaction_id = hashlib.md5(
+            f"{data['accountID']}{data['payee']}{data['description']}{data['transactionDate']}{data['amount']}".encode()
+        ).hexdigest()
+
+        # SQL query to insert the new transaction
+        query = """
+            INSERT INTO F_Transaction (
+                AccountID, AccountName, TransactionID, TransactionPosted,
+                TransactionAmount, TransactionDescription, TransactionPayee,
+                TransactionMemo, SubCategory
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        values = (
+            data['accountID'], data['accountName'], transaction_id, data['transactionDate'],
+            data['amount'], data['description'], data['payee'], data['memo'], data['subcategory']
+        )
+
+        # Connect to the database and execute the query
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+        conn.close()
+
+        # Log the successful addition of the transaction
+        logger.info(f"Transaction added successfully: {transaction_id}")
+
+        return jsonify({'success': True, 'message': 'Transaction added successfully!'})
+
+    except Exception as e:
+        # Log the error and return a failure response
+        logger.error(f"Error adding new transaction: {str(e)}", exc_info=True)
+        return jsonify({'success': False, 'error': f"Failed to add transaction: {str(e)}"}), 500

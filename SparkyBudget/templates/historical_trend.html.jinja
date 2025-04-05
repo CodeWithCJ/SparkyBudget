@@ -44,14 +44,15 @@
             </div>
         </div>
     </div>
+    <!-- Date Range Filter Form -->
     <div class="transaction_edit_filter">
-        <form method="GET" action="/historical_trend">
+        <form id="dateRangeForm" method="GET" action="/historical_trend">
             <label for="date_range">Date Range:</label>
             <input type="text" id="date_range" name="date_range" />
-            <!-- Add hidden input fields for start_date and end_date -->
             <input type="hidden" id="start_date" name="start_date" />
             <input type="hidden" id="end_date" name="end_date" />
         </form>
+        <!-- Dropdown remains outside the form -->
         <label class="spacer-label" for="dropdown_select"> </label>
         <label for="dropdown_select"></label>
         <select id="dropdown_select">
@@ -69,6 +70,60 @@
             </div>
         </div>
     </div>
+
+        <!-- Add Transaction Button -->
+    <button id="addTransactionButton" class="btn btn-primary">+ Add Transaction</button>
+    
+    <!-- Add Transaction Popup -->
+    <!-- Add Transaction Form (already separate, ensure ID is unique) -->
+    <div id="addTransactionPopup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2>Add Transaction</h2>
+                <p>Enter the details of the new transaction.</p>
+                <button id="closeTransactionPopupButton" class="close-button">×</button>
+            </div>
+            <form id="addTransactionForm">
+                <div class="form-group">
+                    <label for="transactionDateInput">Date</label>
+                    <input type="date" id="transactionDateInput" name="transactionDateInput" value="{{ current_date }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountSelectInput">Account</label>
+                    <select id="accountSelectInput" name="accountSelectInput" class="select2" required>
+                        <option value="" disabled selected>Select an account</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transactionDescriptionInput">Description</label>
+                    <input type="text" id="transactionDescriptionInput" name="transactionDescriptionInput" placeholder="Description" required>
+                </div>
+                <div class="form-group">
+                    <label for="transactionPayeeInput">Payee</label>
+                    <input type="text" id="transactionPayeeInput" name="transactionPayeeInput" placeholder="Payee (optional)">
+                </div>
+                <div class="form-group">
+                    <label for="transactionMemoInput">Memo</label>
+                    <input type="text" id="transactionMemoInput" name="transactionMemoInput" placeholder="Memo (optional)">
+                </div>
+                <div class="form-group">
+                    <label for="transactionAmountInput">Amount</label>
+                    <input type="number" id="transactionAmountInput" name="transactionAmountInput" placeholder="Enter amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="subcategorySelectInput">Subcategory</label>
+                    <select id="subcategorySelectInput" name="subcategorySelectInput" class="select2" required>
+                        <option value="" disabled selected>Select a subcategory</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="cancelTransactionButton" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" id="submitTransactionButton" class="btn btn-primary">Add Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="dt-buttons"> </div>
     <!-- DataTable for displaying transaction details -->
     
