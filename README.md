@@ -9,23 +9,21 @@
 1. Create a new directory:  
 ```
 mkdir sparkybudget
+cd sparkybudget
 ```  
 2. Download .env-example and SparkyBudget-fresh.db.
 ```
-wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/.env-example
-wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/SparkyBudget-fresh.db
-
+wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/docker-compose.yml  
+wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/.env-example  
+wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/SparkyBudget-fresh.db  
 ```  
-3. Rename and update the environment file:  
+3. Rename and update DB & the environment file:  
 ```
+mv SparkyBudget-fresh.db SparkyBudget.db
 mv .env-example .env
 nano .env
 ```    
-4. Prepare the database:  
-```
-mv SparkyBudget-fresh.db SparkyBudget.db
-```   
-5. Pull and start the Docker containers:  
+4. Pull and start the Docker containers:  
 ```
 docker compose pull && docker compose up -d
 ```    
