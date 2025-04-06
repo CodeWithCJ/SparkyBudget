@@ -379,6 +379,7 @@ $(function () {
                     fetchLineChartData();
                     updateTransactionTable(response.transaction_data);
                     updateMobileCards(response.transaction_data);
+                    fetchIncomeExpenseChartData();
                 } else {
                     console.error('No transaction data in response:', response);
                 }
@@ -461,7 +462,7 @@ $(function () {
             `;
             mobileContainer.append(cardHtml);
         });
-    }
+    }    
 });
 
 // JS Code for Add Transaction
@@ -661,4 +662,158 @@ $(document).ready(function () {
 // Initial fetch for line chart
 $(document).ready(function () {
     fetchLineChartData();
+    fetchIncomeExpenseChartData();
 });
+
+
+
+
+// Global variable to hold the income vs. expense chart instance
+let incomeExpenseChart = null;
+
+
+// Function to fetch data for the income vs. expense chart
+function fetchIncomeExpenseChartData() {
+    $.ajax({
+        url: '/income_expense_chart', // Corrected URL path
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            start_date: $('#start_date').val(), // Get dates from the date range picker
+            end_date: $('#end_date').val()
+        }),
+        success: function (response) {
+            if (response.data) {
+                renderIncomeExpenseChart(response.data);
+            } else {
+                console.error('No income/expense data in response:', response);
+            }
+        },
+        error: function (error) {
+            console.error('Error fetching income/expense chart data:', error);
+        }
+    });
+}
+
+// Function to render the income vs. expense chart
+function renderIncomeExpenseChart(chartData) {
+    const ctx = document.getElementById('incomeExpenseChartCanvas').getContext('2d');
+
+    // Destroy existing chart if it exists
+    if (incomeExpenseChart) {
+        incomeExpenseChart.destroy();
+    }
+
+    // Prepare labels and data for the chart
+    const labels = chartData.map(item => item.YearMonth);
+    const incomeData = chartData.map(item => item.Income);
+    const expenseData = chartData.map(item => item.ExpenseAmount);
+    const budgetData = chartData.map(item => item.BudgetAmount);
+
+    incomeExpenseChart = new Chart(ctx, {
+        type: 'bar', // Use a combo chart: bars for income/expense, line for budget
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Income',
+                    data: incomeData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)', // Green-ish color
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    type: 'bar',
+                    datalabels: { // Data labels for Income bars
+                        display: function(context) {
+                            // Only show datalabels on desktop for bars
+                            return context.dataset.type === 'bar' && window.innerWidth > 768;
+                        },
+                        anchor: 'end',
+                        align: 'top',
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    }
+                },
+                {
+                    label: 'Expenses',
+                    data: expenseData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',  // Red-ish color
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    type: 'bar',
+                    datalabels: { // Data labels for Expense bars
+                        display: function(context) {
+                            // Only show datalabels on desktop for bars
+                            return context.dataset.type === 'bar' && window.innerWidth > 768;
+                        },
+                        anchor: 'end',
+                        align: 'top',
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    }
+                },
+                {
+                    label: 'Budget',
+                    data: budgetData,
+                    borderColor: 'rgba(255, 205, 86, 1)',   // Yellow-ish color
+                    borderWidth: 2,
+                    type: 'line',
+                    fill: false,
+                    datalabels: {  // Data labels for Budget line (explicitly disabled)
+                        display: false
+                    }
+                }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: false,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'white',
+                        callback: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Income vs. Expenses vs. Budget',
+                    color: 'white',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'white'
+                    }
+                },
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}

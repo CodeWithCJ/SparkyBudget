@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, request, render_template  
 from flask_login import login_required
 import sqlite3, re
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta, date
 from flask import request, jsonify
 import os, logging
 import hashlib
@@ -402,3 +402,131 @@ def add_transaction():
         # Log the error and return a failure response
         logger.error(f"Error adding new transaction: {str(e)}", exc_info=True)
         return jsonify({'success': False, 'error': f"Failed to add transaction: {str(e)}"}), 500
+    
+
+
+
+@historical_trend_bp.route("/income_expense_chart", methods=["POST"])
+@login_required
+def income_expense_chart():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        if not data:
+            logger.warning("No data provided in request.")
+            return jsonify({"error": "No data provided"}), 400
+
+        start_date_param = data.get("start_date")
+        end_date_param = data.get("end_date")
+
+        # Handle missing date parameters: Default to last 6 months
+        if not start_date_param or not end_date_param:
+            end_date = date.today()
+            start_date = end_date - timedelta(days=6 * 30)  # Approximate 6 months
+            start_date_str = start_date.strftime("%Y-%m-%d")
+            end_date_str = end_date.strftime("%Y-%m-%d")
+            logger.info(f"Using default date range: {start_date_str} to {end_date_str}")
+        else:
+            # Convert dates to YYYY-MM-DD format for SQLite (consistent with your DB)
+            try:
+                start_date = datetime.strptime(start_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
+                end_date = datetime.strptime(end_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
+                logger.info(f"Using provided date range: {start_date} to {end_date}")
+            except ValueError as e:
+                logger.error(f"Invalid date format provided: {str(e)}")
+                return jsonify({"error": "Invalid date format. Use MM/DD/YYYY."}), 400
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # SQL query (using parameterized queries to prevent SQL injection)
+        query = """
+            SELECT
+                YearMonth,
+                CAST(SUM(Case WHEN Salary <>0 and NOT NULL then Salary else ProjectedSalary end ) as INTEGER) AS Income,                
+                Sum(CAST(COALESCE(ExpenseAmount, 0) AS INTEGER)) AS ExpenseAmount,
+                Sum(CAST(COALESCE(BudgetAmount, 0) AS INTEGER)) AS BudgetAmount
+            FROM (
+                SELECT
+                    strftime('%Y-%m', a11.BudgetMonth) AS YearMonth,
+                    ROUND(SUM(
+                        CASE
+                            WHEN a11.SubCategory IN ('Paycheck') THEN BudgetAmount
+                            ELSE NULL
+                        END
+                    ), 2) AS ProjectedSalary,
+                    ROUND(SUM(
+                        CASE
+                            WHEN a11.SubCategory NOT IN ('CC Payment', 'Money Transfer','Paycheck')
+                            THEN BudgetAmount
+                            ELSE NULL
+                        END
+                    ), 2) AS BudgetAmount,
+                    NULL AS ExpenseAmount,
+                    NULL AS Salary
+                FROM
+                    F_Budget a11
+                WHERE a11.BudgetMonth BETWEEN ? AND ?                    
+                GROUP BY strftime('%Y-%m', a11.BudgetMonth)
+                UNION ALL
+                SELECT
+                    strftime('%Y-%m', a11.TransactionPosted) AS YearMonth,
+                    NULL AS ProjectedSalary,
+                    NULL AS BudgetAmount,
+                    ABS(ROUND(SUM(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0)), 2)) AS ExpenseAmount,
+                    NULL AS Salary
+                FROM
+                    F_Transaction a11
+                    LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                    LEFT JOIN F_Balance a13 on (a11.AccountID=a13.AccountID)
+                    LEFT JOIN D_AccountTypes a14
+                    ON a13.AccountTypeKey = a14.AccountTypeKey
+                WHERE
+                    HideFromBudget=0 AND                                   
+                   Coalesce(a11.SubCategory,'Unknown') NOT IN ('CC Payment', 'Money Transfer','Paycheck')
+                    AND a11.TransactionPosted BETWEEN ? AND ?
+                GROUP BY strftime('%Y-%m', a11.TransactionPosted)
+                UNION ALL
+                SELECT
+                    strftime('%Y-%m', a11.TransactionPosted) AS YearMonth,
+                    NULL AS ProjectedSalary,
+                    NULL AS BudgetAmount,
+                    NULL AS ExpenseAmount,
+                    ROUND(SUM(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0)), 2) AS Salary
+                FROM
+                    F_Transaction a11
+                WHERE
+                    a11.SubCategory IN ('Paycheck')  -- Replace 'Paycheck' with your income subcategories
+                    AND a11.TransactionPosted BETWEEN ? AND ?
+                GROUP BY strftime('%Y-%m', a11.TransactionPosted)
+            )
+            GROUP BY YearMonth
+            ORDER BY YearMonth ASC;
+        """
+        # Execute the query with the date range parameters (6 times for the 3 UNION ALL parts)
+        params = [start_date, end_date] * 3
+        cursor.execute(query, params)
+        results = cursor.fetchall()
+        conn.close()
+
+        # Format the results as a list of dictionaries
+        formatted_results = []
+        for row in results:
+            formatted_results.append({
+                "YearMonth": row[0],
+                "Income": row[1],
+                "ExpenseAmount": row[2],
+                "BudgetAmount": row[3]
+            })
+
+        # Return the data as JSON
+        return jsonify({"data": formatted_results})
+
+    except sqlite3.Error as e:
+        logger.error(f"SQLite error: {str(e)}", exc_info=True)
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+    
