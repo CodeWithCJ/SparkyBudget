@@ -333,6 +333,9 @@ body {
 #bar_chart .c3-axis-x .tick text,
 #bar_chart .c3-axis-y .tick text {
     fill: #E0E0E0 !important;
+    font-size: 12px !important; /* Adjust font size as needed */
+    font-weight: bold;
+    
 }
 
 /* Style the tooltip for a polished look */
@@ -357,9 +360,31 @@ body {
     padding: 2px 5px;
 }
 
+
+/* Styles for the bar chart data labels */
+#bar_chart .c3-chart-texts .c3-text {
+    fill: #E0E0E0 !important; /* Set font color to white */
+    font-size: 12px !important; /* Adjust font size as needed */
+    font-weight: bold;
+    
+}
+
+/* Styles for the bar chart bars */
+#bar_chart .c3-bar {
+    opacity: 0.8; /* Adjust opacity as needed */
+}
+
+
 .c3-tooltip-container {
     background-color: #2e2e4e !important;
     color: #E0E0E0 !important;
+}
+
+/* Styles for the C3.js tooltip */
+.c3-tooltip-container table td.value {
+    color: black !important; /* Set font color to black */
+    font-weight: bold;
+    font-size: 10px;
 }
 
 /* Responsive adjustments for mobile */

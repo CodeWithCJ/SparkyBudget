@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/historical_trend.css') }}">
     <link rel="stylesheet" href="/static/css/navigation_bar.css">
 
-    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.min.js"></script>
@@ -40,11 +39,10 @@
             <i class="fas fa-home" style="color: #61DAFB; font-size: 24px;"></i>
         </a>
         
-		
         <a class="custom_report" href="{{ url_for('budget_sumary_bp.get_recurring_budget_details') }}" style="color: #61DAFB; font-size: 24px;" title="Recurring Budget Details">
             <i class="fas fa-calendar-alt"></i> <!-- Icon for recurring budget details -->
         </a>
-		
+        
         <a class="custom_report" href="{{ url_for('historical_trend.historical_trend') }}" style="color: #61DAFB; font-size: 24px;"
             title="All Transaction">
             <i class="fas fa-chart-bar"></i>
@@ -60,8 +58,8 @@
         </i>
         {% if current_user.is_authenticated %}
         <!-- Include the rendered budget summary HTML here 
-		<p>Welcome, {{ current_user.id }}!</p>
-		-->
+        <p>Welcome, {{ current_user.id }}!</p>
+        -->
         <a href="{{ url_for('logout') }}" style="color: #61DAFB; font-size: 24px;">
             <i class="fas fa-sign-out-alt" title="Logout"></i>
         </a>
@@ -75,15 +73,15 @@
             </div>
         </div>
     </div>
-    <!-- Date Range Filter Form -->
+    <!-- Date Range Filter (Removed Form Submission) -->
     <div class="transaction_edit_filter">
-        <form id="dateRangeForm" method="GET" action="/historical_trend">
+        <div id="dateRangeContainer">
             <label for="date_range">Date Range:</label>
             <input type="text" id="date_range" name="date_range" />
             <input type="hidden" id="start_date" name="start_date" />
             <input type="hidden" id="end_date" name="end_date" />
-        </form>
-        <!-- Dropdown remains outside the form -->
+        </div>
+        <!-- Dropdown remains outside -->
         <label class="spacer-label" for="dropdown_select"> </label>
         <label for="dropdown_select"></label>
         <select id="dropdown_select">
@@ -102,11 +100,10 @@
         </div>
     </div>
 
-        <!-- Add Transaction Button -->
+    <!-- Add Transaction Button -->
     <button id="addTransactionButton" class="btn btn-primary">+ Add Transaction</button>
     
     <!-- Add Transaction Popup -->
-    <!-- Add Transaction Form (already separate, ensure ID is unique) -->
     <div id="addTransactionPopup" class="popup-overlay" style="display: none;">
         <div class="popup-content">
             <div class="popup-header">
@@ -133,8 +130,6 @@
                     <label for="transactionPayeeInput">Payee</label>
                     <input type="text" id="transactionPayeeInput" name="transactionPayeeInput" placeholder="Payee" required>
                 </div>
-                
-                
                 <div class="form-group">
                     <label for="transactionAmountInput">Amount</label>
                     <input type="number" id="transactionAmountInput" name="transactionAmountInput" placeholder="Enter amount" step="0.01" required>
@@ -145,7 +140,6 @@
                         <option value="" disabled selected>Select a subcategory</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label for="transactionMemoInput">Memo</label>
                     <input type="text" id="transactionMemoInput" name="transactionMemoInput" placeholder="Memo (optional)">
@@ -160,8 +154,6 @@
 
     <div class="dt-buttons"> </div>
     <!-- DataTable for displaying transaction details -->
-    
-    <!-- Desktop Table Container -->
     <div class="transaction-table-container">
         <table id="transactionTable" class="transaction-table" style="width: 100%">
             <thead>
@@ -214,7 +206,7 @@
         </table>
     </div>
 
-        <!-- Split Transaction Popup -->
+    <!-- Split Transaction Popup -->
     <div id="splitTransactionPopup" class="popup-overlay" style="display: none;">
         <div class="popup-content">
             <div class="popup-header">
@@ -242,7 +234,6 @@
         </div>
     </div>
 
-
     <!-- Mobile View -->
     <div class="transaction-table-mobile-container">
         {% for transaction in transaction_data %}
@@ -258,12 +249,10 @@
                 </div>
             </div>
             <div class="transaction_details_body" style="display: none;">
-                
                 <div class="transaction_details_field">
                     <span class="transaction_details_label">Description:</span>
                     <span>{{ transaction[4] }}</span>
                 </div>
-               
                 <div class="transaction_details_field">
                     <span class="transaction_details_label">Subcategory:</span>
                     <span>{{ transaction[6] }}</span>
@@ -288,8 +277,6 @@
         </div>
         {% endfor %}
     </div>
-
-
 
     <!-- Include DataTables initialization script with export options and date range filter -->
     <script>

@@ -110,6 +110,99 @@ def historical_trend():
     # Render the template with the fetched data for transaction analysis
     return render_template("historical_trend.html.jinja", transaction_data=transaction_data)
 
+
+@historical_trend_bp.route("/get_transaction_data", methods=["POST"])
+@login_required
+def get_transaction_data():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        start_date_param = data.get("start_date")
+        end_date_param = data.get("end_date")
+
+        if not start_date_param or not end_date_param:
+            return jsonify({"error": "Start date and end date are required"}), 400
+
+        # Convert dates to Y-M-D format for SQLite
+        start_date = datetime.strptime(start_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
+        end_date = datetime.strptime(end_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # Same query as in historical_trend
+        custom_report_query = """
+            SELECT  
+                CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) as TransactionYear,
+                strftime('%m', a11.TransactionPosted) as TransactionMonth,
+                CASE strftime('%m', TransactionPosted) 
+                    WHEN '01' THEN 'Jan'
+                    WHEN '02' THEN 'Feb'
+                    WHEN '03' THEN 'Mar'
+                    WHEN '04' THEN 'Apr'
+                    WHEN '05' THEN 'May'
+                    WHEN '06' THEN 'Jun'
+                    WHEN '07' THEN 'Jul'
+                    WHEN '08' THEN 'Aug'
+                    WHEN '09' THEN 'Sep'
+                    WHEN '10' THEN 'Oct'
+                    WHEN '11' THEN 'Nov'
+                    WHEN '12' THEN 'Dec'
+                    ELSE NULL
+                END as FormattedTransactionMonth,
+                strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted,               
+                a11.TransactionDescription,
+                a11.TransactionPayee,
+                Coalesce(a11.SubCategory,'Unknown') as SubCategory,
+                TransactionKey,
+                ROUND(SUM(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0)), 2) AS TransactionAmount
+            FROM
+                F_Transaction a11
+            WHERE
+                TransactionPosted BETWEEN ? AND ?
+            GROUP BY
+                CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) ,
+                strftime('%b', a11.TransactionPosted) ,
+                CASE strftime('%m', TransactionPosted) 
+                    WHEN '01' THEN 'Jan'
+                    WHEN '02' THEN 'Feb'
+                    WHEN '03' THEN 'Mar'
+                    WHEN '04' THEN 'Apr'
+                    WHEN '05' THEN 'May'
+                    WHEN '06' THEN 'Jun'
+                    WHEN '07' THEN 'Jul'
+                    WHEN '08' THEN 'Aug'
+                    WHEN '09' THEN 'Sep'
+                    WHEN '10' THEN 'Oct'
+                    WHEN '11' THEN 'Nov'
+                    WHEN '12' THEN 'Dec'
+                    ELSE NULL
+                END ,
+                strftime('%m/%d/%Y', a11.TransactionPosted),               
+                a11.TransactionDescription,
+                a11.TransactionPayee,
+                Coalesce(a11.SubCategory,'Unknown'),
+                TransactionKey
+            ORDER BY a11.TransactionPosted DESC
+        """
+
+        query_params = [start_date, end_date]
+        cursor.execute(custom_report_query, query_params)
+        transaction_data = cursor.fetchall()
+
+        conn.close()
+
+        # Return the data as JSON
+        return jsonify({"transaction_data": transaction_data})
+
+    except Exception as e:
+        logger.error(f"Error fetching transaction data: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
 @historical_trend_bp.route("/salary_chart_data", methods=["GET"])
 @login_required
 def salary_chart_data():
