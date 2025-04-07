@@ -530,3 +530,130 @@ def income_expense_chart():
         logger.error(f"An unexpected error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
     
+
+
+@historical_trend_bp.route("/spending_trend_by_category", methods=["POST"])
+@login_required
+def spending_trend_by_category():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        if not data:
+            logger.warning("No data provided in request.")
+            return jsonify({"error": "No data provided"}), 400
+
+        start_date_param = data.get("start_date")
+        end_date_param = data.get("end_date")
+
+        # Handle missing date parameters: Default to last 6 months
+        if not start_date_param or not end_date_param:
+            end_date = date.today()
+            start_date = end_date - timedelta(days=6 * 30)  # Approximate 6 months
+            start_date_str = start_date.strftime("%Y-%m-%d")
+            end_date_str = end_date.strftime("%Y-%m-%d")
+            logger.info(f"Using default date range: {start_date_str} to {end_date_str}")
+        else:
+            # Convert dates to YYYY-MM-DD format for SQLite (consistent with your DB)
+            try:
+                start_date = datetime.strptime(start_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
+                end_date = datetime.strptime(end_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
+                logger.info(f"Using provided date range: {start_date} to {end_date}")
+            except ValueError as e:
+                logger.error(f"Invalid date format provided: {str(e)}")
+                return jsonify({"error": "Invalid date format. Use MM/DD/YYYY."}), 400
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect("SparkyBudget.db")
+        cursor = conn.cursor()
+
+        # SQL query (using parameterized queries to prevent SQL injection)
+        query = """
+            SELECT
+                YearMonth,
+                Category,
+                ExpenseAmount
+            FROM (
+                SELECT
+                    strftime('%Y-%m', a11.TransactionPosted) AS YearMonth,
+                    CASE
+                        WHEN a12.Category IN (
+                            SELECT Category
+                            FROM (
+                                SELECT
+                                    a12.Category,
+                                    SUM(ABS(ROUND(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0), 2))) AS TotalCategoryAmount
+                                FROM
+                                    F_Transaction a11
+                                    LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                                WHERE
+                                    a11.SubCategory NOT IN ('CC Payment', 'Money Transfer', 'Paycheck')
+                                    AND a11.TransactionPosted BETWEEN ? AND ?
+                                GROUP BY
+                                    a12.Category
+                                ORDER BY
+                                    TotalCategoryAmount DESC
+                                LIMIT 6
+                            )
+                        ) THEN a12.Category
+                        ELSE 'Others'
+                    END AS Category,
+                    ABS(ROUND(SUM(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0)), 2)) AS ExpenseAmount
+                FROM
+                    F_Transaction a11
+                    LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                WHERE
+                    a11.SubCategory NOT IN ('CC Payment', 'Money Transfer', 'Paycheck')
+                    AND a11.TransactionPosted BETWEEN ? AND ?
+                GROUP BY
+                    strftime('%Y-%m', a11.TransactionPosted),
+                    CASE
+                        WHEN a12.Category IN (
+                            SELECT Category
+                            FROM (
+                                SELECT
+                                    a12.Category,
+                                    SUM(ABS(ROUND(COALESCE(a11.TransactionAmountNew, a11.TransactionAmount, 0), 2))) AS TotalCategoryAmount
+                                FROM
+                                    F_Transaction a11
+                                    LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
+                                WHERE
+                                    a11.SubCategory NOT IN ('CC Payment', 'Money Transfer', 'Paycheck')
+                                    AND a11.TransactionPosted BETWEEN ? AND ?
+                                GROUP BY
+                                    a12.Category
+                                ORDER BY
+                                    TotalCategoryAmount DESC
+                                LIMIT 6
+                            )
+                        ) THEN a12.Category
+                        ELSE 'Others'
+                    END
+            ) AS Subquery
+            ORDER BY
+                YearMonth,
+                Category;
+        """
+        # Execute the query with the date range parameters
+        params = [start_date, end_date] * 3  # Dates are used 3 times in this SQL
+        cursor.execute(query, params)
+        results = cursor.fetchall()
+        conn.close()
+
+        # Format the results as a list of dictionaries
+        formatted_results = []
+        for row in results:
+            formatted_results.append({
+                "YearMonth": row[0],
+                "Category": row[1],
+                "ExpenseAmount": row[2]
+            })
+
+        # Return the data as JSON
+        return jsonify({"data": formatted_results})
+
+    except sqlite3.Error as e:
+        logger.error(f"SQLite error: {str(e)}", exc_info=True)
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500

@@ -380,6 +380,7 @@ $(function () {
                     updateTransactionTable(response.transaction_data);
                     updateMobileCards(response.transaction_data);
                     fetchIncomeExpenseChartData();
+                    fetchSpendingTrendChartData();
                 } else {
                     console.error('No transaction data in response:', response);
                 }
@@ -662,7 +663,8 @@ $(document).ready(function () {
 // Initial fetch for line chart
 $(document).ready(function () {
     fetchLineChartData();
-    fetchIncomeExpenseChartData();    
+    fetchIncomeExpenseChartData();
+    fetchSpendingTrendChartData();    
 });
 
 
@@ -968,6 +970,143 @@ function renderNetCashFlowChart(chartData) {
             }
         },
         plugins: [ChartDataLabels]
+    });
+}
+
+
+
+// Global variable to hold the Spending Trend By Category chart instance
+let spendingTrendChart = null;
+
+// Function to render the Spending Trend By Category chart
+function renderSpendingTrendChart(chartData) {
+    const ctx = document.getElementById('spendingTrendChartCanvas').getContext('2d');
+
+    // Destroy existing chart if it exists
+    if (spendingTrendChart) {
+        spendingTrendChart.destroy();
+    }
+
+    // Prepare data for the chart: group by YearMonth and Category
+    const groupedData = {};
+    chartData.forEach(item => {
+        if (!groupedData[item.YearMonth]) {
+            groupedData[item.YearMonth] = {};
+        }
+        groupedData[item.YearMonth][item.Category] = item.ExpenseAmount;
+    });
+
+    // Extract labels (YearMonth) and categories
+    const labels = Object.keys(groupedData);
+    const categories = [...new Set(chartData.map(item => item.Category))]; // Unique categories
+
+     // Define a specific color palette (adjust to match your mockup)
+     const categoryColors = [
+        'rgba(148, 148, 255, 0.4)', //Auto & Transport  // Housing
+        'rgba(60, 179, 113, 0.6)',   //Food & Dining  // Food
+        'rgba(255, 165, 0, 0.7)',    // Home   // Transportation
+        'rgba(255, 69, 0, 0.6)',     //Others   // Utilities
+        'rgba(128, 0, 128, 0.4)',   // Shopping  // Entertainment
+        'rgba(139, 69, 19, 0.4)',   // Transfer  // Other
+        'rgba(148, 148, 255, 0.6)', //Auto & Transport  // Housing
+        'rgba(60, 179, 113, 0.4)',   //Food & Dining  // Food
+        'rgba(255, 165, 0, 0.5)',    // Home   // Transportation
+    ];
+
+    // Create datasets for each category
+    const datasets = categories.map((category, index) => {
+        const data = labels.map(label => groupedData[label][category] || 0); // ExpenseAmount for each month, 0 if not present
+        return {
+            label: category,
+            data: data,
+            backgroundColor: categoryColors[index % categoryColors.length],  // Assign color from the palette
+            borderColor: 'rgba(255, 255, 255, 0.1)',  // Subtle border
+            borderWidth: 1,
+            fill: true,  // Fill the area under the line
+            tension: 0.4, // to show curved lines
+        };
+    });
+
+    spendingTrendChart = new Chart(ctx, {
+        type: 'line',  // Stacked area chart
+        data: {
+            labels: labels,
+            datasets: datasets,
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    stacked: true,
+                    ticks: {
+                        color: 'white',
+                        callback: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Spending Trend by Category',
+                    color: 'white',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                tooltip: {
+                     mode: 'index',  // Show all series on hover at same point
+                    intersect: false  // Don't need to be directly over a data point
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'white'
+                    }
+                },
+            },
+        },
+    });
+}
+// Helper function to generate a random color
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+// Function to fetch data for the Spending Trend by Category chart
+function fetchSpendingTrendChartData() {
+    $.ajax({
+        url: '/spending_trend_by_category',  // The URL to fetch data from the new endpoint you will provide to flask.
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            start_date: $('#start_date').val(),
+            end_date: $('#end_date').val()
+        }),
+        success: function (response) {
+            if (response.data) {
+                renderSpendingTrendChart(response.data);
+            } else {
+                console.error('No spending trend data in response:', response);
+            }
+        },
+        error: function (error) {
+            console.error('Error fetching spending trend data:', error);
+        }
     });
 }
 

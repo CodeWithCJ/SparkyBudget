@@ -970,3 +970,95 @@ body {
         height: 300px !important; /* Smaller height for mobile */
     }
 }
+
+
+
+
+
+
+
+
+/* -------------------------------------------------------------
+# Spending Trend Chart Styles
+-------------------------------------------------------------- */
+
+/* Container for the Spending Trend chart */
+.spending-trend-chart-container {
+    position: relative;
+    width: 80%;
+    max-width: 1000px; /* Limit the maximum width for larger screens */
+    margin: 20px auto; /* Center the chart with some margin */
+    padding: 20px; /* Add padding for the glow effect */
+    height: auto; /* Let the height adjust based on content */
+    box-sizing: border-box;
+}
+
+/* Chart wrapper for the glowing border and perspective */
+.spending-trend-chart-wrap {
+    --radius: 20px;
+    --perspective: 800px;
+    position: relative;
+    border-radius: var(--radius);
+    perspective: var(--perspective);
+    transform-style: preserve-3d;
+    padding: 5px; /* Space for the glowing border */
+    overflow: hidden; /* Prevent the border from spilling out */
+}
+
+/* Glowing gradient border for the Spending Trend chart */
+.spending-trend-chart-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ffd867, #ec526b, #ffd867, #ec526b);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: gradientBorder 5s linear infinite;
+}
+
+/* Subtle shadow beneath the chart */
+.spending-trend-chart-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 60px 140px 30px rgba(0, 0, 0, 0.8), 0 -60px 120px rgba(102, 106, 135, 0.4);
+    filter: blur(5px);
+    z-index: -2;
+}
+
+/* Chart card with gradient background */
+.spending-trend-chart-card {
+    position: relative;
+    padding: 20px;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, #201c29 40%, #37374b 100%);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.7), inset 0 0 3px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s cubic-bezier(0.03, 1, 0.5, 1);
+    transform-style: preserve-3d;
+    z-index: 2;
+}
+
+/* Ensure the canvas fits properly */
+#spendingTrendChartCanvas {
+    width: 100% !important;
+    height: 400px !important; /* Set a fixed height for consistency */
+    display: block;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .spending-trend-chart-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #spendingTrendChartCanvas {
+        height: 300px !important; /* Smaller height for mobile */
+    }
+}
