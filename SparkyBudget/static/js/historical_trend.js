@@ -662,7 +662,7 @@ $(document).ready(function () {
 // Initial fetch for line chart
 $(document).ready(function () {
     fetchLineChartData();
-    fetchIncomeExpenseChartData();
+    fetchIncomeExpenseChartData();    
 });
 
 
@@ -685,6 +685,7 @@ function fetchIncomeExpenseChartData() {
         success: function (response) {
             if (response.data) {
                 renderIncomeExpenseChart(response.data);
+                renderNetCashFlowChart(response.data);
             } else {
                 console.error('No income/expense data in response:', response);
             }
@@ -817,3 +818,156 @@ function renderIncomeExpenseChart(chartData) {
         plugins: [ChartDataLabels]
     });
 }
+
+
+
+
+// Global variable to hold the Net Cash Flow chart instance
+let netCashFlowChart = null;
+
+// Function to render the Net Cash Flow chart
+function renderNetCashFlowChart(chartData) {
+    const ctx = document.getElementById('netCashFlowChartCanvas').getContext('2d');
+
+    // Destroy existing chart if it exists
+    if (netCashFlowChart) {
+        netCashFlowChart.destroy();
+    }
+
+    // Prepare labels, income, expense, and net cash flow data
+    const labels = chartData.map(item => item.YearMonth);
+    const incomeData = chartData.map(item => item.Income);
+    const expenseData = chartData.map(item => -item.ExpenseAmount); // Expenses remains as positive value
+    const netCashFlowData = chartData.map((item, index) => item.Income - item.ExpenseAmount); // Calculate Net Cash Flow
+    console.log(netCashFlowData);
+
+    // Ensure that even if all values in chartData are zero, we'll display meaningful scaling
+    const maxY = Math.max(...incomeData) + (Math.max(...incomeData) / 2); // Adding 50% padding to Max Y
+    const minY = Math.min(...expenseData) + (Math.min(...expenseData) / 2); // Subtracting 50% padding to Min Y
+
+    // Determine line colors based on net cash flow (above or below zero)
+    const netCashFlowColors = netCashFlowData.map(value => value >= 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)');
+
+    netCashFlowChart = new Chart(ctx, {
+        type: 'bar',  // Combo chart: bars for income/expense, line for net cash flow
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Income',
+                    data: incomeData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)', // Green-ish color
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    type: 'bar',
+                    order: 2,
+                    datalabels: {
+                        display: function (context) {
+                            // Only show datalabels on desktop for bars
+                            return context.dataset.label === 'Income' && window.innerWidth > 768;
+                        },
+                        anchor: 'end',
+                        align: 'top',
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    }
+                },
+                {
+                    label: 'Expenses',
+                    data: expenseData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',  // Red-ish color
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    type: 'bar',
+                    order: 2,
+                    datalabels: {
+                        display: function (context) {
+                            // Only show datalabels on desktop for bars
+                            return context.dataset.label === 'Expenses' && window.innerWidth > 768;
+                        },
+                        anchor: 'end',
+                        align: 'bottom', // Position the labels at the bottom of the negative bars
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function (value) {
+                            return '$' + Math.abs(Math.round(value));  // Display positive value
+                        }
+                    }
+                },
+                {
+                    label: 'Net Cash Flow',
+                    data: netCashFlowData,
+                    borderColor: netCashFlowColors,  // Use conditional colors for the line
+                    borderWidth: 2,
+                    type: 'line',
+                    fill: false,
+                    pointRadius: 5,
+                    order: 1,
+                    datalabels: {  // ADD data lable
+                        display: window.innerWidth > 768,  // to show on desktop
+                        anchor: 'top',  // Adjust the anchor point as needed (e.g., 'top', 'bottom')
+                        align: 'center', // or 'left' or 'right', depending on the look you want
+                        color: 'white',  // Set the data label color to white
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        formatter: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    }
+                }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: false,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    suggestedMin: minY,
+                    suggestedMax: maxY,
+                    ticks: {
+                        color: 'white',
+                        callback: function (value) {
+                            return '$' + Math.round(value);
+                        }
+                    },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Net Cash Flow',
+                    color: 'white',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'white'
+                    }
+                },
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}
+
