@@ -62,31 +62,4 @@ Join our Discord Community for installation support, configuration help, and con
 👉 https://discord.gg/XRubfPQa  
 
 
-# 🚀 Future Plans (Upcoming Features)  
-📊 LLM Integration for Finance Queries  
-✅ Experimenting with local AI models to enable conversational interactions with financial data.  
-
-📈 Expense Insights & Annual Planning  
-✅ Analyzing historical expenses to build Annual Operating Plans (AOP) & Operation & Risk (O&R).  
-✅ Identifying unnecessary expenses and providing alerts/warnings.  
-
-📉 Budget Projection Using Advanced Analytics  
-✅ Implementing exponential moving averages and R-based financial modeling for predictive budgeting.  
-
-🔥 Financial Independence (FIRE) Projections  
-✅ Estimating long-term financial independence and retirement timelines.  
-
-💱 Multi-Currency Support  
-✅ Handling USD & INR, with potential expansion to other currencies.  
-
-⚠️ Things I Won’t Focus  
-📂 Manual Bank Statement Imports  
-❌ Since SimpleFin covers my needs, I won’t add manual bank import functionality.  
-
-📌 Advanced Auto Categorization  
-❌ My app uses simple keyword-based categorization, and I don’t plan to add complex regex-based rules like Actual.  
-
-🔌 API Development  
-❌ The app follows a simple and decoupled database structure, so an API isn’t necessary for my use case as of now to interact with SparkyBudget's database.  
-
 
