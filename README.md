@@ -14,7 +14,7 @@ cd sparkybudget
 ```  
 2. Download .env-example and SparkyBudget-fresh.db.
 ```
-wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/docker-compose.yml  
+wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/docker-compose.yaml  
 wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/.env-example  
 wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/SparkyBudget-fresh.db  
 ```  
