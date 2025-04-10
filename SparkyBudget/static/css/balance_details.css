@@ -112,17 +112,27 @@ table.dataTable thead .sorting_desc {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    .balance-details-wrapper {
+        width: 95%; /* Set to 95% for mobile view */
+        margin: 10px auto; /* Reduce margin to minimize extra space */
+        padding: 10px; /* Reduce padding if needed */
+    }
     .balance-details-container {
         display: none;
     }
 
     .balance-details-mobile-container {
         display: block;
-        margin: 20px;
+        width: 100%; /* Ensure it takes the full width of the wrapper */
+        max-width: none; /* Remove any max-width restrictions */
+        margin: 0; /* Remove any extra margins */
+        padding: 0; /* Remove padding to avoid extra space */
     }
 
     .bank-group {
+        width: 100%; /* Ensure the bank group takes full width */
         margin-bottom: 20px;
+        padding: 0; /* Remove padding if any */
     }
 
     .bank-title {
@@ -142,7 +152,12 @@ table.dataTable thead .sorting_desc {
         padding: 15px;
         color: #fff;
         box-shadow: 0 2px 5px rgba(0, 188, 212, 0.2);
+        width: 100% !important;       /* Or adjust percentage as needed */
+       
+        
+        margin-bottom: 15px; /* Keep or adjust vertical spacing */
     }
+    
 
     .balance_details_header {
         display: flex;
@@ -262,4 +277,28 @@ table.dataTable thead .sorting_desc {
 #addAccountForm .btn-secondary {
     background: #444;
     color: #e0e7ff;
+}
+
+
+
+/* Upload Icon Styles */
+.upload-icon {
+    color: #61dafb;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.upload-icon:hover {
+    color: #00bcd4;
+}
+
+/* Ensure upload column is centered */
+.balance-details-table td:last-child {
+    text-align: center;
+}
+
+/* Mobile Upload Icon */
+.balance-details-mobile-container .upload-icon {
+    margin-left: 10px;
+    font-size: 14px;
 }

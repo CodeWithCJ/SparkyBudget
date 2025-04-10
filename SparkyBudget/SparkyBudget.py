@@ -23,11 +23,16 @@ from py_utils.currency_utils import app as currency_app
 from py_utils.manage_categories import manage_categories_bp
 from py_utils.SimpleFinToDB import process_accounts_data
 from py_utils.subcategory_update import subcategory_update_bp
+from py_utils.FileToDB import file_to_db_bp
+
 
 # py_routes
 from py_routes.home import home_bp
 from py_routes.budget_summary import budget_sumary_bp
 from py_routes.historical_trend import historical_trend_bp
+
+
+
 
 def create_app():
     app = Flask(__name__, template_folder='./templates', static_folder='./static')
@@ -61,6 +66,7 @@ app.register_blueprint(budget_sumary_bp)
 app.register_blueprint(historical_trend_bp)
 app.register_blueprint(manage_categories_bp)
 app.register_blueprint(subcategory_update_bp)
+app.register_blueprint(file_to_db_bp)
 
 db_lock = Lock()
 

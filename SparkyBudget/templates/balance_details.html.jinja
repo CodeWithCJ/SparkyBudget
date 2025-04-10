@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">
 </head>
 <body>
-
-        <!-- Add Account Button -->
+    <!-- Add Account Button -->
     <button id="addAccountButton" class="btn btn-primary">+ Add Account</button>
     
     <!-- Add Account Popup -->
@@ -20,8 +20,6 @@
                     <i class="fas fa-times"></i>
                 </button>
                 <h2>Add Account</h2>
-                
-               
             </div>
             <form id="addAccountForm">
                 <div class="form-group">
@@ -62,73 +60,82 @@
         </div>
     </div>
 
-
-
-    <!-- Desktop Table Container (unchanged) -->
+    <!-- Desktop Table Container -->
     <div class="balance-details-wrapper">
-        <H4 style="text-align: center;"><i class="fas fa-piggy-bank"></i> Balance Details</H4>
+        <h4 style="text-align: center;"><i class="fas fa-piggy-bank"></i> Balance Details</h4>
         <div class="balance-details-container">
             <table id="balanceTable" class="balance-details-table">
                 <thead>
                     <tr>
+                        <th style="display: none;">AccountKey</th> <!-- Hidden AccountKey column -->
                         <th>Account Type <i class="fas fa-edit editable-icon"></i></th>
                         <th>Bank</th>
                         <th>Account Name <i class="fas fa-edit editable-icon"></i></th>
                         <th>Last Sync</th>
                         <th>Balance</th>
                         <th>Available Balance</th>
+                        <th>Upload</th> <!-- New Upload column -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for balance_details_data in bank_account_name_balance_details %}
                     <tr>
+                        <td style="display: none;" class="account-key">{{ balance_details_data[0] }}</td> <!-- Hidden AccountKey -->
                         <td class="editable-account-type" data-account-key="{{ balance_details_data[0] }}">{{ balance_details_data[1] }}</td>
                         <td>{{ balance_details_data[2] }}</td>
                         <td class="editable-display-name" data-account-key="{{ balance_details_data[0] }}">{{ balance_details_data[3] or '' }}</td>
                         <td data-order="{{ balance_details_data[4].strftime('%Y-%m-%d') }}">{{ balance_details_data[4].strftime('%b ') }}{{ balance_details_data[4].day }}, {{ balance_details_data[4].year }}</td>
                         <td>{{ balance_details_data[5] | tocurrency_whole }}</td>
                         <td>{{ balance_details_data[6] | tocurrency_whole }}</td>
+                        <td>
+                            <i class="fas fa-upload upload-icon" data-account-key="{{ balance_details_data[0] }}" style="cursor: pointer;"></i>
+                            <input type="file" class="upload-file-input" style="display: none;" accept=".csv">
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-    
 
-    <!-- Mobile View Container -->
-    <div class="balance-details-mobile-container">
-        {% set banks = bank_account_name_balance_details | groupby(2) %}
-        {% for bank_name, accounts in banks %}
-        <div class="bank-group">
-            <h3 class="bank-title">{{ bank_name }}</h3>
-            {% for account in accounts %}
-            <div class="balance_details_card" data-bank="{{ bank_name }}">
-                <div class="balance_details_header">
-                    <div class="balance_details_info">
-                        <span class="balance_details_account_name">{{ account[3] or '' }}</span>
-                        <span class="balance_details_last_refreshed">{{ account[4].strftime("%B ") }}{{ account[4].day }}, {{ account[4].year }}</span>
+        <!-- Mobile View Container -->
+        <div class="balance-details-mobile-container">
+            {% set banks = bank_account_name_balance_details | groupby(2) %}
+            {% for bank_name, accounts in banks %}
+            <div class="bank-group">
+                <h3 class="bank-title">{{ bank_name }}</h3>
+                {% for account in accounts %}
+                <div class="balance_details_card" data-bank="{{ bank_name }}">
+                    <div class="balance_details_header">
+                        <div class="balance_details_info">
+                            <span class="balance_details_account_name">{{ account[3] or '' }}</span>
+                            <span class="balance_details_last_refreshed">{{ account[4].strftime("%B ") }}{{ account[4].day }}, {{ account[4].year }}</span>
+                        </div>
+                        <div class="balance_details_amount_container">
+                            <span class="balance_details_balance">{{ account[5] | tocurrency_whole }}</span>
+                            <span class="balance_details_status" onclick="balance_details_toggleDetails(this)">More ▼</span>
+                        </div>
                     </div>
-                    <div class="balance_details_amount_container">
-                        <span class="balance_details_balance">{{ account[5] | tocurrency_whole }}</span>
-                        <span class="balance_details_status" onclick="balance_details_toggleDetails(this)">More ▼</span>
+                    <div class="balance_details_body" style="display: none;">
+                        <div class="balance_details_field">
+                            <span class="balance_details_label">Account Type:</span>
+                            <span class="editable-account-type" data-account-key="{{ account[0] }}">{{ account[1] }}</span>
+                        </div>
+                        <div class="balance_details_field">
+                            <span class="balance_details_label">Available Balance:</span>
+                            <span>{{ account[6] | tocurrency_whole }}</span>
+                        </div>
+                        <div class="balance_details_field">
+                            <span class="balance_details_label">Upload Transactions:</span>
+                            <i class="fas fa-upload upload-icon" data-account-key="{{ account[0] }}" style="cursor: pointer;"></i>
+                            <input type="file" class="upload-file-input" style="display: none;" accept=".csv">
+                            <input type="hidden" class="account-key" value="{{ account[0] }}">
+                        </div>
                     </div>
                 </div>
-                <div class="balance_details_body" style="display: none;">
-                    <div class="balance_details_field">
-                        <span class="balance_details_label">Account Type:</span>
-                        <span class="editable-account-type" data-account-key="{{ account[0] }}">{{ account[1] }}</span>
-                    </div>
-                    <div class="balance_details_field">
-                        <span class="balance_details_label">Available Balance:</span>
-                        <span>{{ account[6] | tocurrency_whole }}</span>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
             {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

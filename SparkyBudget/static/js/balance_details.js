@@ -1,7 +1,5 @@
-// static/js/balance_details.js
-
 $(document).ready(function() {
-    // Initialize DataTable with custom styling and debugging, only if not already initialized
+    // Initialize DataTable with custom styling and debugging
     if (!$.fn.dataTable.isDataTable('#balanceTable')) {
         $('#balanceTable').DataTable({
             "pageLength": 17,
@@ -10,7 +8,6 @@ $(document).ready(function() {
                 [10, 17, 25, "All"]
             ],
             "rowCallback": function(row, data) {
-                // Add the dark-row class to each row
                 $(row).addClass('dark-row');
             },
             "autoWidth": false,
@@ -20,12 +17,14 @@ $(document).ready(function() {
                 console.log('DataTables initialized with column count:', settings.aoColumns.length);
             },
             "columns": [
+                { "visible": false }, // Hidden AccountKey column
                 null, // Account Type
                 null, // Bank
                 null, // Display Account Name
-                null, // As of
-                null, // Balance
-                null  // Available Balance
+                null, // Last Sync
+                null, // Balance                
+                null, // Available Balance
+                { "orderable": false } // Upload column (non-sortable)
             ]
         });
     }
@@ -59,7 +58,7 @@ $(document).ready(function() {
         $input.on('blur keypress', function(e) {
             if (e.type === 'blur' || (e.type === 'keypress' && e.which === 13)) {
                 const newValue = $input.val().trim();
-                $cell.html(newValue || ''); // Display empty string in UI if cleared
+                $cell.html(newValue || '');
 
                 $.ajax({
                     url: '/update_display_account_name',
@@ -72,7 +71,6 @@ $(document).ready(function() {
                     success: function(response) {
                         if (response.success) {
                             console.log('DisplayAccountName updated successfully');
-                            // Refresh the page to pull updated data
                             location.reload();
                         } else {
                             console.error('Failed to update DisplayAccountName:', response.message);
@@ -95,7 +93,6 @@ $(document).ready(function() {
         const currentValue = $cell.text().trim() || '';
         const accountKey = $cell.data('account-key');
 
-        // Only create dropdown if cell doesn't already contain a select
         if (!$cell.find('select').length) {
             let dropdownHtml = '<select class="account-type-select">';
             accountTypes.forEach(type => {
@@ -107,13 +104,11 @@ $(document).ready(function() {
             const $select = $cell.find('select');
             $select.focus();
 
-            // Handle selection change
             $select.on('change', function() {
                 const newKey = $select.val();
                 const newType = $select.find('option:selected').text();
-                $cell.html(newType); // Update cell with selected value
+                $cell.html(newType);
 
-                // AJAX call to update the account type
                 $.ajax({
                     url: '/update_account_type',
                     method: 'POST',
@@ -138,25 +133,53 @@ $(document).ready(function() {
                 });
             });
 
-            // Handle click outside to revert if no selection made
             $(document).one('click', function closeDropdown(event) {
                 if (!$(event.target).closest('.editable-account-type').length) {
-                    $cell.html(currentValue); // Revert to original value
-                    $(document).off('click', closeDropdown); // Remove the listener
+                    $cell.html(currentValue);
+                    $(document).off('click', closeDropdown);
                 }
             });
         }
 
-        // Prevent default click behavior if needed
         e.stopPropagation();
     });
-});
 
+    // Handle upload icon click
+    $(document).on('click', '.upload-icon', function() {
+        const $icon = $(this);
+        const accountKey = $icon.data('account-key');
+        const $fileInput = $icon.siblings('.upload-file-input');
+        
+        $fileInput.off('change').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('account_key', accountKey);
 
+                $.ajax({
+                    url: '/upload_transactions',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('Failed to upload transactions: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
 
-// Add to existing $(document).ready()
-$(document).ready(function() {
-    // ... existing code ...
+        $fileInput.click();
+    });
 
     // Mobile toggle function
     window.balance_details_toggleDetails = function(button) {
@@ -172,37 +195,29 @@ $(document).ready(function() {
             statusElement.text('More ▼').css('color', '#00cc00');
         }
     };
-});
 
-
-
-
-$(document).ready(function () {
-    // Show the popup and set today's date as the default value
-    $('#addAccountButton').on('click', function () {
-        const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-        $('#addAccountBalanceDateInput').val(today); // Set the default value
+    // Add Account Popup
+    $('#addAccountButton').on('click', function() {
+        const today = new Date().toISOString().split('T')[0];
+        $('#addAccountBalanceDateInput').val(today);
         $('#addAccountPopup').fadeIn();
     });
 
-    // Close the popup when clicking the close button or cancel button
-    $('#addAccountCloseButton, #addAccountCancelButton').on('click', function () {
+    $('#addAccountCloseButton, #addAccountCancelButton').on('click', function() {
         $('#addAccountPopup').fadeOut();
     });
 
-    // Close the popup when clicking outside the form
-    $('#addAccountPopup').on('click', function (e) {
+    $('#addAccountPopup').on('click', function(e) {
         if ($(e.target).is('#addAccountPopup')) {
             $('#addAccountPopup').fadeOut();
         }
     });
 
-    // Initialize select2 for Account Type dropdown
     $('#addAccountTypeSelect').select2({
         ajax: {
-            url: '/get_account_types', // Backend endpoint to fetch account types
+            url: '/get_account_types',
             dataType: 'json',
-            processResults: function (data) {
+            processResults: function(data) {
                 return {
                     results: data.account_types.map(accountType => ({
                         id: accountType.key,
@@ -215,9 +230,8 @@ $(document).ready(function () {
         allowClear: true
     });
 
-    // Handle Add Account form submission
-    $('#addAccountForm').on('submit', function (e) {
-        e.preventDefault(); // Prevent default form submission
+    $('#addAccountForm').on('submit', function(e) {
+        e.preventDefault();
 
         const formData = {
             accountTypeKey: $('#addAccountTypeSelect').val(),
@@ -234,7 +248,7 @@ $(document).ready(function () {
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
-            success: function (response) {
+            success: function(response) {
                 if (response.success) {
                     alert('Account added successfully!');
                     location.reload();
@@ -242,7 +256,7 @@ $(document).ready(function () {
                     alert('Failed to add account: ' + response.message);
                 }
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 alert('An error occurred: ' + xhr.responseText);
             }
         });
