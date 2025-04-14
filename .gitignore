@@ -170,3 +170,4 @@ containers/data/
 output/
 certs/
 **/*.csv
+.cursor/mcp.json
