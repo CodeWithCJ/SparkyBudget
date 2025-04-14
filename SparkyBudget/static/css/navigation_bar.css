@@ -1,40 +1,118 @@
-/* This CSS file is for the navigation bar at the top of the page */
 .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    border-bottom: 10px solid #1d1d1d;
-    /* Change to your desired dark color */
-    background-color: #333;
-    /* Optional: Set text color to white for better visibility */
-    color: #fff;
-    /* Optional: Set a high z-index value to make sure it's on top */
-    z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 242, 254, 0.1);
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
+.header-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, #00f2fe, #4facfe);
+}
 
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-/* Default behavior for larger screens (header at the top) */
+.header-logo img {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.5));
+}
+
+.header-logo h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  background: linear-gradient(to right, #00f2fe, #4facfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-item {
+  color: #f8fafc;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.1);
+}
+
+.nav-item.active {
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.15);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  color: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+.nav-icon:hover {
+  color: #00f2fe;
+  transform: scale(1.1);
+}
+
 @media (min-width: 769px) {
-    .header-container {
-        position: relative; /* or static, depending on your layout */
-    }
+  .header-container {
+    position: sticky;
+  }
 }
 
-/* Mobile devices (header at the bottom) */
 @media (max-width: 768px) {
-    .header-container {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%; /* Ensure it spans the full width */
-        border-bottom: none; /* Optional: Remove the bottom border since it's at the bottom */
-        border-top: 10px solid #1d1d1d; /* Optional: Add a top border for consistency */
-    }
+  .header-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: none;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    padding: 0 1rem;
+    height: 60px;
+  }
 
-    /* Add padding to the bottom of the body or main content to prevent overlap */
-    body {
-        padding-bottom: 50px; /* Adjust based on the height of your header (40px + 10px border) */
-    }
+  .header-container::before {
+    top: auto;
+    bottom: 0;
+  }
+
+  .header-logo h1 {
+    display: none;
+  }
+
+  .header-nav {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  body {
+    padding-bottom: 70px;
+  }
 }

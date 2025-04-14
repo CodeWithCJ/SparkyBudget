@@ -1,0 +1,200 @@
+<!-- Navigation Bar Component -->
+<style>
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: linear-gradient(to right, #1a1a1a, #2d2d2d);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+
+    .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .header-logo:hover {
+        transform: scale(1.02);
+    }
+
+    .header-logo img {
+        height: 42px;
+        width: auto;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .header-logo h1 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #61DAFB;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: #d6dadf;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .nav-item:hover {
+        color: #61DAFB;
+        background: rgba(97, 218, 251, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .nav-item.active {
+        color: #61DAFB;
+        background: rgba(97, 218, 251, 0.15);
+    }
+
+    .nav-item.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 3px;
+        background-color: #61DAFB;
+        border-radius: 3px;
+    }
+
+    .nav-icon {
+        font-size: 1.3rem;
+        margin-bottom: 0.3rem;
+        transition: transform 0.3s ease;
+    }
+
+    .nav-item:hover .nav-icon {
+        transform: scale(1.1);
+    }
+
+    .nav-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    #downloadButton {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    #downloadButton:hover {
+        transform: rotate(180deg);
+    }
+
+    #downloadButton img {
+        height: 26px;
+        width: auto;
+        filter: brightness(0) invert(1);
+        transition: filter 0.3s ease;
+    }
+
+    #downloadButton:hover img {
+        filter: brightness(0) invert(1) sepia(1) saturate(5000%) hue-rotate(175deg);
+    }
+
+    #spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        filter: brightness(0) invert(1) sepia(1) saturate(5000%) hue-rotate(175deg);
+    }
+
+    @media (max-width: 1200px) {
+        .header-container {
+            padding: 1rem 1.5rem;
+        }
+
+        .header-nav {
+            gap: 1.5rem;
+        }
+
+        .nav-text {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<div class="header-container">
+    <div class="header-logo">
+        <img src="{{ url_for('static', filename='images/SparkyBudget.png') }}" alt="SparkyBudget Logo" />
+        <h1>SparkyBudget</h1>
+    </div>
+    <div class="header-nav">
+        <div id="toggleBalanceSummary" class="toggle-icon nav-item " style="color: #61DAFB; font-size: 24px;">
+            <i class="fas fa-piggy-bank"></i>
+            <span class="nav-text">Toggle Balance Summary</span>
+        </div>
+        <a href="{{ url_for('home.index') }}"
+            class="nav-item {% if request.endpoint == 'home.index' %}active{% endif %}">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-text">Home</span>
+        </a>
+        <a class="nav-item {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
+            onclick="balanceDetailsTableToggleVisibility()">
+            <i class="fas fa-info-circle" title="Account Details" style="color: #61DAFB; font-size: 24px;"></i>
+            <span class="nav-text">Account Details</span>
+        </a>
+        <a class="nav-item {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
+            onclick="dailybalanceDetailsToggleVisibility()">
+            <i class="fas fa-line-chart" title="Daily Balance Details" style="color: #61DAFB; font-size: 24px;"></i>
+            <span class="nav-text">Daily Balance Details</span>
+        </a>
+        <a href="{{ url_for('budget_sumary_bp.get_recurring_budget_details') }}"
+            class="nav-item {% if 'get_recurring_budget_details' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-chart-line nav-icon"></i>
+            <span class="nav-text">Recurring Budget Details</span>
+        </a>
+        <a href="{{ url_for('historical_trend.historical_trend') }}"
+            class="nav-item {% if 'historical_trend' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-tags nav-icon"></i>
+            <span class="nav-text">All Transaction</span>
+        </a>
+        <a href="{{ url_for('manage_categories.manage_categories') }}"
+            class="nav-item {% if 'manage_categories' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-tags nav-icon"></i>
+            <span class="nav-text">Category Management</span>
+        </a>
+        <a class="nav-item">
+            <i id="downloadButton">
+                <img src="static/images/refresh.svg" alt="Refresh" title="Sync">
+                <img id="spinner" src="{{ url_for('static', filename='Spinner-0.4s-57px.gif') }}" alt="Loading..."
+                    style="width: 50px; height: auto; display: none;" />
+            </i>
+            <span class="nav-text">Sync</span>
+        </a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}" style="color: #61DAFB; font-size: 24px;">
+            <i class="fas fa-sign-out-alt" title="Logout"></i>
+        </a>
+        {% endif %}
+    </div>
+</div>
