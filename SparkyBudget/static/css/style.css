@@ -342,6 +342,10 @@ html, body {
         flex: none;
         width: 100%;
     }
+    .toggle-nav-container {
+        display: none;
+        
+    }
 }
 
 .month-year-picker-container {

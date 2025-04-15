@@ -1,12 +1,13 @@
 $(document).ready(function () {
-    // Download button handler
-    $('#downloadButton').on('click', function () {
-        $('#spinner').show();
+    $(document).on('click', '#syncNavItem, #syncNavItem .nav-text', function (e) {
+        e.preventDefault();
+        console.log('Sync clicked:', e.target);
+        $('#downloadButton').addClass('spinning');
         $.ajax({
             url: '/download_data',
             type: 'POST',
             success: function (response) {
-                $('#spinner').hide();
+                $('#downloadButton').removeClass('spinning');
                 if (response.success) {
                     alert(response.message);
                     location.reload();
@@ -15,7 +16,7 @@ $(document).ready(function () {
                 }
             },
             error: function (error) {
-                $('#spinner').hide();
+                $('#downloadButton').removeClass('spinning');
                 alert('Error: ' + error.statusText);
             }
         });

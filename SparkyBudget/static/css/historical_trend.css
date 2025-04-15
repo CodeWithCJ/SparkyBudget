@@ -1062,3 +1062,13 @@ body {
         height: 300px !important; /* Smaller height for mobile */
     }
 }
+
+
+
+@media (max-width: 768px) {
+    .mobile-header-logo #toggleBalanceSummary,
+    .mobile-header-logo .networth,
+    .mobile-header-logo .account {
+      display: none;
+    }
+  }

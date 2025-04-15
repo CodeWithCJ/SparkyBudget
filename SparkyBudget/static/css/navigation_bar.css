@@ -1,26 +1,26 @@
+/* This CSS file is for the navigation bar at the top of the page */
 .header-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 70px;
-  background: rgba(15, 23, 42, 0.8);
+  height: 60px;
+  background: #333;
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 242, 254, 0.1);
   padding: 0 2rem;
-  position: sticky;
-  top: 0;
+  color: #fff;
   z-index: 1000;
 }
 
+/* Gradient line at the bottom of the top nav */
 .header-container::before {
   content: "";
   position: absolute;
-  top: 0;
+  bottom: 0;
+  top: auto;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(to right, #00f2fe, #4facfe);
+  height: 1px;
+  background: linear-gradient(to right, #feae00, #fe4f92);
 }
 
 .header-logo {
@@ -35,6 +35,7 @@
   filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.5));
 }
 
+/* Logo text visible by default */
 .header-logo h1 {
   font-size: 1.5rem;
   margin: 0;
@@ -42,12 +43,15 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: block;
 }
 
 .header-nav {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  width: auto;
+  justify-content: flex-end;
 }
 
 .nav-item {
@@ -56,63 +60,181 @@
   font-size: 1rem;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease; /* Only transition background */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none; /* Explicitly no underline */
 }
 
 .nav-item:hover {
-  color: #00f2fe;
-  background: rgba(0, 242, 254, 0.1);
+  background: rgba(0, 242, 254, 0.1); /* Background hover effect */
 }
 
+/* Hover effect only for text */
+.nav-item:hover .nav-text {
+  color: #00f2fe;
+}
+
+/* Ensure icon stays static */
+.nav-icon {
+  font-size: 1.5rem;
+  color: #f8fafc;
+  transition: none; /* No changes on hover */
+}
+
+/* Prevent any hover changes to icon */
+.nav-item:hover .nav-icon {
+  color: #f8fafc; /* Keep original color */
+}
+
+/* Active state */
 .nav-item.active {
   color: #00f2fe;
   background: rgba(0, 242, 254, 0.15);
 }
 
-.nav-icon {
-  font-size: 1.5rem;
-  color: #f8fafc;
-  transition: all 0.3s ease;
+.nav-item.active .nav-icon {
+  color: #f8fafc; /* Icon stays unchanged */
 }
 
-.nav-icon:hover {
-  color: #00f2fe;
-  transform: scale(1.1);
+.nav-text {
+  display: inline;
 }
 
+/* Default behavior for larger screens (header at the top) */
 @media (min-width: 769px) {
   .header-container {
-    position: sticky;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    border-bottom: none;
-    border-top: 1px solid rgba(148, 163, 184, 0.2);
-    padding: 0 1rem;
-    height: 60px;
-  }
-
-  .header-container::before {
-    top: auto;
-    bottom: 0;
-  }
-
-  .header-logo h1 {
-    display: none;
-  }
-
-  .header-nav {
-    width: 100%;
-    justify-content: space-around;
+      position: relative;
   }
 
   body {
-    padding-bottom: 70px;
+      padding-top: 70px; /* Height (60px) + border (10px) */
+      padding-bottom: 0;
+      margin: 0;
+  }
+}
+
+/* Mobile devices (header at the bottom) */
+@media (max-width: 768px) {
+  .header-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: none;
+      border-top: 10px solid #1d1d1d;
+      background: #333;
+      
+  }
+
+  /* Move gradient line to the top of the bottom nav */
+  .header-container::before {
+      top: 0;
+      bottom: auto;
+  }
+
+  /* Hide logo text on mobile */
+  .header-logo h1 {
+      display: none;
+  }
+
+  /* Center logo image if text is hidden */
+  .header-logo {
+      justify-content: center;
+  }
+
+  .header-nav {
+      width: 100%;
+      justify-content: space-around;
+      gap: 0.5rem;
+  }
+
+  /* Hide nav text on mobile */
+  .nav-text {
+      display: none;
+  }
+
+  /* Adjust nav items for icon-only display */
+  .nav-item {
+      padding: 0.5rem;
+      gap: 0;
+      justify-content: center;
+      text-decoration: none;
+  }
+
+  .nav-icon {
+      font-size: 1.8rem;
+      color: #f8fafc;
+      transition: none;
+  }
+
+  .nav-item:hover .nav-icon {
+      color: #f8fafc;
+  }
+
+  body {
+      padding-top: 0;
+      padding-bottom: 70px; /* Height (60px) + border (10px) */
+      margin: 0;
+  }
+  
+}
+
+
+/* Default: Hide mobile header logo */
+.mobile-header-logo {
+  display: none;
+}
+
+/* Show mobile header logo only on mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  .mobile-header-logo {
+    display: flex;
+    align-items: center;    
+    background: #333;
+    font-size: small;
+  }
+
+  .mobile-header-logo img {
+    height: 40px;
+    width: auto;
+    filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.5));
+  }
+
+  /* Optionally hide desktop logo on mobile */
+  .header-logo {
+    display: none;
+  }
+  .mobile-header-logo h1 {
+    font-size: 1.5rem; /* Adjust this value as needed (e.g., 1.2rem, 1rem) */
+    padding-top: 10px;
+  }
+  
+}
+
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.nav-item {
+  pointer-events: auto;
+}
+
+.nav-text {
+  display: inline; /* Desktop */
+  pointer-events: auto;
+  user-select: auto;
+}
+
+@media (max-width: 768px) {
+  .nav-text {
+      display: none; /* Mobile */
   }
 }

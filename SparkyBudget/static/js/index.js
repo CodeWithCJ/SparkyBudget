@@ -151,6 +151,7 @@ $(document).ready(function () {
 });
 
 function balanceDetailsTableToggleVisibility() {
+    window.scrollTo(0, 0);
     var balanceDetailsTable = document.getElementById('balanceDetailsTable');
     var isHidden = balanceDetailsTable.classList.contains('hidden-balance-details');
 
@@ -497,6 +498,7 @@ function deleteBudget(subCategory) {
 })();
 
 function dailybalanceDetailsToggleVisibility() {
+    window.scrollTo(0, 0);
     var dailyBalanceContainer = document.getElementById('dailyBalanceContainer');
     dailyBalanceContainer.style.display = (dailyBalanceContainer.style.display === 'none' || dailyBalanceContainer.style.display === '') ? 'block' : 'none';
 }

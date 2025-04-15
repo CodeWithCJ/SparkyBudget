@@ -1,142 +1,95 @@
-/* Modern, Sexy Login Page Styling */
-:root {
-  --primary-color: #00f2fe;
-  --secondary-color: #4facfe;
-  --accent-color: #ff6b6b;
-  --background-dark: #0f172a;
-  --background-light: #1e293b;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --card-bg: rgba(30, 41, 59, 0.7);
-  --border-color: rgba(148, 163, 184, 0.2);
-  --shadow-color: rgba(0, 242, 254, 0.1);
+body, html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Noto Sans', sans-serif;
+  overflow: hidden;
+  margin: 0;
 }
+
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-}
-
-body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, var(--background-dark), var(--background-light));
-  position: relative;
-  overflow: hidden;
 }
 
 .background {
-  position: absolute;
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
   height: 100%;
-  background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
-  z-index: 1;
-}
-
-.background::before {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(0, 242, 254, 0.03) 10px,
-    rgba(0, 242, 254, 0.03) 20px
-  );
-  animation: backgroundMove 30s linear infinite;
-}
-
-@keyframes backgroundMove {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(50%, 50%);
-  }
+  width: 100%;
+  background-image: url("/static/images/homepage.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(10px);
+  opacity: 0.9;
 }
 
 .login {
-  background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px var(--shadow-color);
-  width: 100%;
-  max-width: 400px;
-  z-index: 2;
-  border: 1px solid var(--border-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.login::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-}
-
-.login:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px var(--shadow-color);
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-  flex-direction: column;
-}
-
-#SparkyBudgetLogo {
-  width: 100px;
-  height: auto;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-#SparkyBudgetLogo:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.7));
-}
-
-.login h1 {
-  color: var(--text-primary);
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333;
+  padding: 2rem;
+  max-width: 100%;
   text-align: center;
+  border-radius: 1rem;
+  color: #d6dadf;
+  font-weight: 500;
+  box-shadow: 0 0 2rem #d6dadf;
+
+  @media screen and (max-width: 600px) {
+          padding: 0.5rem;
+  }
 }
 
-.input-group {
-  margin: 1.5rem 0;
+h1 {
+  color: #f57c00;
+  margin-top: 1.25rem;  
+  margin-bottom: 0;
+  padding: 0;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding: 0;
+}
+
+label,
+button,
+input {
+  font-size: 1rem;
+}
+
+.loginfield {
+  background-color: #d6dadf;
+  border: none;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+fieldset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
   border: none;
 }
 
-.input-group label {
-  display: block;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
+.submit {
+  margin-top: 1rem;
+  padding-block: 0.5rem;
+  padding-inline: 1rem;
+  border-radius: 0.25rem;
 }
+
+.submit:hover {
+  background-color: #abaeb2;
+}
+
 
 .input-icon-wrapper {
   position: relative;
@@ -145,67 +98,38 @@ body {
 
 .input-icon-wrapper i {
   position: absolute;
-  left: 12px;
   top: 50%;
+  left: 0.75rem;
   transform: translateY(-50%);
-  color: var(--primary-color);
-  opacity: 0.7;
+  color: #333;
+  font-size: 1rem; /* Consistent icon size */
+  height: 1rem;
+  width: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
-.loginfield {
+.input-icon-wrapper input {
   width: 100%;
-  padding: 12px 12px 12px 40px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  padding-left: 2.5rem; /* Leave room for icon */
+  padding-right: 0.5rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  line-height: 1rem;
 }
 
-.loginfield:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.2);
-  background: rgba(15, 23, 42, 0.8);
-}
 
-.loginfield::placeholder {
-  color: var(--text-secondary);
-}
-
-.submit {
-  width: 100%;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: var(--background-dark);
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-.submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--shadow-color);
-}
-
-.submit:active {
-  transform: translateY(0);
-}
-
-/* Responsive design */
-@media (max-width: 480px) {
-  .login {
-    margin: 1rem;
-    padding: 1.5rem;
+@media (max-width: 600px) {
+  h1 {
+      height: 100%;
+      width: 100%;
+      font-size: Larger;
   }
-  
-  .login h1 {
-    font-size: 1.5rem;
+  .login {
+      height: 50%;
+      width: 90%;
   }
 }

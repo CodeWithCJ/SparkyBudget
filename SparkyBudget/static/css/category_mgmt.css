@@ -180,3 +180,11 @@ table.dataTable tbody td input[type="checkbox"] {
     background-color: transparent !important; /* Prevent any white background */
 }
 
+
+@media (max-width: 768px) {
+    .mobile-header-logo #toggleBalanceSummary,
+    .mobile-header-logo .networth,
+    .mobile-header-logo .account {
+      display: none;
+    }
+  }

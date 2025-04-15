@@ -36,6 +36,7 @@
 
 <body>
     {% include 'components/navigation_bar.html.jinja' %}
+    
 
     <div class="content">
 
@@ -44,6 +45,20 @@
             {% include 'balance_summary.html.jinja' %}
         </div>
         <div class="main-content">
+
+            <div class="toggle-nav-container">                  
+                <a class="nav-item {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
+                    onclick="dailybalanceDetailsToggleVisibility(); window.scrollTo(0, 0);">
+                    <i class="fas fa-line-chart nav-icon"></i>
+                    <span class="nav-text">Networth</span>
+                </a>
+                <a class="nav-item {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
+                        onclick="balanceDetailsTableToggleVisibility(); window.scrollTo(0, 0);">
+                        <i class="fas fa-info-circle nav-icon"></i>
+                        <span class="nav-text">Account</span>
+                </a>
+            </div>
+
 
 
             <div id="dailyBalanceContainer" class="daily-balance-container">
