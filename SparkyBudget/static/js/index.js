@@ -127,27 +127,7 @@ $(document).ready(function () {
         }
     });
 
-    // Download button handler
-    $('#downloadButton').on('click', function () {
-        $('#spinner').show();
-        $.ajax({
-            url: '/download_data',
-            type: 'POST',
-            success: function (response) {
-                $('#spinner').hide();
-                if (response.success) {
-                    alert(response.message);
-                    location.reload();
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function (error) {
-                $('#spinner').hide();
-                alert('Error: ' + error.statusText);
-            }
-        });
-    });
+    
 });
 
 function balanceDetailsTableToggleVisibility() {
@@ -212,8 +192,8 @@ function updateTransactionTable(transactionMonth, transactionYear) {
             }
         }
     };
-    xhr.open("GET", "/update_transaction_table?year=" + transactionYear + "&month=" + transactionMonth, true);
-    xhr.send();
+    //xhr.open("GET", "/update_transaction_table?year=" + transactionYear + "&month=" + transactionMonth, true);
+    //xhr.send();
 
     updateBudgetSummaryChart(transactionYear, transactionMonth);
     setTimeout(() => {
@@ -628,7 +608,15 @@ $(document).ready(function () {
                         mode: 'xy',
                     },
                     zoom: {
-                        enabled: true,
+                        wheel: {
+                            enabled: true, // Enable zooming via mouse wheel
+                        },
+                        drag: {
+                            enabled: true, // Enable zooming via dragging
+                        },
+                        pinch: {
+                            enabled: true, // Enable zooming via pinch gesture (touch devices)
+                        },
                         mode: 'xy',
                         speed: 0.1,
                         sensitivity: 3,
@@ -927,9 +915,6 @@ function updateIncomeVsBudgetPieChart(forceRefresh = false) {
     updatePieCharts(forceRefresh);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    debouncedUpdatePieCharts();
-});
 
 $(document).ready(function () {
     $('.reCategorizeButton').on('click', function () {
