@@ -170,94 +170,6 @@ def get_account_types():
         logger.error(f"Error fetching account types: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": str(e)})
 
-# Route to update DisplayAccountName (updated to use AccountKey)
-@home_bp.route("/update_display_account_name", methods=["POST"])
-@login_required
-def update_display_account_name():
-    try:
-        # Log the incoming request data
-        data = request.get_json()
-        logger.debug("Received data for update_display_account_name:", data)
-        
-        # Validate input
-        account_key = data.get("account_key")
-        new_display_name = data.get("display_account_name")
-        if account_key is None:
-            raise ValueError("account_key must be provided")
-        if new_display_name is None or not isinstance(new_display_name, str):
-            raise ValueError("display_account_name must be a string")
-
-        # Convert empty string to None to set NULL in the database
-        if new_display_name.strip() == '':
-            new_display_name = None
-            logger.debug("Converted empty string to None for DisplayAccountName")
-
-        # Ensure account_key is the correct type (assuming it's an integer in the database)
-        try:
-            account_key = int(account_key)
-        except (ValueError, TypeError):
-            logger.error("Invalid account_key type:", account_key, exc_info=True)
-            raise ValueError("account_key must be a valid integer")
-
-        # Connect to the database
-        conn = sqlite3.connect("SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        cursor = conn.cursor()
-        
-        # Execute the update
-        cursor.execute(
-            """
-            UPDATE F_Balance
-            SET DisplayAccountName = ?
-            WHERE AccountKey = ?
-            """,
-            (new_display_name, account_key)
-        )
-        
-        # Log the number of affected rows
-        logger.debug(f"Rows updated: {cursor.rowcount}")
-        
-        # Commit the transaction
-        conn.commit()
-        
-        # Close the connection
-        conn.close()
-        
-        return jsonify({"success": True, "message": "DisplayAccountName updated successfully."})
-    
-    except Exception as e:
-        # Log the error for debugging
-        logger.error(f"Error in update_display_account_name: {str(e)}", exc_info=True)
-        # Ensure the connection is closed even in case of an error
-        if 'conn' in locals():
-            conn.close()
-        return jsonify({"success": False, "message": str(e)}), 400
-
-# Route to update AccountTypeKey (updated to use AccountKey)
-@home_bp.route("/update_account_type", methods=["POST"])
-@login_required
-def update_account_type():
-    try:
-        data = request.get_json()
-        account_key = data.get("account_key")  # Use AccountKey to identify the row
-        new_account_type_key = data.get("account_type_key")
-
-        conn = sqlite3.connect("SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-        cursor = conn.cursor()
-        cursor.execute(
-            """
-            UPDATE F_Balance
-            SET AccountTypeKey = ?
-            WHERE AccountKey = ?
-            """,
-            (new_account_type_key, account_key)
-        )
-        conn.commit()
-        conn.close()
-        return jsonify({"success": True, "message": "AccountType updated successfully."})
-    except Exception as e:
-        logger.error(f"Error in update_account_type: {str(e)}", exc_info=True)
-        return jsonify({"success": False, "message": str(e)})
-    
 
 
 @home_bp.route("/addAccount", methods=["POST"])
@@ -295,4 +207,107 @@ def add_account():
 
     except Exception as e:
         logger.error(f"Error adding account: {str(e)}", exc_info=True)
+        return jsonify({"success": False, "message": str(e)}), 400
+    
+
+
+
+# Consolidated route to update all fields for an account
+@home_bp.route("/update_account", methods=["POST"])
+@login_required
+def update_account():
+    try:
+        data = request.get_json()
+        logger.debug("Received data for update_account:", data)
+
+        account_key = data.get("account_key")
+        account_type_key = data.get("account_type_key")
+        display_account_name = data.get("display_account_name")
+        balance_date = data.get("balance_date")
+        balance = data.get("balance")
+        available_balance = data.get("available_balance")
+
+        # Validate required fields
+        if account_key is None:
+            raise ValueError("account_key must be provided")
+        if account_type_key is None:
+            raise ValueError("account_type_key must be provided")
+
+        # Convert account_key to integer
+        try:
+            account_key = int(account_key)
+        except (ValueError, TypeError):
+            logger.error("Invalid account_key type:", account_key, exc_info=True)
+            raise ValueError("account_key must be a valid integer")
+
+        # Handle display_account_name: convert empty string to None
+        if display_account_name is not None and display_account_name.strip() == '':
+            display_account_name = None
+            logger.debug("Converted empty string to None for DisplayAccountName")
+
+        # Validate and convert numeric fields
+        balance = float(balance) if balance is not None else 0.0
+        available_balance = float(available_balance) if available_balance is not None else 0.0
+
+        # Validate balance_date format (YYYY-MM-DD) if provided
+        if balance_date:
+            try:
+                datetime.strptime(balance_date, '%Y-%m-%d')
+            except ValueError:
+                raise ValueError("balance_date must be in YYYY-MM-DD format")
+
+        conn = sqlite3.connect("SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        cursor = conn.cursor()
+
+        # Update all fields in a single query
+        cursor.execute(
+            """
+            UPDATE F_Balance
+            SET AccountTypeKey = ?,
+                DisplayAccountName = ?,
+                BalanceDate = ?,
+                Balance = ?,
+                AvailableBalance = ?
+            WHERE AccountKey = ?
+            """,
+            (account_type_key, display_account_name, balance_date, balance, available_balance, account_key)
+        )
+
+        logger.debug(f"Rows updated: {cursor.rowcount}")
+
+        # Fetch the updated row to return to the frontend
+        cursor.execute(
+            """
+            SELECT AccountKey,
+                   COALESCE(AccountType,'UNKNOWN'),
+                   OrganizationName,
+                   Coalesce(DisplayAccountName,AccountName) as AccountName,
+                   DATE(BalanceDate) AS "[date]",
+                   ROUND(Balance, 2) AS Balance,
+                   ROUND(AvailableBalance, 2) AS AvailableBalance
+            FROM F_Balance a11
+                 LEFT JOIN D_AccountTypes a12
+                 ON a11.AccountTypeKey = a12.AccountTypeKey
+            WHERE AccountKey = ?
+            """,
+            (account_key,)
+        )
+        updated_row = cursor.fetchone()
+
+        conn.commit()
+        conn.close()
+
+        if cursor.rowcount == 0:
+            return jsonify({"success": False, "message": "No rows updated. AccountKey not found."}), 400
+
+        return jsonify({
+            "success": True,
+            "message": "Account updated successfully.",
+            "updated_row": updated_row
+        })
+
+    except Exception as e:
+        logger.error(f"Error in update_account: {str(e)}", exc_info=True)
+        if 'conn' in locals():
+            conn.close()
         return jsonify({"success": False, "message": str(e)}), 400

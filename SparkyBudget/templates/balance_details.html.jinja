@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">   
 </head>
 <body>
     <!-- Add Account Button -->
     <button id="addAccountButton" class="btn btn-primary">+ Add Account</button>
-    
-    <!-- Add Account Popup -->
+
+    <!-- Add Account Popup (content remains the same) -->
     <div id="addAccountPopup" class="popup-overlay" style="display: none;">
         <div class="popup-content">
             <div class="popup-header">
@@ -47,12 +48,12 @@
                 <div class="form-group">
                     <label for="addAccountAvailableBalanceInput">Available Balance</label>
                     <input type="number" id="addAccountAvailableBalanceInput" name="addAccountAvailableBalanceInput" placeholder="Enter available balance (Optional)" step="0.01">
-                </div>                
+                </div>
                 <div class="form-group">
                     <label for="addAccountOrganizationDomainInput">Organization Domain</label>
                     <input type="text" id="addAccountOrganizationDomainInput" name="addAccountOrganizationDomainInput" placeholder="Enter organization domain (Optional)">
-                </div>            
-                <div class="form-actions">                    
+                </div>
+                <div class="form-actions">
                     <button type="submit" id="addAccountSubmitButton" class="btn btn-primary">Add Account</button>
                     <button type="button" id="addAccountCancelButton" class="btn btn-secondary">Cancel</button>
                 </div>
@@ -62,34 +63,36 @@
 
     <!-- Desktop Table Container -->
     <div class="balance-details-wrapper">
-        <h4 style="text-align: center;"><i class="fas fa-piggy-bank"></i> Balance Details</h4>
         <div class="balance-details-container">
             <table id="balanceTable" class="balance-details-table">
                 <thead>
                     <tr>
-                        <th style="display: none;">AccountKey</th> <!-- Hidden AccountKey column -->
-                        <th>Account Type <i class="fas fa-edit editable-icon"></i></th>
-                        <th>Bank</th>
-                        <th>Account Name <i class="fas fa-edit editable-icon"></i></th>
-                        <th>Last Sync</th>
-                        <th>Balance</th>
-                        <th>Available Balance</th>
-                        <th>Upload</th> <!-- New Upload column -->
+                        <th>AccountKey</th> <!-- Hidden column -->
+                        <th>ACCOUNT TYPE <span class="edit-indicator"><i class="fas fa-pencil-alt"></i></span></th>
+                        <th>BANK</th>
+                        <th>ACCOUNT NAME <span class="edit-indicator"><i class="fas fa-pencil-alt"></i></span></th>
+                        <th>LAST SYNC <span class="edit-indicator"><i class="fas fa-pencil-alt"></i></span></th>
+                        <th>BALANCE <span class="edit-indicator"><i class="fas fa-pencil-alt"></i></span></th>
+                        <th>AVAILABLE BALANCE <span class="edit-indicator"><i class="fas fa-pencil-alt"></i></span></th>
+                        <th>UPLOAD</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for balance_details_data in bank_account_name_balance_details %}
+                    {% for row in bank_account_name_balance_details %}
                     <tr>
-                        <td style="display: none;" class="account-key">{{ balance_details_data[0] }}</td> <!-- Hidden AccountKey -->
-                        <td class="editable-account-type" data-account-key="{{ balance_details_data[0] }}">{{ balance_details_data[1] }}</td>
-                        <td>{{ balance_details_data[2] }}</td>
-                        <td class="editable-display-name" data-account-key="{{ balance_details_data[0] }}">{{ balance_details_data[3] or '' }}</td>
-                        <td data-order="{{ balance_details_data[4].strftime('%Y-%m-%d') }}">{{ balance_details_data[4].strftime('%b ') }}{{ balance_details_data[4].day }}, {{ balance_details_data[4].year }}</td>
-                        <td>{{ balance_details_data[5] | tocurrency_whole }}</td>
-                        <td>{{ balance_details_data[6] | tocurrency_whole }}</td>
+                        <td>{{ row[0] }}</td> <!-- Hidden AccountKey -->
+                        <td class="editable-account-type" data-account-key="{{ row[0] }}">{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td class="editable-display-name" data-account-key="{{ row[0] }}">{{ row[3] }}</td>
+                        <td class="editable-last-sync" data-account-key="{{ row[0] }}">{{ row[4] }}</td>
+                        <td class="editable-balance" data-account-key="{{ row[0] }}">${{ row[5] }}</td>
+                        <td class="editable-available-balance" data-account-key="{{ row[0] }}">${{ row[6] }}</td>
                         <td>
-                            <i class="fas fa-upload upload-icon" data-account-key="{{ balance_details_data[0] }}" style="cursor: pointer;"></i>
-                            <input type="file" class="upload-file-input" style="display: none;" accept=".csv">
+                            <!-- Changed Upload Icon -->
+                            <span class="upload-icon" data-account-key="{{ row[0] }}" title="Upload Statement">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <input type="file" class="upload-file-input" style="display: none;" accept=".csv,.qfx,.ofx,.qbo" /> <!-- Added accept attribute -->
                         </td>
                     </tr>
                     {% endfor %}
@@ -97,23 +100,25 @@
             </table>
         </div>
 
-        <!-- Mobile View Container -->
         <div class="balance-details-mobile-container">
-            {% set banks = bank_account_name_balance_details | groupby(2) %}
-            {% for bank_name, accounts in banks %}
+            {% set grouped_by_bank = bank_account_name_balance_details | groupby(2) %}
+            {% for bank, accounts in grouped_by_bank %}
             <div class="bank-group">
-                <h3 class="bank-title">{{ bank_name }}</h3>
+                <div class="bank-title">{{ bank }}</div>
                 {% for account in accounts %}
-                <div class="balance_details_card" data-bank="{{ bank_name }}">
+                <div class="balance_details_card">
                     <div class="balance_details_header">
                         <div class="balance_details_info">
-                            <span class="balance_details_account_name">{{ account[3] or '' }}</span>
-                            <span class="balance_details_last_refreshed">{{ account[4].strftime("%B ") }}{{ account[4].day }}, {{ account[4].year }}</span>
+                            <span class="balance_details_account_name editable-display-name" data-account-key="{{ account[0] }}">{{ account[3] }}</span>
+                            <span class="balance_details_last_refreshed editable-last-sync" data-account-key="{{ account[0] }}">{{ account[4] }}</span>
+                            <span class="balance_details_balance editable-balance" data-account-key="{{ account[0] }}">${{ account[5] }}</span>
                         </div>
-                        <div class="balance_details_amount_container">
-                            <span class="balance_details_balance">{{ account[5] | tocurrency_whole }}</span>
-                            <span class="balance_details_status" onclick="balance_details_toggleDetails(this)">More ▼</span>
-                        </div>
+                        <span class="balance_details_status" onclick="balance_details_toggleDetails(this)">More ▼</span>
+                        <!-- Changed Upload Icon -->
+                        <span class="upload-icon" data-account-key="{{ account[0] }}" title="Upload Statement">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <input type="file" class="upload-file-input" style="display: none;" accept=".csv,.qfx,.ofx,.qbo" /> <!-- Added accept attribute -->
                     </div>
                     <div class="balance_details_body" style="display: none;">
                         <div class="balance_details_field">
@@ -122,13 +127,7 @@
                         </div>
                         <div class="balance_details_field">
                             <span class="balance_details_label">Available Balance:</span>
-                            <span>{{ account[6] | tocurrency_whole }}</span>
-                        </div>
-                        <div class="balance_details_field">
-                            <span class="balance_details_label">Upload Transactions:</span>
-                            <i class="fas fa-upload upload-icon" data-account-key="{{ account[0] }}" style="cursor: pointer;"></i>
-                            <input type="file" class="upload-file-input" style="display: none;" accept=".csv">
-                            <input type="hidden" class="account-key" value="{{ account[0] }}">
+                            <span class="editable-available-balance" data-account-key="{{ account[0] }}">${{ account[6] }}</span>
                         </div>
                     </div>
                 </div>
@@ -140,6 +139,7 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ url_for('static', filename='js/balance_details.js') }}"></script>
 </body>
 </html>

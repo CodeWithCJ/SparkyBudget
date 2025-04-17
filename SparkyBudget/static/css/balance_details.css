@@ -80,15 +80,15 @@
 }
 
 /* Editable Cell Styles */
-.editable-display-name, .editable-account-type {
+.editable-display-name, .editable-account-type, .editable-last-sync, .editable-balance, .editable-available-balance {
     cursor: pointer;
 }
 
-.editable-display-name:hover, .editable-account-type:hover {
+.editable-display-name:hover, .editable-account-type:hover, .editable-last-sync:hover, .editable-balance:hover, .editable-available-balance:hover {
     background-color: rgba(0, 188, 212, 0.2);
 }
 
-.display-name-input, .account-type-select {
+.display-name-input, .account-type-select, .last-sync-input, .balance-input, .available-balance-input {
     width: 100%;
     background-color: #444444;
     color: #ffffff;
@@ -301,4 +301,14 @@ table.dataTable thead .sorting_desc {
 .balance-details-mobile-container .upload-icon {
     margin-left: 10px;
     font-size: 14px;
+}
+
+.edit-indicator {
+    margin-left: 5px;
+    font-size: 0.8em; /* Make icon slightly smaller */
+    color: #777;    /* Give it a subtle color */
+    cursor: default; /* Indicate it's not clickable itself */
+}
+.upload-icon i { /* Style the upload icon if needed */
+    cursor: pointer;
 }
