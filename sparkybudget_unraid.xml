@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<Container>
+  <Name>SparkyBudget</Name>
+  <Repository>codewithcj/sparkybudget</Repository>
+  <Registry>https://hub.docker.com/r/codewithcj/sparkybudget/</Registry>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/codewithcj/SparkyBudget/issues</Support>
+  <Branch>
+    <Tag>latest</Tag>
+    <Subject>Latest stable release</Subject>
+    <Date>{{ now() | datetimeformat("%Y-%m-%d") }}</Date>
+  </Branch>
+  <Overview>
+    SparkyBudget is a personal finance management application.
+  </Overview>
+  <WebUI>http://[IP]:[PORT:5000]/</WebUI>
+  <TemplateURL></TemplateURL>
+  <Icon>https://raw.githubusercontent.com/codewithcj/SparkyBudget/main/SparkyBudget.png</Icon>
+  <ExtraParams></ExtraParams>
+  <PostArgs></PostArgs>
+  <DonateText></DonateText>
+  <DonateLink></DonateLink>
+  <Requires></Requires>
+  <Config>
+    <Config Name="WebUI Port" Target="5000" Default="5000" Mode="tcp" Description="Container Port" Type="Port" Display="always" Required="true" Mask="false">5000</Config>
+    <Config Name="App Data" Target="/SparkyBudget/SparkyBudget.db" Default="" Mode="rw" Description="Container Path for Database" Type="Path" Display="always" Required="true" Mask="false">
+      <Recommendation>/mnt/user/appdata/sparkybudget/database</Recommendation>
+    </Config>
+    <Config Name="Access URL File" Target="/SparkyBudget/access_url.txt" Default="" Mode="rw" Description="Container Path for Access URL File" Type="Path" Display="advanced" Required="false" Mask="false">
+      <Recommendation>/mnt/user/appdata/sparkybudget/config</Recommendation>
+    </Config>
+  </Config>
+</Container>

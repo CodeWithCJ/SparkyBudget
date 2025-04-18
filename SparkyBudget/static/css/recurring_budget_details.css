@@ -145,7 +145,7 @@ body {
 }
 
 .select2-container--default .select2-results__option {
-    background-color: black;
+    background-color: #3c444f !important; /* Set the background color to match the category page */
     /* Set the text color to white for better visibility */
     color: white;
 }
@@ -251,3 +251,68 @@ body {
       display: none;
     }
   }
+
+/* --- Select2 Dark Theme Styles (Added for recurring_budget_details.css) --- */
+
+/* Container for the Select2 dropdown */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple { /* Include multiple if needed */
+    background-color: #3c444f !important; /* Dark background */
+    color: #eee !important; /* Light text */
+    border: 1px solid #555 !important; /* Darker border */
+    height: 38px !important; /* Adjust height if needed */
+    padding: 6px 12px !important; /* Adjust padding */
+}
+
+/* Style for the selected value */
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--multiple .select2-selection__rendered { /* Include multiple */
+    color: #eee !important; /* Light text for selected value */
+    line-height: 26px; /* Vertically align text */
+}
+
+/* Style for the dropdown arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important; /* Match container height */
+}
+
+/* Style for the dropdown panel */
+.select2-container--default .select2-dropdown {
+    background-color: #3c444f !important; /* Dark background for dropdown */
+    border: 1px solid #555 !important; /* Darker border */
+}
+
+/* Style for highlighted (hovered) option */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #555 !important; /* Slightly lighter dark for hover */
+    color: #fff !important; /* White text on hover */
+}
+
+/* Style for selected option */
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: #4a5261 !important; /* Different background for selected */
+    color: #fff !important; /* White text for selected */
+}
+
+/* Style for the search input within the dropdown */
+.select2-search input {
+    background-color: #4a5261 !important; /* Darker background for search input */
+    color: #eee !important; /* Light text for search input */
+    border: 1px solid #555 !important; /* Darker border */
+}
+
+/* Style for selected tags in multiple select */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #555 !important; /* Dark background for tags */
+    color: #eee !important; /* Light text for tags */
+    border: 1px solid #666 !important; /* Darker border for tags */
+}
+
+/* Style for the remove button on selected tags */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #ccc !important; /* Lighter color for remove button */
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fff !important; /* White color on hover */
+}
