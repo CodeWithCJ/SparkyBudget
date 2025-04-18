@@ -1010,3 +1010,46 @@ header .icon svg {
         bottom: 80px;
     }
 }
+/* From Uiverse.io by AlimurtuzaCodes */
+.btn {
+  border: none;
+  width: 10em; /* Reduced width */
+  height: 3em; /* Reduced height */
+  border-radius: 2em; /* Adjusted border-radius */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Reduced gap */
+  background: #3a404c; /* Changed background color */
+  cursor: pointer;
+  transition: all 450ms ease-in-out;
+}
+
+.sparkle {
+  fill: #AAAAAA;
+  transition: all 800ms ease;
+}
+
+.text {
+  font-weight: 600;
+  color: #AAAAAA;
+  font-size: small; /* Reduced font size */
+}
+
+.btn:hover {
+  background: linear-gradient(0deg,#A47CF3,#683FEA);
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+  inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+  0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+  0px 0px 180px 0px #9917FF;
+  transform: translateY(-2px);
+}
+
+.btn:hover .text {
+  color: white;
+}
+
+.btn:hover .sparkle {
+  fill: white;
+  transform: scale(1.2);
+}

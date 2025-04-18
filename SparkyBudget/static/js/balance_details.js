@@ -835,29 +835,84 @@ $(document).ready(function() {
             data: JSON.stringify(formData),
             success: function(response) {
                 if (response.success) {
+                    
                     alert('Account added successfully!');
+                    // Clear the form fields
+                    $('#addAccountTypeSelect').val(null).trigger('change'); // Clear Select2
+                    $('#addAccountOrganizationNameInput').val(''); // Corrected ID for Bank
+                    $('#addAccountNameInput').val(''); // Corrected ID for Display Name
+                    $('#addAccountBalanceInput').val('');
+                    $('#addAccountBalanceDateInput').val(''); // Clear Balance Date
+                    $('#addAccountAvailableBalanceInput').val('');
+                    $('#addAccountOrganizationDomainInput').val(''); // Clear Organization Domain
+
+                    // Close the popup
+                    $('#addAccountPopup').css('display', 'none');
+
                     // Refresh the entire table since a new account was added
+                    // Fetch the updated page content
                     $.ajax({
-                        url: '/get_balance_data',
+                        url: '/', // Fetch the entire page HTML
                         method: 'GET',
-                        success: function(response) {
-                            if (response.success) {
-                                table.clear();
-                                response.data.forEach(row => {
-                                    table.row.add([
-                                        row[0],
-                                        row[1],
-                                        row[2],
-                                        row[3],
-                                        row[4],
-                                        `$${row[5]}`,
-                                        `$${row[6]}`,
-                                        '<span class="upload-icon" data-account-key="' + row[0] + '">↑↓</span><input type="file" class="upload-file-input" style="display: none;" />'
-                                    ]);
+                        success: function(htmlResponse) {
+                            const $fetchedHtml = $(htmlResponse);
+
+                            // Update Desktop Table
+                            const $newTable = $fetchedHtml.find('#balanceTable').first();
+                            if ($newTable.length) {
+                                // Destroy the old DataTable instance
+                                if ($.fn.dataTable.isDataTable('#balanceTable')) {
+                                    table.destroy();
+                                    console.log('Old DataTable instance destroyed.');
+                                }
+                                // Replace the old table HTML with the new one
+                                $('#balanceTable').replaceWith($newTable);
+                                console.log('Desktop table HTML replaced.');
+                                // Re-initialize DataTable on the new table element
+                                table = $('#balanceTable').DataTable({
+                                    "pageLength": 17,
+                                    "lengthMenu": [
+                                        [10, 17, 25, -1],
+                                        [10, 17, 25, "All"]
+                                    ],
+                                    "rowCallback": function(row, data) {
+                                        $(row).addClass('dark-row');
+                                    },
+                                    "autoWidth": false,
+                                    "stripeClasses": [],
+                                    "deferRender": true,
+                                    "initComplete": function(settings, json) {
+                                        console.log('New DataTable instance initialized.');
+                                    },
+                                    "columns": [
+                                        { "visible": false }, // Hidden AccountKey column
+                                        null, // Account Type
+                                        null, // Bank
+                                        null, // Display Account Name
+                                        null, // Last Sync
+                                        null, // Balance
+                                        null, // Available Balance
+                                        { "orderable": false } // Upload column (non-sortable)
+                                    ]
                                 });
-                                table.draw();
-                                console.log('Table data refreshed successfully');
+                                console.log('Desktop table refreshed successfully');
+                            } else {
+                                console.warn('Could not find #balanceTable in fetched HTML.');
                             }
+
+                            // Update Mobile Container
+                            const $mobileContainer = $fetchedHtml.find('.balance-details-mobile-container').first();
+                            if ($mobileContainer.length) {
+                                $('.balance-details-mobile-container').replaceWith($mobileContainer);
+                                console.log('Mobile view refreshed successfully');
+                                // Note: Event listeners for mobile view (like toggleDetails) might need re-binding
+                                // if they are not using delegated event handling.
+                            } else {
+                                console.warn('Could not find .balance-details-mobile-container in fetched HTML.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching HTML for refresh:', status, error);
                         }
                     });
                 } else {
