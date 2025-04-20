@@ -12,15 +12,13 @@
 mkdir sparkybudget
 cd sparkybudget
 ```  
-2. Download .env-example and SparkyBudget-fresh.db.
+2. Download Docker Compose and  .env-example.
 ```
 wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/docker-compose.yaml  
 wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/.env-example  
-wget https://raw.githubusercontent.com/CodeWithCJ/SparkyBudget/refs/heads/main/SparkyBudget-fresh.db  
 ```  
 3. Rename and update DB & the environment file:  
 ```
-mv SparkyBudget-fresh.db SparkyBudget.db
 mv .env-example .env
 nano .env
 ```    
@@ -36,8 +34,10 @@ docker compose pull && docker compose up -d
 
 
 # 📂 Demo Files  
-📌 The SparkyBudget-demo.db file contains sample transactions from SimpleFin for testing.  
-
+📌 The SparkyBudget-demo.db file contains sample transactions from SimpleFin for testing. or Simply pass below env variable to "Yes" to auto generate demo accounts & transactions    
+```
+SPARKY_DEMO=Yes  
+```
 
 # 🔄 How to Reset the Token?  
 If you need to reset your SimpleFin Token, delete the access_url.txt.  
