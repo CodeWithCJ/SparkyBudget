@@ -39,10 +39,11 @@
 .header-logo h1 {
   font-size: 1.5rem;
   margin: 0;
-  background: linear-gradient(to right, #00f2fe, #4facfe);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #f57c00; /* Apply the desired color */
+  /* Remove gradient styles that conflict */
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
   display: block;
 }
 
@@ -56,8 +57,8 @@
 
 .nav-item {
   color: #f8fafc;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 500; /* Explicitly set font weight */
+  font-size: 1rem; /* Explicitly set font size */
   padding: 0.5rem 1rem;
   border-radius: 8px;
   transition: background 0.3s ease; /* Only transition background */
@@ -92,6 +93,8 @@
 .nav-item.active {
   color: #00f2fe;
   background: rgba(0, 242, 254, 0.15);
+  font-weight: 500; /* Ensure consistent font weight in active state */
+  font-size: 1rem; /* Ensure consistent font size in active state */
 }
 
 .nav-item.active .nav-icon {
@@ -209,6 +212,7 @@
   .mobile-header-logo h1 {
     font-size: 1.5rem; /* Adjust this value as needed (e.g., 1.2rem, 1rem) */
     padding-top: 10px;
+    color: #f57c00; /* Apply the desired color for mobile */
   }
   
 }

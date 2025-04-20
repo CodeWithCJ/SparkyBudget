@@ -42,7 +42,7 @@ def get_access_url():
     setup_token = os.getenv("SIMPLEFIN_TOKEN")
 
     # Load access URL from file if available
-    access_url_file = "access_url.txt"
+    access_url_file = "private/access_url.txt"
 
     try:
         with open(access_url_file, "r") as file:
@@ -73,7 +73,7 @@ def process_accounts_data():
     from SparkyBudget import db_lock  # Import inside the function to avoid circular import
     with db_lock:  # Synchronize database access
         # Create the output folder if it doesn't exist
-        output_folder = "output"
+        output_folder = "private/db/csv_temp"
         os.makedirs(output_folder, exist_ok=True)
 
         # Load access URL from file if available
@@ -93,7 +93,7 @@ def process_accounts_data():
                 data = response.json()  # Parse the API response as JSON
 
                 # SQLite database connection (use check_same_thread=False for multi-threading safety)
-                with sqlite3.connect("SparkyBudget.db", check_same_thread=False) as conn:
+                with sqlite3.connect("private/db/SparkyBudget.db", check_same_thread=False) as conn:
                     cursor = conn.cursor()
 
                     # Create a temporary table for transactions with pending status

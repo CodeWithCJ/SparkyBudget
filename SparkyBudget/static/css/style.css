@@ -382,7 +382,7 @@ html, body {
 
 
 
-.chart-container canvas {
+.pieChartContainer canvas {
     width: 100% !important;
     max-width: 200px !important; /* Ensure it's a square */
     height: auto !important;
@@ -401,7 +401,7 @@ html, body {
 }
 
 /* Wrapper for side-by-side layout */
-.charts-wrapper {
+.pieChartsWrapper {
     display: flex;
     justify-content: center;
     gap: 20px; /* Space between the charts */
@@ -409,8 +409,8 @@ html, body {
     margin-top: 20px;
 }
 
-/* Adjust chart-container for side-by-side display */
-.charts-wrapper .chart-container {
+/* Adjust pieChartContainer for side-by-side display */
+.pieChartsWrapper .pieChartContainer {
     flex: 1;
     max-width: 240px;
     max-width: 240px;
@@ -439,14 +439,14 @@ html, body {
 
 
 
-.chart-container {
+.pieChartContainer {
     width: 100%;
     max-width: 240px;
     height: auto;
     padding: 15px;
-    background-color: #1A2634;   /*#212121*/
+    border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
+    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -456,36 +456,6 @@ html, body {
 
 
 
-.glow-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;     
-}
-
-/* Thicker glowing border line, minimal outer glow */
-.glow-wrapper::before {
-    content: '';
-    position: absolute;
-    top: -15px; /* Keep the offset to position glow outside */
-    left: -15px;
-    right: -15px;
-    bottom: -15px;
-    border: 4px solid transparent; /* Increased border width for a thicker glow line */
-    border-radius: 20px; /* Matches chart-container's border-radius + offset */
-    border-image: linear-gradient(45deg, rgb(186, 66, 255) 35%, rgb(0, 225, 255)) 1;
-    filter: blur(1px); /* Minimal blur to keep the glow sharp */
-    box-shadow: 
-        0 -1px 5px 0 rgb(186, 66, 255), 
-        0 1px 5px 0 rgb(0, 225, 255); /* Minimal shadow to avoid thickening the outer glow */
-    animation: spinningGradient 1.5s linear infinite;
-    z-index: -2;
-}
 
 /* Animate the gradient to simulate a spinning effect */
 @keyframes spinningGradient {
@@ -507,7 +477,7 @@ html, body {
 }
 
 /* Ensure canvas is centered */
-.chart-container canvas {
+.pieChartContainer canvas {
     width: 100% !important;
     max-width: 200px !important;
     height: auto !important;
@@ -517,7 +487,7 @@ html, body {
 
 
 @media (max-width: 768px) {
-    .charts-wrapper {
+    .pieChartsWrapper {
         flex-direction: column;
         align-items: center; /* Center the charts horizontally */
         justify-content: center; /* Center them vertically */
@@ -527,7 +497,7 @@ html, body {
         
     }
 
-    .chart-container {
+    .pieChartContainer {
         max-width: 110px; /* Same as old settings */
         padding: 1px; /* Reduced from 2px to maximize space for the pie chart */
         min-height: 180px; /* Already set to increase rectangle height */
@@ -543,30 +513,6 @@ html, body {
         font-size: 6px !important; /* Already correct */
     }
 
-    .glow-wrapper {
-        position: absolute; /* Ensure glow-wrapper matches chart-container dimensions */
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-    }
-
-    .glow-wrapper::before {
-        content: '';
-        position: absolute;
-        top: -3px; /* Already adjusted to bring glow closer to the rectangle */
-        left: -3px;
-        right: -3px;
-        bottom: -3px;
-        border: 2px solid transparent;
-        border-radius: 10px; /* Already adjusted to match the offset */
-        filter: blur(0.5px);
-        box-shadow: 
-            0 -0.5px 3px 0 rgb(186, 66, 255), 
-            0 0.5px 3px 0 rgb(0, 225, 255);
-        animation: spinningGradient 1.7s linear infinite;
-        z-index: -1;
-    }
 }
 
 

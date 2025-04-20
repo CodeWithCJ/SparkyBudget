@@ -16,8 +16,8 @@ body {
     border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
     background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
     border-radius: 8px; /* Rounded corners for a smoother look */
-    padding: 10px; /* Inner padding to keep content from touching the border */
-    margin-bottom: 15px; /* Space between each subcategory section */
+    padding: 5px; /* Inner padding to keep content from touching the border */
+    margin-bottom: 10px; /* Space between each subcategory section */
     width: 90%; /* Match the original width of top-content */
     margin-left: auto; /* Center the container */
     margin-right: auto; /* Center the container */
@@ -69,13 +69,14 @@ body {
 
 .category-bar {
     width: 100% !important; /* Full width within the subcategory-container */
-    margin: 10px 0; /* Adjusted margin for spacing */
+    margin: 5px 0; /* Adjusted margin for spacing */
     height: 20px; /* Increase from default (e.g., 8px or 10px) */
     border-radius: 8px; /* Optional for rounded corners */
+    background-color: #ffffff; /* Light gray background for the empty portion */
 }
 
 .subcategory-bar {
-    height: 30px; /* Match the category-bar height */
+    height: 20px; /* Match the category-bar height */
     border-radius: 8px;
 }
 
@@ -84,9 +85,9 @@ body {
     justify-content: space-between; /* Push content to opposite ends */
     align-items: center; /* Align items vertically */
     width: 100% !important; /* Full width within the subcategory-container */
-    margin-top: 20px; /* Add spacing above if needed */
+    margin-top: 10px; /* Add spacing above if needed */
     box-sizing: border-box; /* Include padding in width calculation */
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 
 .bottom-left-content {
@@ -122,4 +123,6 @@ body {
     .top-content {
         display: flex;
         justify-content: space-between;
-        align-items
+        align-items: center;
+    }
+}

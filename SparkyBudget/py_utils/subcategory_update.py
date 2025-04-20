@@ -1,7 +1,7 @@
 # py_utils/subcategory_mgmt.py
 
 import sqlite3, os, logging
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required
 
 
@@ -18,7 +18,7 @@ subcategory_update_bp = Blueprint('subcategory_update', __name__)
 def get_distinct_subcategories():
     try:
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])  # Replace with the actual name of your SQLite database file
         cursor = conn.cursor()
 
         # Fetch distinct Subcategories
@@ -43,7 +43,7 @@ def update_subcategory():
     new_subcategory = request.form.get("updatedSubcategory")
 
     # Connect to the SQLite database
-    conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
+    conn = sqlite3.connect(current_app.config['DATABASE_PATH'])  # Replace with the actual name of your SQLite database file
     cursor = conn.cursor()
 
     # Update the Subcategory in the database

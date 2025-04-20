@@ -1,7 +1,7 @@
 #py_routes/home.py
 
 import sqlite3, os, logging
-from flask import Blueprint, render_template, jsonify, request 
+from flask import Blueprint, render_template, jsonify, request, current_app
 from flask_login import login_required
 from datetime import datetime
 
@@ -16,7 +16,7 @@ home_bp = Blueprint('home', __name__)
 def index():
     # Connect to the SQLite database
     conn = sqlite3.connect(
-        "SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+        current_app.config['DATABASE_PATH'], detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
     )  # Replace with the actual name of your SQLite database file
     cursor = conn.cursor()
     # Fetch data for the first table: OrganizationName, sum(Balance), sum(AvailableBalance)
@@ -160,7 +160,7 @@ def index():
 @login_required
 def get_account_types():
     try:
-        conn = sqlite3.connect("SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'], detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         cursor = conn.cursor()
         cursor.execute("SELECT AccountTypeKey, AccountType FROM D_AccountTypes ORDER BY AccountType")
         account_types = cursor.fetchall()
@@ -196,7 +196,7 @@ def add_account():
             data['accountTypeKey']
         )
 
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
         cursor.execute(query, values)
         conn.commit()
@@ -256,7 +256,7 @@ def update_account():
             except ValueError:
                 raise ValueError("balance_date must be in YYYY-MM-DD format")
 
-        conn = sqlite3.connect("SparkyBudget.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'], detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         cursor = conn.cursor()
 
         # Update all fields in a single query

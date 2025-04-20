@@ -3,7 +3,7 @@
 import os, logging
 import sqlite3
 
-from flask import jsonify, render_template, request, Blueprint  
+from flask import jsonify, render_template, request, Blueprint, current_app
 from flask_login import login_required
 
 
@@ -26,7 +26,7 @@ def manage_categories():
 @login_required
 def category_subcategory_data():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
         category_subcategory_query = """
             SELECT                
@@ -58,7 +58,7 @@ def category_subcategory_data():
 @login_required
 def category_data():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Adjusted SQL query to correctly fetch distinct categories
@@ -95,7 +95,7 @@ def add_subcategory():
     try:
         subcategory = request.form["subcategory"]
         category = request.form["category"]
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         logger.debug(f"Adding New Subcategory: {subcategory}, Category: {category}")
@@ -128,7 +128,7 @@ def add_subcategory_rule():
         match_word = request.form['matchword']
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # SQL query to insert the new rule
@@ -155,7 +155,7 @@ def add_subcategory_rule():
 @login_required
 def delete_subcategory(subcategory_key):
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         delete_category_query = """
@@ -181,7 +181,7 @@ def update_category():
     try:
         subcategory_key = request.form["subcategory_key"]
         new_subcategory_name = request.form["new_subcategory_name"]
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         update_category_query = """
@@ -208,7 +208,7 @@ def update_category():
 @login_required
 def subcategory_data():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Adjusted SQL query to correctly fetch distinct categories
@@ -244,7 +244,7 @@ def subcategory_data():
 @login_required
 def subcategory_rule_data():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
         subcategory_rule_query = """
             SELECT                
@@ -288,7 +288,7 @@ def update_rule():
     try:
         RuleKey = request.form["RuleKey"]
         Match_Word = request.form["Match_Word"]
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         update_rule_query = """
@@ -313,7 +313,7 @@ def update_rule():
 @login_required
 def delete_rule(RuleKey):
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         delete_rule_query = """
@@ -337,7 +337,7 @@ def delete_rule(RuleKey):
 @login_required
 def account_type_data():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # SQL query to fetch account types sorted by SortOrder
@@ -377,7 +377,7 @@ def add_account_type():
         sort_order = data['SortOrder']
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # SQL query to insert the new account type
@@ -401,7 +401,7 @@ def update_account_types():
     try:
         data = request.get_json()
         logger.debug("Received data:", data)  # Already present
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Verify table structure
@@ -446,7 +446,7 @@ def update_account_types():
 @login_required
 def delete_account_type(account_type):
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
         delete_query = """
             DELETE FROM D_AccountTypes

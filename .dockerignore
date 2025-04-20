@@ -60,6 +60,7 @@ containers/data/
 **/access_url.txt
 **/*.csv
 **/.env
+private/
 
 # Ignore static files that are not needed
 static/css/*.map

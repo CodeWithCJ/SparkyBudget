@@ -3,7 +3,7 @@ import logging
 import hashlib
 import pandas as pd
 from datetime import datetime
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required
 
 # Get log level from environment, default to INFO if not set
@@ -132,7 +132,7 @@ def upload_transactions_to_db(file, account_key, db_lock):
 
         # Ensure that only one thread/process can access the DB at a time
         with db_lock:
-            with sqlite3.connect("SparkyBudget.db") as conn:
+            with sqlite3.connect(current_app.config['DATABASE_PATH']) as conn:
                 cursor = conn.cursor()
 
                 # Get AccountID, AccountName and AccountType from the account_key

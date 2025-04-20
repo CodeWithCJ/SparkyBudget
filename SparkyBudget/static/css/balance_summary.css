@@ -1,7 +1,7 @@
 .balance-summary-list {
     font-family: Arial, sans-serif;
     color: #d6dadf;
-    background-color: #173F3F;
+    background: linear-gradient(145deg, #2E3440, #353b48);
     border-radius: 8px;
 }
 
@@ -15,7 +15,7 @@
     align-items: flex-start;
     padding: 15px 10px;
     cursor: pointer;
-    background-color: #1e4b4b;
+    background-color: #252a33;
     border-radius: 4px;
 }
 
@@ -24,9 +24,6 @@
     cursor: default;
 }
 
-.account-type-header:hover {
-    background-color: #255757;
-}
 
 .account-type-left {
     display: flex;
@@ -61,8 +58,7 @@
 }
 
 .available-balance {
-    font-size: 12px;
-    color: #77ace0;
+    font-size: 12px;    
     margin-top: 2px;
 }
 
@@ -78,7 +74,7 @@
     display: flex;
     justify-content: space-between;
     padding: 10px 20px;
-    background-color: #1a3c3c;
+    background-color: #474e5d;
     border-top: 1px solid #2a5a5a;
 }
 
@@ -100,8 +96,7 @@
 }
 
 .account-sub-item .available-balance {
-    font-size: 11px;
-    color: #77ace0;
+    font-size: 11px;    
     margin-top: 2px;
 }
 

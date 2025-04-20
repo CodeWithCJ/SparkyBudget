@@ -1,6 +1,6 @@
 # py_routes/historical_trend.py
 
-from flask import Blueprint, jsonify, request, render_template  
+from flask import Blueprint, jsonify, request, render_template, current_app
 from flask_login import login_required
 import sqlite3, re
 from datetime import datetime,timedelta, date
@@ -18,7 +18,7 @@ historical_trend_bp = Blueprint('historical_trend', __name__)
 @login_required
 def historical_trend():
     # Connect to the SQLite database
-    conn = sqlite3.connect("SparkyBudget.db")  # Replace with the actual name of your SQLite database file
+    conn = sqlite3.connect(current_app.config['DATABASE_PATH'])  # Replace with the actual name of your SQLite database file
     cursor = conn.cursor()
 
     # Default parameters
@@ -131,7 +131,7 @@ def get_transaction_data():
         end_date = datetime.strptime(end_date_param, "%m/%d/%Y").strftime("%Y-%m-%d")
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Same query as in historical_trend
@@ -208,7 +208,7 @@ def get_transaction_data():
 def salary_chart_data():
 #def chart_data():
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Your SQL query for line chart data
@@ -267,7 +267,7 @@ def split_transaction():
             return jsonify({"error": "Split amount must be a valid number!"}), 400
 
         # Connect to the database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Fetch the original transaction details using TransactionKey
@@ -327,7 +327,7 @@ def split_transaction():
 def get_accounts():
     try:
         # Connect to the database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Query to fetch DisplayAccountName or AccountName
@@ -387,7 +387,7 @@ def add_transaction():
         )
 
         # Connect to the database and execute the query
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
         cursor.execute(query, values)
         conn.commit()
@@ -437,7 +437,7 @@ def income_expense_chart():
                 return jsonify({"error": "Invalid date format. Use MM/DD/YYYY."}), 400
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # SQL query (using parameterized queries to prevent SQL injection)
@@ -563,7 +563,7 @@ def spending_trend_by_category():
                 return jsonify({"error": "Invalid date format. Use MM/DD/YYYY."}), 400
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # SQL query (using parameterized queries to prevent SQL injection)

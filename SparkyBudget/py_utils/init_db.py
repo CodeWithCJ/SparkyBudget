@@ -1,6 +1,7 @@
 import sqlite3
 import logging
 import os
+from SparkyBudget import DATABASE_PATH
 
 # Configure logging
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 def init_database():
     """Initialize the SparkyBudget database with all required tables."""
     try:
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
 
         # Create D_AccountTypes table

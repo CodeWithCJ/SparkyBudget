@@ -2,9 +2,19 @@ import locale, os, logging
 from datetime import timedelta
 from datetime import datetime
 from threading import Lock
-from flask import Flask, jsonify  
+from flask import Flask, jsonify
 from flask_login import LoginManager, login_required
+import dotenv
+import os
 
+# Load from private/.env first (lowest precedence)
+dotenv_path_private = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', '.env')
+dotenv.load_dotenv(dotenv_path_private, override=True)
+
+# Then load from the default location (main folder)
+dotenv.load_dotenv(override=True)
+
+DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', 'db', 'SparkyBudget.db')
 
 # Get log level from environment, default to INFO if not set
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -24,6 +34,7 @@ from py_utils.manage_categories import manage_categories_bp
 from py_utils.SimpleFinToDB import process_accounts_data
 from py_utils.subcategory_update import subcategory_update_bp
 from py_utils.FileToDB import file_to_db_bp
+from py_db.init_db import initialize_database
 
 
 # py_routes
@@ -37,11 +48,12 @@ from py_routes.historical_trend import historical_trend_bp
 def create_app():
     app = Flask(__name__, template_folder='./templates', static_folder='./static')
     app.jinja_env.add_extension("jinja2.ext.loopcontrols")
+    app.config['DATABASE_PATH'] = DATABASE_PATH
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
     app.config["SESSION_COOKIE_SECURE"] = bool(int(os.getenv("USE_INTERNAL_HTTPS", 0))) or bool(
         int(os.getenv("USE_SECURE_SESSION_COOKIE", 1))
     )
-    app.config["SESSION_COOKIE_HTTPONLY"] = True    
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
     #app.secret_key = secrets.token_hex(16)
     app.secret_key = os.getenv("FLASK_SECRET_KEY", "your-very-secure-key")
     login_manager = LoginManager(app)
@@ -82,6 +94,8 @@ def download_data():
         return jsonify({"success": False, "message": str(e)})
 
 if __name__ == "__main__":
+    with app.app_context():
+        initialize_database() # Call the initialization function
     ssl_context = None
     if bool(int(os.getenv("USE_INTERNAL_HTTPS", 0))):
         ssl_context = (r"certs/cert.pem", r"certs/key.pem")

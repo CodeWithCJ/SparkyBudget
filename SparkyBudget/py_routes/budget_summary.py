@@ -1,8 +1,10 @@
 #py_routes/budget_summary.py
 
 import sqlite3, os, logging
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, url_for, send_from_directory, current_app
 from flask_login import login_required
+
+private_images_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'private', 'images')
 
 
 
@@ -20,11 +22,11 @@ def budget_summary_pie_chart():
     try:
         selected_year = request.args.get("year")
         selected_month = request.args.get("month")
-        
+
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
-        
+
         # SQL query (unchanged from your original)
         sql_query = """
             SELECT
@@ -41,7 +43,7 @@ def budget_summary_pie_chart():
                     ), 2) AS ProjectedSalary,
                     ROUND(SUM(
                         CASE
-                            WHEN a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') 
+                            WHEN a11.SubCategory NOT IN ('CC Payment', 'Money Transfer')
                             AND a12.Category NOT IN ('Income') THEN BudgetAmount
                             ELSE NULL
                         END
@@ -52,7 +54,7 @@ def budget_summary_pie_chart():
                     F_Budget a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
                 WHERE
-                    CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ? 
+                    CAST(strftime('%Y', a11.BudgetMonth) AS TEXT) = ?
                     AND strftime('%m', a11.BudgetMonth) = ?
                 UNION ALL
                 SELECT
@@ -66,10 +68,10 @@ def budget_summary_pie_chart():
                     LEFT JOIN F_Balance a13 ON (a11.AccountID = a13.AccountID)
                     LEFT JOIN D_AccountTypes a14 ON (a13.AccountTypeKey = a14.AccountTypeKey)
                 WHERE
-                    HideFromBudget = 0 
-                    AND a11.SubCategory NOT IN ('CC Payment', 'Money Transfer') 
-                    AND a12.Category NOT IN ('Income') 
-                    AND CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? 
+                    HideFromBudget = 0
+                    AND a11.SubCategory NOT IN ('CC Payment', 'Money Transfer')
+                    AND a12.Category NOT IN ('Income')
+                    AND CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ?
                     AND strftime('%m', a11.TransactionPosted) = ?
                 UNION ALL
                 SELECT
@@ -81,13 +83,13 @@ def budget_summary_pie_chart():
                     F_Transaction a11
                     LEFT JOIN D_Category a12 ON (a11.SubCategory = a12.SubCategory)
                 WHERE
-                    a12.Category IN ('Income') 
-                    AND CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? 
+                    a12.Category IN ('Income')
+                    AND CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ?
                     AND strftime('%m', a11.TransactionPosted) = ?
             )
         """
         cursor.execute(
-            sql_query, 
+            sql_query,
             (selected_year, selected_month, selected_year, selected_month, selected_year, selected_month)
         )
         result = cursor.fetchone()
@@ -107,8 +109,8 @@ def budget_summary_pie_chart():
     except Exception as e:
         logger.error(f"An error occurred while fetching budget summary data: {str(e)}", exc_info=True)
         return jsonify({"error": "Failed to fetch budget summary data"}), 500
-        
-        
+
+
 
 @budget_sumary_bp.route("/budget_summary_chart")
 @login_required
@@ -134,7 +136,7 @@ def budget_summary_chart():
         order_by_index = 2  # Default to sorting by category if criteria is not recognized
 
     # Use a context manager to manage the SQLite connection
-    with sqlite3.connect("SparkyBudget.db") as conn:
+    with sqlite3.connect(current_app.config['DATABASE_PATH']) as conn:
         cursor = conn.cursor()
 
         # Enable query logging
@@ -144,7 +146,7 @@ def budget_summary_chart():
         sql_query = """
             SELECT
                 Category,
-                SubCategory,            
+                SubCategory,
                 SUM(BudgetAmount) AS BudgetAmount,
                 ABS(SUM(TotalTransactionAmount)) AS TotalTransactionAmount,
                 Round(SUM(BudgetAmount) - ABS(SUM(TotalTransactionAmount)),2) as RemainingBudget
@@ -165,7 +167,7 @@ def budget_summary_chart():
                 GROUP BY
                     Coalesce(a12.Category, 'Unknown'),
                     Coalesce(a11.SubCategory,'Unknown')
-                UNION ALL   
+                UNION ALL
                 SELECT
                     Coalesce(a12.Category, 'Unknown') as Category,
                     Coalesce(a11.SubCategory,'Unknown') as SubCategory,
@@ -179,7 +181,7 @@ def budget_summary_chart():
                     ON a13.AccountTypeKey = a14.AccountTypeKey
                 WHERE
                     HideFromBudget=0 AND
-                    Coalesce(a11.SubCategory,'Unknown') not in ('CC Payment','Money Transfer') AND                    
+                    Coalesce(a11.SubCategory,'Unknown') not in ('CC Payment','Money Transfer') AND
                     CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
                     strftime('%m', a11.TransactionPosted) = ?
                 GROUP BY
@@ -190,15 +192,95 @@ def budget_summary_chart():
                 Category,
                 SubCategory
             ORDER BY
-                CASE WHEN Category = 'Unknown' THEN 1 ELSE 0 END          
+                CASE WHEN Category = 'Unknown' THEN 1 ELSE 0 END
         """
 
         # Fetch data for the third table based on selected filters
         cursor.execute(sql_query, (selected_year, selected_month, selected_year, selected_month))
-        budget_summary_chart = cursor.fetchall()
-        budget_summary_chart = sorted(
-            budget_summary_chart, key=lambda x: x[order_by_index], reverse=SortAscDesc
-        )
+        budget_summary_data = cursor.fetchall()
+
+    # Define image paths and placeholder
+    static_budget_icons_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'images', 'budget_icons')
+    placeholder_image_url = url_for('static', filename='images/placeholder.png') # Assuming a placeholder exists
+
+    # Process data to include image URLs and gradient style
+    processed_budget_summary = []
+    for item in budget_summary_data:
+        subcategory = item[1] # SubCategory is at index 1
+        image_filename = f"{subcategory}.png" # Assuming .png extension
+
+        # Determine Image URL
+        private_image_path = os.path.join(private_images_dir, image_filename)
+        if os.path.exists(private_image_path):
+            image_url = url_for('budget_sumary_bp.serve_private_image', filename=image_filename)
+        else:
+            static_image_path = os.path.join(static_budget_icons_dir, image_filename)
+            if os.path.exists(static_image_path):
+                image_url = url_for('static', filename=f'images/budget_icons/{image_filename}')
+            else:
+                image_url = placeholder_image_url
+
+        # Determine Gradient Style
+        budget_amount = item[2]
+        total_transaction_amount = item[3]
+        # Determine Bar Width and Color
+        bar_width_percentage = "0%"
+        bar_color = "#FFFFFF" # Default to white
+
+        if budget_amount > 0:
+            percentage = (total_transaction_amount / budget_amount) * 100
+            if percentage == 0:
+                bar_width_percentage = "0%"
+                bar_color = "#FFFFFF" # White for 0% spent
+            elif percentage > 0 and percentage < 100:
+                bar_width_percentage = str(min(percentage, 100)) + "%" # Cap width at 100%
+                bar_color = "#7ED321" # Green for spent portion within budget
+            elif percentage >= 100:
+                 bar_width_percentage = "100%" # Bar is full width
+                 if total_transaction_amount == budget_amount:
+                      bar_color = "#FFD200" # Yellow for exactly at budget
+                 else: # total_transaction_amount > budget_amount
+                      bar_color = "#ff002f" # Red for over budget
+        elif budget_amount == 0 and total_transaction_amount > 0:
+             bar_width_percentage = "100%" # Full bar width
+             bar_color = "#ff8400" # Orange for budget 0, spent > 0
+        # else: budget_amount == 0 and total_transaction_amount == 0, bar_width_percentage remains "0%" and bar_color remains "#FFFFFF"
+
+        logger.debug(f"Generated bar_width_percentage for {subcategory}: {bar_width_percentage}, bar_color: {bar_color}")
+
+        # Create a dictionary for each item including the image URL, bar width, and bar color
+        processed_item = {
+            "Category": item[0],
+            "SubCategory": item[1],
+            "BudgetAmount": item[2],
+            "TotalTransactionAmount": item[3],
+            "RemainingBudget": item[4],
+            "ImageUrl": image_url, # Add the determined image URL
+            "BarWidthPercentage": bar_width_percentage, # Add the determined bar width percentage
+            "BarColor": bar_color # Add the determined bar color
+        }
+        processed_budget_summary.append(processed_item)
+
+    # Sort the processed data
+    # The sorting key needs to be adjusted to work with dictionaries
+    def get_sort_key(item):
+        if sort_criteria == "category":
+            return item["Category"]
+        elif sort_criteria == "subcategory":
+            return item["SubCategory"]
+        elif sort_criteria == "budget":
+            return item["BudgetAmount"]
+        elif sort_criteria == "spent":
+            return item["TotalTransactionAmount"]
+        elif sort_criteria == "balance":
+            return item["RemainingBudget"]
+        else:
+            return item["Category"] # Default sort key
+
+    budget_summary_chart_sorted = sorted(
+        processed_budget_summary, key=get_sort_key, reverse=SortAscDesc
+    )
+
 
     # Log debugging information
     logger.debug(
@@ -206,10 +288,18 @@ def budget_summary_chart():
         f"Sorted by: {sort_criteria}, Descending: {SortAscDesc}"
     )
 
-    # Render the template with the fetched data for the third table
-    return render_template("budget_summary_chart.html.jinja", budget_summary_chart=budget_summary_chart)
-    
-    
+    # Render the template with the processed and sorted data
+    return render_template("budget_summary_chart.html.jinja", budget_summary_chart=budget_summary_chart_sorted)
+
+@budget_sumary_bp.route("/private_images/<filename>")
+@login_required
+def serve_private_image(filename):
+    try:
+        # Ensure the filename is safe to prevent directory traversal attacks
+        return send_from_directory(private_images_dir, filename)
+    except FileNotFoundError:
+        # Handle the case where the file is not found
+        return jsonify({"error": "Image not found"}), 404
 
 # Add this route to handle the inline editing of the budget - I am trying this to update Budget amount from Budget summary page.
 @budget_sumary_bp.route("/inline_edit_budget", methods=["POST"])
@@ -223,7 +313,7 @@ def inline_edit_budget():
         new_budget = data["budget"]
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Update the budget in the database
@@ -258,7 +348,7 @@ def add_budget():
         subCategory = data["subCategory"]
         budget_amount = data["budgetAmount"]
 
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Use the INSERT OR REPLACE syntax to update or insert the record
@@ -291,7 +381,7 @@ def delete_budget():
         selected_month = data["month"]
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
         logger.debug("delete_budget: From Python")
         # Formulate the SQL query to delete the budget
@@ -328,19 +418,20 @@ def get_budget_transaction_details():
     selected_subcategory = request.args.get("subcategory")
 
     # Connect to the SQLite database
-    conn = sqlite3.connect("SparkyBudget.db")
+    conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
     cursor = conn.cursor()
 
     # Fetch transaction details for the selected subcategory
 
+
     sql_query1 = """
-        SELECT  
+        SELECT
             TransactionKey,
-			strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted, 
-			a11.AccountName,			              
+			strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted,
+			a11.AccountName,
             a11.TransactionDescription,
             a11.TransactionPayee,
-            ROUND(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0), 2) AS TransactionAmount	
+            ROUND(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0), 2) AS TransactionAmount
         FROM
             F_Transaction a11
             left join F_balance a12
@@ -351,7 +442,7 @@ def get_budget_transaction_details():
             AccountType not in ('Retirement','Hide') AND
             CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) = ? AND
             strftime('%m', a11.TransactionPosted) = ?
-            AND Coalesce(a11.SubCategory,'Unknown') = ?             
+            AND Coalesce(a11.SubCategory,'Unknown') = ?
         ORDER BY
             TransactionPosted desc,a11.AccountName,a11.TransactionDescription, a11.TransactionPayee, ROUND(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0), 2),TransactionKey
     """
@@ -383,17 +474,17 @@ def get_budget_transaction_details():
 def get_recurring_budget_details():
     try:
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # SQL query to fetch SubCategory and BudgetAmount from D_Budget
         sql_query = """
-            SELECT 
-                SubCategory, 
+            SELECT
+                SubCategory,
                 BudgetAmount
-            FROM 
+            FROM
                 D_Budget
-            ORDER BY 
+            ORDER BY
                 SubCategory ASC
         """
 
@@ -422,7 +513,7 @@ def get_recurring_budget_details():
         # Log the error and return an error response
         logger.error(f"An error occurred while fetching budget details: {str(e)}", exc_info=True)
         return render_template("recurring_budget_details.html.jinja", data=[], error=str(e))
-    
+
 
 @budget_sumary_bp.route("/delete_recurring_budget", methods=["POST"])
 @login_required
@@ -436,7 +527,7 @@ def delete_recurring_budget():
             return jsonify({"success": False, "message": "SubCategory is required."})
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Delete the record from the D_Budget table
@@ -456,7 +547,7 @@ def delete_recurring_budget():
     except Exception as e:
         logger.error(f"An error occurred while deleting the record: {str(e)}", exc_info=True)
         return jsonify({"success": False, "message": "An error occurred while deleting the record."})
-    
+
 
 @budget_sumary_bp.route("/add_recurring_budget", methods=["POST"])
 @login_required
@@ -471,7 +562,7 @@ def add_recurring_budget():
             return jsonify({"success": False, "message": "SubCategory and BudgetAmount are required."})
 
         # Connect to the SQLite database
-        conn = sqlite3.connect("SparkyBudget.db")
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         # Insert or update the record in the D_Budget table
