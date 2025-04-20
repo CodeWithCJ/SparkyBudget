@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 manage_categories_bp = Blueprint('manage_categories', __name__)
 
 
-@manage_categories_bp.route("/manage_categories")
+@manage_categories_bp.route("/category")
 @login_required
 def manage_categories():
-    return render_template("category_mgmt.html.jinja")
+    return render_template("category.html.jinja")
 
 
 @manage_categories_bp.route("/getCategorySubCategory")

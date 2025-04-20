@@ -469,7 +469,7 @@ def get_budget_transaction_details():
     return render_template("budget_transaction_details.html.jinja", transaction_details=transaction_details)
 
 
-@budget_sumary_bp.route("/get_recurring_budget_details")
+@budget_sumary_bp.route("/budget")
 @login_required
 def get_recurring_budget_details():
     try:
@@ -507,12 +507,12 @@ def get_recurring_budget_details():
         ]
 
         # Render the template with the fetched data
-        return render_template("recurring_budget_details.html.jinja", data=formatted_budget_details)
+        return render_template("budget.html.jinja", data=formatted_budget_details)
 
     except Exception as e:
         # Log the error and return an error response
         logger.error(f"An error occurred while fetching budget details: {str(e)}", exc_info=True)
-        return render_template("recurring_budget_details.html.jinja", data=[], error=str(e))
+        return render_template("budget.html.jinja", data=[], error=str(e))
 
 
 @budget_sumary_bp.route("/delete_recurring_budget", methods=["POST"])

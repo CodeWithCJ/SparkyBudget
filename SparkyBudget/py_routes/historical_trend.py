@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 historical_trend_bp = Blueprint('historical_trend', __name__)
 
-@historical_trend_bp.route("/historical_trend")
+@historical_trend_bp.route("/trend")
 @login_required
 def historical_trend():
     # Connect to the SQLite database
@@ -108,7 +108,7 @@ def historical_trend():
     conn.close()
 
     # Render the template with the fetched data for transaction analysis
-    return render_template("historical_trend.html.jinja", transaction_data=transaction_data)
+    return render_template("trend.html.jinja", transaction_data=transaction_data)
 
 
 @historical_trend_bp.route("/get_transaction_data", methods=["POST"])

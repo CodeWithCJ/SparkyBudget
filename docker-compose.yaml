@@ -3,9 +3,9 @@ services:
     container_name: sparkybudget
     env_file:
       - .env
-    image: codewithcj/sparkybudget:latest  # Use your Docker Hub username and image name
+    image: codewithcj/sparkybudget:latest  # Use latest or specific version
     volumes:
-      - ./SparkyBudget.db:/SparkyBudget/SparkyBudget.db   
+      - ./:/private
     ports:
-      - 5050:5000  # Map port 5000 in the container to port 5050 on the host
+      - 5050:5000  # Update 5050 to your desired port
     restart: unless-stopped

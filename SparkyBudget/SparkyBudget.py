@@ -14,7 +14,8 @@ dotenv.load_dotenv(dotenv_path_private, override=True)
 # Then load from the default location (main folder)
 dotenv.load_dotenv(override=True)
 
-DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', 'db', 'SparkyBudget.db')
+DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', 'db', 'SparkyBudget.db') # Revert to original calculation
+PRIVATE_FOLDER_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private') # Define private folder path
 
 # Get log level from environment, default to INFO if not set
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -49,6 +50,7 @@ def create_app():
     app = Flask(__name__, template_folder='./templates', static_folder='./static')
     app.jinja_env.add_extension("jinja2.ext.loopcontrols")
     app.config['DATABASE_PATH'] = DATABASE_PATH
+    app.config['PRIVATE_DATA_PATH'] = PRIVATE_FOLDER_PATH # Set private data path in config
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
     app.config["SESSION_COOKIE_SECURE"] = bool(int(os.getenv("USE_INTERNAL_HTTPS", 0))) or bool(
         int(os.getenv("USE_SECURE_SESSION_COOKIE", 1))
@@ -88,7 +90,8 @@ locale.setlocale(locale.LC_ALL, "")
 @login_required
 def download_data():
     try:
-        process_accounts_data()
+        #private_data_path = current_app.config['PRIVATE_DATA_PATH'] # Get path from config
+        process_accounts_data(PRIVATE_FOLDER_PATH) # Pass path to function
         return jsonify({"success": True, "message": "Sync with Bank Successfully."})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})

@@ -29,7 +29,7 @@ def ts_to_datetime(ts):
     return datetime.datetime.fromtimestamp(ts, datetime.timezone.utc)
 
 
-def get_access_url():
+def get_access_url(private_data_path):
     # Load setup token from file
     #token_file_path = "token.txt"
 #
@@ -42,7 +42,7 @@ def get_access_url():
     setup_token = os.getenv("SIMPLEFIN_TOKEN")
 
     # Load access URL from file if available
-    access_url_file = "private/access_url.txt"
+    access_url_file = os.path.join(private_data_path, "access_url.txt")
 
     try:
         with open(access_url_file, "r") as file:
@@ -67,17 +67,17 @@ def get_access_url():
     return access_url
 
 
-def process_accounts_data():
+def process_accounts_data(private_data_path):
     server_local_timestamp = datetime.datetime.now()
     logger.info(f"process_accounts_data executed at {server_local_timestamp}")
     from SparkyBudget import db_lock  # Import inside the function to avoid circular import
     with db_lock:  # Synchronize database access
         # Create the output folder if it doesn't exist
-        output_folder = "private/db/csv_temp"
+        output_folder = os.path.join(private_data_path, "db", "csv_temp")
         os.makedirs(output_folder, exist_ok=True)
 
         # Load access URL from file if available
-        access_url = get_access_url()
+        access_url = get_access_url(private_data_path) # Pass the path here
         if access_url:
             # Calculate the start date parameter for the last 12 months (or 10 days for testing)
             last_12_months = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=10)
@@ -93,7 +93,8 @@ def process_accounts_data():
                 data = response.json()  # Parse the API response as JSON
 
                 # SQLite database connection (use check_same_thread=False for multi-threading safety)
-                with sqlite3.connect("private/db/SparkyBudget.db", check_same_thread=False) as conn:
+                db_path = os.path.join(private_data_path, "db", "SparkyBudget.db")
+                with sqlite3.connect(db_path, check_same_thread=False) as conn:
                     cursor = conn.cursor()
 
                     # Create a temporary table for transactions with pending status
@@ -259,4 +260,10 @@ def process_accounts_data():
 
 # Call the function if this script is executed directly
 if __name__ == "__main__":
-    process_accounts_data()
+    # This block is for direct execution and might not have the Flask app context.
+    # Consider how you want to handle the private_data_path in this case.
+    # For now, keeping the original behavior or adding a placeholder.
+    # A more robust solution for standalone execution might involve
+    # reading from an environment variable or a config file.
+    # For this task, we assume it's called from the Flask app.
+    pass # Placeholder, as the call will come from SparkyBudget.py

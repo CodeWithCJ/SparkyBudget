@@ -37,7 +37,7 @@
         
        
         <a href="{{ url_for('budget_sumary_bp.get_recurring_budget_details') }}"
-            class="nav-item {% if 'get_recurring_budget_details' in request.endpoint %}active{% endif %}">
+        class="nav-item {% if 'budget_sumary_bp.get_recurring_budget_details' in request.endpoint %}active{% endif %}">
             <i class="fas fa-calendar-alt nav-icon"></i>
             <span class="nav-text">Budget</span>
         </a>
