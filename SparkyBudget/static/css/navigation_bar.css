@@ -37,7 +37,7 @@
 
 /* Logo text visible by default */
 .header-logo h1 {
-  font-size: 1.5rem;
+  font-size: 1.5rem !important;
   margin: 0;
   color: #f57c00; /* Apply the desired color */
   /* Remove gradient styles that conflict */
