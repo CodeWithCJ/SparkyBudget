@@ -34,7 +34,8 @@ docker compose pull && docker compose up -d
 
 
 # 📂 Demo Files  
-📌 The SparkyBudget-demo.db file contains sample transactions from SimpleFin for testing. or Simply pass below env variable to "Yes" to auto generate demo accounts & transactions    
+📌 Pass below env variable to "Yes" to auto generate demo accounts & transactions. Backup your DB file if you are existing user.  
+This will generate dummy accounts & transactions in the DB file.  
 ```
 SPARKY_DEMO=Yes  
 ```
