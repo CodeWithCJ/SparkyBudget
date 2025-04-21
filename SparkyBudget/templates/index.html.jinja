@@ -119,67 +119,74 @@
             <div id="balanceDetailsTable" class="hidden-balance-details">
                 {% include 'balance_details.html.jinja' %}
             </div>
+            <div class="budgetCalendarAddBugetWrapper">
+                <div class="filters">
+                    <label class="month-year-picker-container" for="calendarPicker">Select Month:
+                        <input type="text" id="calendarPicker" value="{{ now.year }}-{{ now.strftime('%m') }}" readonly
+                            style="display: none;">
+                        <span id="calendarPickerDisplay" class="calendar-picker-display">{{ now.year }}-{{
+                            now.strftime('%b') }}</span>
+                        <div class="year-month-picker hide">
+                            <div class="year-picker">
+                                <button class="previous-year">
 
-            <div class="filters">
-                <label class="month-year-picker-container" for="calendarPicker">Select Month:
-                    <input type="text" id="calendarPicker" value="{{ now.year }}-{{ now.strftime('%m') }}" readonly
-                        style="display: none;">
-                    <span id="calendarPickerDisplay" class="calendar-picker-display">{{ now.year }}-{{
-                        now.strftime('%b') }}</span>
-                    <div class="year-month-picker hide">
-                        <div class="year-picker">
-                            <button class="previous-year">
+                                    <span class="selected-year">{{ now.year }}</span>
+                                    <button class="next-year">></button>
+                            </div>
+                            <div class="month-picker">
+                                <button data-month="01">Jan</button>
+                                <button data-month="02">Feb</button>
+                                <button data-month="03">Mar</button>
+                                <button data-month="04">Apr</button>
+                                <button data-month="05">May</button>
+                                <button data-month="06">Jun</button>
+                                <button data-month="07">Jul</button>
+                                <button data-month="08">Aug</button>
+                                <button data-month="09">Sep</button>
+                                <button data-month="10">Oct</button>
+                                <button data-month="11">Nov</button>
+                                <button data-month="12">Dec</button>
+                            </div>
+                            <div class="picker-actions">
+                                <button class="clear-button">Clear</button>
+                                <button class="this-month-button">This month</button>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                
 
-                                <span class="selected-year">{{ now.year }}</span>
-                                <button class="next-year">></button>
-                        </div>
-                        <div class="month-picker">
-                            <button data-month="01">Jan</button>
-                            <button data-month="02">Feb</button>
-                            <button data-month="03">Mar</button>
-                            <button data-month="04">Apr</button>
-                            <button data-month="05">May</button>
-                            <button data-month="06">Jun</button>
-                            <button data-month="07">Jul</button>
-                            <button data-month="08">Aug</button>
-                            <button data-month="09">Sep</button>
-                            <button data-month="10">Oct</button>
-                            <button data-month="11">Nov</button>
-                            <button data-month="12">Dec</button>
-                        </div>
-                        <div class="picker-actions">
-                            <button class="clear-button">Clear</button>
-                            <button class="this-month-button">This month</button>
-                        </div>
-                    </div>
-                </label>
+                <button class="btn" id="addBudgetButton" onclick="toggleAddBudgetForm()">
+                    <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
+                        <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+                    </svg>
+                
+                    <span class="text">Add Budget</span>
+                </button>
             </div>
-
-
-            <button class="btn" id="addBudgetButton" onclick="toggleAddBudgetForm()">
-                <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
-                    <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
-                </svg>
             
-                <span class="text">Add Budget</span>
-            </button>
-
-            <form id="addBudgetForm" class="hide">
-                <label for="subCategoryInput">Subcategory:</label>
-                <select id="subCategoryInput" class="select2" required>
-                    <option value="" selected disabled>Select a subcategory</option>
-                </select>
-                <label for="budgetAmountInput">Budget Amount:</label>
-                <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput"
-                    placeholder="Enter budget amount" required>
-                <button type="button" onclick="addBudget()">Submit Budget</button>
-            </form>
-
+                <form id="addBudgetForm" class="hide">
+                    <div class="addBudgetFormWrapper">
+                        <div class="budget-form-group">
+                            <label for="subCategoryInput">Subcategory:</label>
+                            <select id="subCategoryInput" class="select2" required>
+                                <option value="" selected disabled>Select a subcategory</option>
+                            </select>
+                        </div>
+                        <div class="budget-form-group">
+                            <label for="budgetAmountInput">Amount:</label>
+                            <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput"
+                                placeholder="Enter budget amount" required>
+                        </div>
+                        <button type="button" onclick="addBudget()">Submit Budget</button>
+                    </div>
+                </form>
+            
 
             <div class="pieChartsWrapper">
-                <div class="pieChartContainer">                    
+                <div class="pieChartContainer">
                         <h2 class="chart-total" id="incomeTotal">Income - $6,273.00</h2>
-                        <canvas id="incomeVsBudgetPieChart"></canvas>                    
+                        <canvas id="incomeVsBudgetPieChart"></canvas>
                 </div>
                 <div class="pieChartContainer">
                     

@@ -16,19 +16,21 @@
 <body>
     {% include 'components/navigation_bar.html.jinja' %}
     <div class="recurring-budget-container">
-        <h1>Recurring Budget Details</h1>
+        <h1>Recurring Budgets</h1>
         <form id="addBudgetForm">
-            <div class="form-group">
-                <label for="subCategoryInput">Subcategory:</label>
-                <select id="subCategoryInput" class="select2" required>
-                    <option value="" selected disabled>Select a subcategory</option>
-                </select>
+            <div class="addBudgetFormWrapper">  
+                <div class="form-group">
+                    <label for="subCategoryInput">Subcategory:</label>
+                    <select id="subCategoryInput" class="select2" required>
+                        <option value="" selected disabled>Select</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="budgetAmountInput">Amount:</label>
+                    <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput" placeholder="Enter budget amount" required>
+                </div>
+                <button type="button" onclick="addRecurringBudget()">Submit</button>
             </div>
-            <div class="form-group">
-                <label for="budgetAmountInput">Budget Amount:</label>
-                <input type="text" pattern="^(\d)+(\.\d{1,2})?$" inputmode="decimal" id="budgetAmountInput" placeholder="Enter budget amount" required>
-            </div>
-            <button type="button" onclick="addRecurringBudget()">Submit Budget</button>
         </form>
 
         {% if error %}

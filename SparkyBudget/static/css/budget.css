@@ -315,3 +315,69 @@ body {
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
     color: #fff !important; /* White color on hover */
 }
+
+
+
+
+.addBudgetFormWrapper {
+    margin-top: 10px;
+    width: 40% !important;
+    height: auto;
+    padding: 15px;
+    border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
+    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
+    border-radius: 8px;
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Add space between form groups and button */
+    align-items:stretch  ; /* Center items horizontally */
+    position: relative; /* For positioning the glow */
+}
+
+.addBudgetFormWrapper button {
+    border: none;
+    width: 10em; /* Reduced width */
+    height: 3em; /* Reduced height */
+    border-radius: 2em; /* Adjusted border-radius */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* Reduced gap */
+    background: #3a404c; /* Changed background color */
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+    margin: 0 auto; /* Keep the button centered */
+   
+   font-weight: 600;
+   color: white;
+   font-size: small;
+   
+}
+
+.addBudgetFormWrapper button:hover {
+    background: linear-gradient(0deg,#A47CF3,#683FEA);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+    inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+    0px 0px 180px 0px #9917FF;
+    transform: translateY(-2px);
+    color: white;
+}
+.addBudgetFormWrapper .form-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* Space out the label and input */
+    align-items: center; /* Vertically align items */
+}
+.addBudgetFormWrapper .form-group input[type="text"],
+.addBudgetFormWrapper .form-group .select2-container {
+    width: 60% !important;
+}
+
+@media (max-width: 768px) {
+    .addBudgetFormWrapper {
+        width: 90% !important; /* Adjust width for mobile */
+        margin: 0 auto; /* Center the form on mobile */
+    }
+
+}

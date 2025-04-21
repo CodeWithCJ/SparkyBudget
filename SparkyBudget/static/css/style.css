@@ -346,6 +346,7 @@ html, body {
         display: none;
         
     }
+
 }
 
 .month-year-picker-container {
@@ -454,6 +455,42 @@ html, body {
     position: relative; /* For positioning the glow */
 }
 
+.budgetCalendarAddBugetWrapper {
+    display: flex;
+    width: 25%; 
+    align-items: center; /* Changed to align-items for vertical alignment */
+    gap: 10px; /* Added gap for spacing between items */
+}
+
+.addBudgetFormWrapper {
+    margin-top: 10px;
+    width: 20% !important;
+    height: auto;
+    padding: 15px;
+    border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
+    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
+    border-radius: 8px;
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Add space between form groups and button */
+    align-items: center; /* Center items horizontally */
+    position: relative; /* For positioning the glow */
+}
+
+
+.budget-form-group label {
+    margin-right: 10px; /* Add space between label and input/select */
+}
+
+
+/* Mobile styles for the button */
+@media (max-width: 768px) {
+    .addBudgetFormWrapper button {
+        width: 100%; /* Make button full width on mobile */
+        text-align: center; /* Center button text */
+    }
+}
+
 
 
 
@@ -487,6 +524,12 @@ html, body {
 
 
 @media (max-width: 768px) {
+    .chartjs-legend ul {
+        font-size: 6px !important;  /* Smaller on mobile */
+    }
+
+   
+
     .pieChartsWrapper {
         flex-direction: column;
         align-items: center; /* Center the charts horizontally */
@@ -511,6 +554,26 @@ html, body {
 
     .chartjs-legend ul {
         font-size: 6px !important; /* Already correct */
+    }
+
+    
+    
+    .addBudgetFormWrapper {
+          
+        width: 90% !important;
+        
+    }
+
+    /* Remove previous text alignment */
+    .addBudgetFormWrapper .subCategoryInput,
+    .addBudgetFormWrapper .text {
+           justify-items: right;
+        
+    }
+
+    /* Center the button within the form */
+    .addBudgetFormWrapper .btn {
+        align-self: center;
     }
 
 }
@@ -766,6 +829,10 @@ header .icon svg {
         width: 100% !important;
         height: 250% !important;
     }
+    
+    .budgetCalendarAddBugetWrapper {
+        width: 100%;       
+    }
 }
 
 /* For larger screens, maintain proportions */
@@ -1017,6 +1084,52 @@ header .icon svg {
 .select2-container--default .select2-selection--multiple .select2-selection__rendered { /* Include multiple */
     color: #eee !important; /* Light text for selected value */
     line-height: 26px; /* Vertically align text */
+}
+
+/* Style for the dropdown arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important; /* Match container height */
+}
+
+/* Style for the dropdown panel */
+.select2-container--default .select2-dropdown {
+    background-color: #3c444f !important; /* Dark background for dropdown */
+    border: 1px solid #555 !important; /* Darker border */
+}
+
+/* Style for highlighted (hovered) option */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #555 !important; /* Slightly lighter dark for hover */
+    color: #fff !important; /* White text on hover */
+}
+
+/* Style for selected option */
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: #4a5261 !important; /* Different background for selected */
+    color: #fff !important; /* White text for selected */
+}
+
+/* Style for the search input within the dropdown */
+.select2-search input {
+    background-color: #4a5261 !important; /* Darker background for search input */
+    color: #eee !important; /* Light text for search input */
+    border: 1px solid #555 !important; /* Darker border */
+}
+
+/* Style for selected tags in multiple select */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #555 !important; /* Dark background for tags */
+    color: #eee !important; /* Light text for tags */
+    border: 1px solid #666 !important; /* Darker border for tags */
+}
+
+/* Style for the remove button on selected tags */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #ccc !important; /* Lighter color for remove button */
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fff !important; /* White color on hover */
 }
 
 /* Style for the dropdown arrow */

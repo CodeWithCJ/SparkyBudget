@@ -31,7 +31,6 @@ logger = logging.getLogger(__name__)
 # py_utils
 from py_utils.auth import load_user, login, logout, before_request, unauthorized
 from py_utils.currency_utils import app as currency_app
-from py_utils.manage_categories import manage_categories_bp
 from py_utils.SimpleFinToDB import process_accounts_data
 from py_utils.subcategory_update import subcategory_update_bp
 from py_utils.FileToDB import file_to_db_bp
@@ -42,6 +41,7 @@ from py_db.init_db import initialize_database
 from py_routes.home import home_bp
 from py_routes.budget_summary import budget_sumary_bp
 from py_routes.historical_trend import historical_trend_bp
+from py_routes.manage_categories import manage_categories_bp
 
 
 

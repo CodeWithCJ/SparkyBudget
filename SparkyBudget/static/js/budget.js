@@ -28,7 +28,7 @@ $(document).ready(function () {
             $('#subCategoryInput').select2({
                 data: formattedSubcategories,
                 width: '40%', // Set the width to 40%
-                placeholder: 'Select or type to search',
+                placeholder: 'Select',
                 allowClear: true,
             });
         } else {
