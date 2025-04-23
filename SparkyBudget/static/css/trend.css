@@ -433,9 +433,11 @@ body {
 .transaction-table th {
     padding: 16px 20px;
     text-align: left;
-    font-weight: 600;
     border: none;
+    font-weight: 600;
+    color: white !important;
     position: relative;
+    background: #282c35;
 }
 
 .transaction-table th::after {

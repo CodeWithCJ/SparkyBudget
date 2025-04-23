@@ -6,19 +6,10 @@
     border-radius: 16px;
     margin: 10px 0;
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+    
     animation: glow 2s ease-in-out infinite alternate;
 }
 
-/* Glowing animation keyframes */
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.3);
-    }
-}
 
 /* Default styles for desktop - Enhanced version with new colors */
 .budget-transaction-table {
@@ -32,8 +23,7 @@
     margin: 0;
 }
 
-.budget-transaction-table thead {
-    background: linear-gradient(90deg, #00bcd4, #0288d1);
+.budget-transaction-table thead {    
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 1.2px;
@@ -42,9 +32,11 @@
 .budget-transaction-table th {
     padding: 16px 20px;
     text-align: left;
-    font-weight: 600;
     border: none;
+    font-weight: 600;
+    color: white !important;
     position: relative;
+    background: #282c35;
 }
 
 .budget-transaction-table th::after {

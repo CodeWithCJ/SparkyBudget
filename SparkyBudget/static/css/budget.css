@@ -39,7 +39,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     margin-top: 20px;
-    border: 2px solid rgba(0, 188, 212, 0.5); /* Add border around the table */
+    border: 0.25px white !important; /* Add border around the table */
 }
 
 .recurring-budget-container thead {
@@ -52,9 +52,11 @@ body {
 .recurring-budget-container th {
     padding: 16px 20px;
     text-align: left;
-    font-weight: 600;
     border: none;
+    font-weight: 600;
+    color: white !important;
     position: relative;
+    background: #282c35;
 }
 
 .recurring-budget-container th::after {
@@ -150,13 +152,6 @@ body {
 }
 
 /* Limit the width of the select2 dropdown to 40% */
-#subCategoryInput {
-    width: 40% !important; /* Ensure the width is enforced */
-    min-width: 200px; /* Optional: Set a minimum width */
-    display: inline-block; /* Ensure it doesn't take up the full width */
-}
-
-
 
 /* Responsive styles for mobile devices */
 @media (max-width: 768px) {
@@ -251,88 +246,7 @@ body {
     }
   }
 
-/* --- Select2 Dark Theme Styles (Added for recurring_budget_details.css) --- */
 
-/* Container for the Select2 dropdown */
-.select2-container--default .select2-selection--single,
-.select2-container--default .select2-selection--multiple { /* Include multiple if needed */
-    background-color: #3c444f !important; /* Dark background */
-    color: #eee !important; /* Light text */
-    border: 1px solid #555 !important; /* Darker border */
-    height: 38px !important; /* Adjust height if needed */
-    padding: 6px 12px !important; /* Adjust padding */
-}
-
-/* Style for the selected value */
-.select2-container--default .select2-selection--single .select2-selection__rendered,
-.select2-container--default .select2-selection--multiple .select2-selection__rendered { /* Include multiple */
-    color: #eee !important; /* Light text for selected value */
-    line-height: 26px; /* Vertically align text */
-}
-
-/* Style for the dropdown arrow */
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 36px !important; /* Match container height */
-}
-
-/* Style for the dropdown panel */
-.select2-container--default .select2-dropdown {
-    background-color: #3c444f !important; /* Dark background for dropdown */
-    border: 1px solid #555 !important; /* Darker border */
-}
-
-/* Style for highlighted (hovered) option */
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #555 !important; /* Slightly lighter dark for hover */
-    color: #fff !important; /* White text on hover */
-}
-
-/* Style for selected option */
-.select2-container--default .select2-results__option[aria-selected="true"] {
-    background-color: #4a5261 !important; /* Different background for selected */
-    color: #fff !important; /* White text for selected */
-}
-
-/* Style for the search input within the dropdown */
-.select2-search input {
-    background-color: #4a5261 !important; /* Darker background for search input */
-    color: #eee !important; /* Light text for search input */
-    border: 1px solid #555 !important; /* Darker border */
-}
-
-/* Style for selected tags in multiple select */
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #555 !important; /* Dark background for tags */
-    color: #eee !important; /* Light text for tags */
-    border: 1px solid #666 !important; /* Darker border for tags */
-}
-
-/* Style for the remove button on selected tags */
-.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-    color: #ccc !important; /* Lighter color for remove button */
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-    color: #fff !important; /* White color on hover */
-}
-
-
-
-
-.addBudgetFormWrapper {
-    margin-top: 10px;
-    width: 40% !important;
-    height: auto;
-    padding: 15px;
-    border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
-    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
-    border-radius: 8px;
-    display: flex; /* Use flexbox */
-    flex-direction: column; /* Stack items vertically */
-    gap: 10px; /* Add space between form groups and button */
-    align-items:stretch  ; /* Center items horizontally */
-    position: relative; /* For positioning the glow */
-}
 
 .addBudgetFormWrapper button {
     border: none;
@@ -363,16 +277,53 @@ body {
     transform: translateY(-2px);
     color: white;
 }
+.addBudgetFormWrapper {
+    margin-top: 10px;
+    width: 35% !important; /* Keep the form width */
+    height: auto;
+    padding: 15px;
+    border: 1px solid #4a5263;
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between form groups and button */
+    align-items: center;
+    position: relative;
+}
+
 .addBudgetFormWrapper .form-group {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between; /* Space out the label and input */
-    align-items: center; /* Vertically align items */
+    align-items: center; /* Vertically center the label and input/select */
+    justify-content: space-between; /* Distribute space between label and input/select */
+    width: 100%; /* Ensure the group takes full width of the wrapper */
+    
 }
-.addBudgetFormWrapper .form-group input[type="text"],
-.addBudgetFormWrapper .form-group .select2-container {
-    width: 60% !important;
+
+.budget-form-group label {
+    flex: 0 0 30%; /* Reduce label width for better balance */
+    text-align: left; /* Align text to the left */
+    color: #fff; /* Ensure readability on dark background */
+    font-size: 14px;
 }
+
+.budget-form-group select{
+    flex: 0 0 65% !important; /* Consistent width for both select and input */
+    width: 100% !important; /* Ensure they fill their allocated space */
+    box-sizing: border-box; /* Include padding and border in the width */
+    
+}
+
+
+
+.budget-form-group input {
+    flex: 0 0 65% !important; /* Consistent width for both select and input */
+    width: 100% !important; /* Ensure they fill their allocated space */
+    box-sizing: border-box; /* Include padding and border in the width */
+   
+}
+
+
 
 @media (max-width: 768px) {
     .addBudgetFormWrapper {

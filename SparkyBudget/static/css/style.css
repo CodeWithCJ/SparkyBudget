@@ -462,33 +462,46 @@ html, body {
     gap: 10px; /* Added gap for spacing between items */
 }
 
+
 .addBudgetFormWrapper {
     margin-top: 10px;
-    width: 20% !important;
+    width: 20% !important; /* Keep the form width */
     height: auto;
     padding: 15px;
-    border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
-    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
+    border: 1px solid #4a5263;
+    background: linear-gradient(145deg, #2E3440, #353b48);
     border-radius: 8px;
-    display: flex; /* Use flexbox */
-    flex-direction: column; /* Stack items vertically */
-    gap: 10px; /* Add space between form groups and button */
-    align-items: center; /* Center items horizontally */
-    position: relative; /* For positioning the glow */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between form groups and button */
+    align-items: center;
+    position: relative;
 }
 
+.budget-form-group {
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    width: 100%; /* Ensure the group takes full width of the wrapper */
+    gap: 10px; /* Small space between label and input */
+}
 
 .budget-form-group label {
-    margin-right: 10px; /* Add space between label and input/select */
+    flex: 0 0 40%; /* Labels take 40% of the width */
+    text-align: left; /* Align text to the left */
+}
+
+.budget-form-group select {
+    flex: 0 0 60%; /* Dropdown and input take 60% of the width */
+    width: 100% !important; /* Ensure they fill their allocated space */
+    box-sizing: border-box; /* Include padding and border in the width */
 }
 
 
-/* Mobile styles for the button */
-@media (max-width: 768px) {
-    .addBudgetFormWrapper button {
-        width: 100%; /* Make button full width on mobile */
-        text-align: center; /* Center button text */
-    }
+
+.budget-form-group input {
+    flex: 0 0 55%; /* Dropdown and input take 60% of the width */
+    width: 100% !important; /* Ensure they fill their allocated space */
+    box-sizing: border-box; /* Include padding and border in the width */
 }
 
 
