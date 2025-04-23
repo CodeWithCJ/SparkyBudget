@@ -3,7 +3,8 @@
 
 **SparkyBudge** is a personal finance management app that helps users track accounts like Checking, Credit Card, and Loan, manage budgets, and analyze spending trends. Its dark-themed interface offers tools for monitoring net cash, setting recurring budgets, and viewing historical financial data. Ideal for anyone seeking to organize their finances with ease.
 
-![image](https://github.com/user-attachments/assets/05cd8d45-2d55-4520-abee-cc2eda49557a)
+![image](https://github.com/user-attachments/assets/3126ccef-b69a-4862-a8d1-c4d666db80e3)
+
 
 
 # 🛠 How to Install?  
@@ -34,7 +35,8 @@ docker compose pull && docker compose up -d
 
 
 # 📂 Demo Files  
-📌 The SparkyBudget-demo.db file contains sample transactions from SimpleFin for testing. or Simply pass below env variable to "Yes" to auto generate demo accounts & transactions    
+📌 Pass below env variable to "Yes" to auto generate demo accounts & transactions. Backup your DB file if you are existing user.  
+This will generate dummy accounts & transactions in the DB file.  
 ```
 SPARKY_DEMO=Yes  
 ```
