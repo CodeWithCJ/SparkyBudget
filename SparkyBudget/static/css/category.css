@@ -7,60 +7,131 @@ body {
     font-family: sans-serif;
 }
 
+/* Container for the category table with glowing effect */
+.category-table-container {
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    padding: 20px;
+    border-radius: 16px;
+    margin: 20px auto;
+    max-width: 900px; /* Adjust max-width as needed */
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* Glowing animation keyframes */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.3);
+    }
+}
+
+.category-table-container th {
+    background: #282c35;
+    color: white; /* Ensure text is readable */
+}
+
 /* --- Base Table Styles --- */
-table.dataTable {
-    background-color: transparent;
-    color: #eee;
-    width: 100% !important;
-    border-collapse: collapse;
-    border-radius: 10px;
+/*css needed for Transaction Table */
+
+/* Desktop Styles for transactionTable */
+.transaction-table-container {
+    margin: 20px auto;
+    width: 80%;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    margin-bottom: 20px;
-    border: none !important;
+    margin: 0;
 }
 
-/* --- Header Styles --- */
-table.dataTable thead th {
-    background-color: #3399cc;
-    color: #24292e; /* MODIFIED: Header font color to black */
-    font-weight: bold;
-    border: 1px solid #3399cc;
-    padding: 10px 15px;
+.transaction-table thead {
+    background: linear-gradient(90deg, #00bcd4, #0288d1);
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.transaction-table th {
+    padding: 16px 20px;
     text-align: left;
+    border: none;
+    font-weight: 600;
+    color: white !important;
+    position: relative;
+    background: #282c35;
 }
 
-/* --- Row and Cell Styles --- */
-table.dataTable tbody tr,
-table.dataTable tbody td {
-    background-color: #173F3F;
-    color: #eee;
-    border: 1px solid #3399cc;
-    padding: 8px 15px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+.transaction-table th::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.transaction-table th:last-child::after {
+    display: none;
+}
+
+.transaction-table tbody {
+    background: transparent;
+}
+
+.transaction-table tr {
+    transition: all 0.3s ease;
+}
+
+
+.category-table-container tr:hover {
+    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
+}
+
+.category-table-container tr:hover {
+    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
+}
+
+.transaction-table td {
+    padding: 15px 20px;
     text-align: left;
+    border: 1px solid rgba(95, 101, 102, 0.3); /* Add border to body cells */
+    color: #e0e7ff;
+    font-weight: 400;
 }
 
-/* --- Input Field Styles --- */
-table.dataTable tbody td input[type="text"] {
-    background-color: #3c444f;
-    color: #eee;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 2px 5px;
-    width: 95%;
-    box-sizing: border-box;
+.transaction-table td:last-child {
+    /* border-right: none; */ /* Keep border-right for consistency */
 }
 
-table.dataTable tbody td input[type="text"]:focus {
-    background-color: #444;
-    outline: none;
+.transaction-table .re-categorize-button {
+    background: linear-gradient(90deg, #ff6f61, #ff8a65);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
-/* --- Checkbox Styles --- */
-table.dataTable tbody td input[type="checkbox"] {
-    accent-color: #3399cc;
-    transform: scale(0.8);
+.transaction-table .re-categorize-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
 }
 
 /* --- Pagination, Info, etc. --- */
@@ -91,6 +162,16 @@ table.dataTable tbody td input[type="checkbox"] {
 }
 
 /* --- Delete Button Styles --- */
+#accountTypeTable td,
+#categoryTable td,
+#categoryRuleTable td {
+    padding: 15px 20px;
+    text-align: left;
+    border: none; /* Remove border from body cells */
+    color: #e0e7ff;
+    font-weight: 400;
+}
+
 #accountTypeTable .delete-btn,
 #categoryTable .delete-btn,
 #categoryRuleTable .delete-btn {
@@ -106,6 +187,87 @@ table.dataTable tbody td input[type="checkbox"] {
 #categoryTable .delete-btn:hover,
 #categoryRuleTable .delete-btn:hover {
     color: #cc0000;
+}
+
+/* --- Delete Button Styles --- */
+#accountTypeTable .delete-btn,
+#categoryTable .delete-btn,
+#categoryRuleTable .delete-btn {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+}
+
+#accountTypeTable .delete-btn:hover,
+#categoryTable .delete-btn:hover,
+#categoryRuleTable .delete-btn:hover {
+    color: #cc0000;
+}
+
+/* --- Add and Add Rule Button Styles --- */
+#addCategoryForm button,
+#addSubCategoryRuleForm button {
+    border: none;
+    width: 10em;
+    height: 3em;
+    border-radius: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: #3a404c;
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+    /* Removed margin: 0 auto; */
+    font-weight: 600;
+    color: white;
+    font-size: small;
+}
+
+#addCategoryForm button:hover,
+#addSubCategoryRuleForm button:hover {
+    background: linear-gradient(0deg,#A47CF3,#683FEA);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+    inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+    0px 0px 180px 0px #9917FF;
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* --- Form Container Styles --- */
+.AddSubCategoryContainer,
+.AddSubCategoryRuleContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust gap as needed */
+    margin-bottom: 20px; /* Add some space below the forms */
+    /* Styles for the rectangular box */
+    padding: 15px;
+    border: 1px solid #4a5263;
+    background: linear-gradient(145deg, #2E3440, #353b48);
+    border-radius: 8px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    width: 25%; /* Set width to 40% for desktop */
+    margin-left: 20px; /* Align to the left with spacing */
+}
+
+.AddSubCategoryContainer form,
+.AddSubCategoryRuleContainer form {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust gap as needed */
+    width: 100%; /* Ensure form takes full width of container */
+}
+
+.AddSubCategoryContainer select,
+.AddSubCategoryContainer input[type="text"],
+.AddSubCategoryRuleContainer select,
+.AddSubCategoryRuleContainer input[type="text"] {
+    flex-grow: 1; /* Allow inputs and selects to take available space */
 }
 
 /* --- Container and Table Widths --- */
@@ -126,6 +288,9 @@ table.dataTable tbody td input[type="checkbox"] {
 #categoryTable,
 #categoryRuleTable {
     width: 100% !important;
+    border-collapse: separate; /* Ensure border-spacing works */
+    border-spacing: 0; /* Remove space between borders */
+    border: 0.01px solid rgb(134, 132, 132) !important; /* Add border around the table */
 }
 
 /* --- Media Queries --- */
@@ -133,8 +298,8 @@ table.dataTable tbody td input[type="checkbox"] {
     .containerAccountTypes,
     .containerCategoryManagement,
     .containerRuleManagement{
-        width: 40% !important;
-        margin: 0 auto;
+        width: 80% !important; /* Adjusted width to match trend.css container */
+        margin: 20px auto; /* Adjusted margin to match trend.css container */
     }
 }
 
@@ -165,8 +330,10 @@ table.dataTable tbody td input[type="checkbox"] {
 
 /* Optional: Hover effect for options (if supported) */
 .dataTables_length select option:hover {
-    background-color: #4a5261 !important; /* Slightly lighter shade for hover */
-    color: #fff !important;
+    
+    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
 }
 
 /* Added: Focus style */
@@ -188,6 +355,14 @@ table.dataTable tbody td input[type="checkbox"] {
       display: none;
     }
   }
+
+@media (max-width: 767px) {
+    .AddSubCategoryContainer,
+    .AddSubCategoryRuleContainer {
+        width: 100%; /* Full width on mobile */
+        margin-left: 0; /* Remove left margin on mobile */
+    }
+}
 
 /* --- Select2 Dark Theme Styles --- */
 

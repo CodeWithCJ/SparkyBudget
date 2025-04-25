@@ -5,6 +5,7 @@ import csv
 import datetime
 import os
 import sqlite3
+import json # Added for saving JSON response
 #from datetime import datetime
 
 
@@ -84,13 +85,19 @@ def process_accounts_data(private_data_path):
             start_date_param = int(last_12_months.timestamp())
 
             # Append the parameters to the access URL
-            access_url_with_params = f"{access_url}/accounts?start-date={start_date_param}&pending=1"
+            access_url_with_params = f"{access_url}/accounts?start-date={start_date_param}" # &pending=1
 
             try:
                 # Fetch data from the API
                 response = requests.get(access_url_with_params)
                 response.raise_for_status()  # Raise an exception for HTTP errors
                 data = response.json()  # Parse the API response as JSON
+
+                # Save the raw JSON data to a file for debugging
+                json_output_filename = os.path.join(output_folder, "simplefin_response.json")
+                with open(json_output_filename, "w", encoding="utf-8") as json_file:
+                    json.dump(data, json_file, indent=4)
+                logger.info(f"Raw SimpleFin API response saved to {json_output_filename}")
 
                 # SQLite database connection (use check_same_thread=False for multi-threading safety)
                 db_path = os.path.join(private_data_path, "db", "SparkyBudget.db")
@@ -221,33 +228,39 @@ def process_accounts_data(private_data_path):
                 
                 # Save balance and organization data to CSV file
                 balance_org_csv_filename = os.path.join(output_folder, "balance_org_data.csv")
-                with open(balance_org_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
-                    csv_writer = csv.writer(csv_file)
+                if balance_org_data_list: # Add check for empty list
+                    with open(balance_org_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
+                        csv_writer = csv.writer(csv_file)
 
-                    # Write header
-                    header = [key.replace("-", " ") for key in balance_org_data_list[0].keys()]
-                    csv_writer.writerow(header)
+                        # Write header
+                        header = [key.replace("-", " ") for key in balance_org_data_list[0].keys()]
+                        csv_writer.writerow(header)
 
-                    # Write data
-                    for balance_org_data in balance_org_data_list:
-                        csv_writer.writerow([balance_org_data.get(key, "") for key in header])
+                        # Write data
+                        for balance_org_data in balance_org_data_list:
+                            csv_writer.writerow([balance_org_data.get(key, "") for key in header])
 
-                logger.info(f"Balance and organization data saved to {balance_org_csv_filename}")
+                    logger.info(f"Balance and organization data saved to {balance_org_csv_filename}")
+                else:
+                    logger.info("No balance or organization data to save to CSV.") # Log if list is empty
 
                 # Save transactions data to CSV file
                 transactions_csv_filename = os.path.join(output_folder, "transactions_data.csv")
-                with open(transactions_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
-                    csv_writer = csv.writer(csv_file)
+                if transactions_data_list: # Add check for empty list
+                    with open(transactions_csv_filename, "w", newline="", encoding="utf-8") as csv_file:
+                        csv_writer = csv.writer(csv_file)
 
-                    # Write header
-                    header = [key.replace("-", " ") for key in transactions_data_list[0].keys()]
-                    csv_writer.writerow(header)
+                        # Write header
+                        header = [key.replace("-", " ") for key in transactions_data_list[0].keys()]
+                        csv_writer.writerow(header)
 
-                    # Write data
-                    for transaction_data in transactions_data_list:
-                        csv_writer.writerow([transaction_data.get(key, "") for key in header])
+                        # Write data
+                        for transaction_data in transactions_data_list:
+                            csv_writer.writerow([transaction_data.get(key, "") for key in header])
 
-                logger.info(f"Transactions data saved to {transactions_csv_filename}")
+                    logger.info(f"Transactions data saved to {transactions_csv_filename}")
+                else:
+                    logger.info("No transaction data to save to CSV.") # Log if list is empty
 
                 logger.info("Data saved to the database and CSV files.")
 

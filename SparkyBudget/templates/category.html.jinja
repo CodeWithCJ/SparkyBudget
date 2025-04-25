@@ -20,20 +20,22 @@
     <main>
         <section>
             <h2>Account Types</h2>
-            <div class="containerAccountTypes">
-                <table id="accountTypeTable" class="display responsive-table dataTable" aria-label="Account Types Table">
-                    <thead>
-                        <tr>
-                            <th>Delete</th>
-                            <th>AccountType</th>
-                            <th>HideFromBudget</th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be dynamically inserted here -->
-                    </tbody>
-                </table>
+            <div class="category-table-container">
+                <div class="containerAccountTypes">
+                    <table id="accountTypeTable" class="display responsive-table dataTable" aria-label="Account Types Table">
+                        <thead>
+                            <tr>
+                                <th>Delete</th>
+                                <th>AccountType</th>
+                                <th>HideFromBudget</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
         <section>
@@ -45,17 +47,19 @@
                     <button type="submit">Add</button>
                 </form>
             </div>
-            <div class="containerCategoryManagement">
-    <table id="categoryTable" class="display responsive-table dataTable" aria-label="Category Table">
-        <thead>
-            <tr>
-                <th>Delete</th>
-                <th>SubCategoryKey</th>
-                <th>Category</th>
-                <th>SubCategory</th>
-            </tr>
-        </thead>
-    </table>
+            <div class="category-table-container">
+                <div class="containerCategoryManagement">
+        <table id="categoryTable" class="display responsive-table dataTable" aria-label="Category Table">
+            <thead>
+                <tr>
+                    <th>Delete</th>
+                    <th>SubCategoryKey</th>
+                    <th>Category</th>
+                    <th>SubCategory</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
         </section>
         <section>
@@ -67,19 +71,21 @@
                     <button type="submit" id="submitAddSubCategoryRule">Add Rule</button>
                 </form>
             </div>
-            <div class="containerRuleManagement">
-                <table id="categoryRuleTable" class="display responsive-table dataTable" aria-label="Category Rule Table">
-                    <thead>
-                        <tr>
-                            <th>Delete</th>
-                            <th>RuleKey</th>
-                            <th>Default_SubCategory</th>
-                            <th>Rule_Category</th>
-                            <th>Rule_Pattern</th>
-                            <th>Match_Word</th>
-                        </tr>
-                    </thead>
-                </table>
+            <div class="category-table-container">
+                <div class="containerRuleManagement">
+                    <table id="categoryRuleTable" class="display responsive-table dataTable" aria-label="Category Rule Table">
+                        <thead>
+                            <tr>
+                                <th>Delete</th>
+                                <th>RuleKey</th>
+                                <th>Default_SubCategory</th>
+                                <th>Rule_Category</th>
+                                <th>Rule_Pattern</th>
+                                <th>Match_Word</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </section>
     </main>
