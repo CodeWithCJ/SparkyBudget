@@ -14,13 +14,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def daily_balance_history_insert(db_name="SparkyBudget.db"):
+def daily_balance_history_insert(private_data_path, db_name="SparkyBudget.db"):
     logger.info(f"daily_balance_history_insert executed at {datetime.now()}")
     from SparkyBudget import db_lock  # Import the db_lock from your app or shared module
     with db_lock:  # Synchronize database access
         try:
             # Connect to the SQLite database with the 'with' statement to auto-close the connection
-            with sqlite3.connect(db_name) as conn:
+            db_path = os.path.join(private_data_path, "db", db_name)
+            with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
 
                 # Insert new records from F_Balance into F_Balance_History

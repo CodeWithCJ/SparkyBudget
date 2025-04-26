@@ -167,7 +167,7 @@ body {
 #categoryRuleTable td {
     padding: 15px 20px;
     text-align: left;
-    border: none; /* Remove border from body cells */
+    border: 1px solid rgba(95, 101, 102, 0.3); /* Add border to body cells */
     color: #e0e7ff;
     font-weight: 400;
 }
@@ -290,7 +290,9 @@ body {
     width: 100% !important;
     border-collapse: separate; /* Ensure border-spacing works */
     border-spacing: 0; /* Remove space between borders */
-    border: 0.01px solid rgb(134, 132, 132) !important; /* Add border around the table */
+    border: 0.25px white !important; /* Add border around the table */
+border-radius: 12px;
+    overflow: hidden;
 }
 
 /* --- Media Queries --- */
@@ -415,4 +417,12 @@ body {
     background-color: #4a5261 !important; /* Darker background for search input */
     color: #eee !important; /* Light text for search input */
     border: 1px solid #555 !important; /* Darker border */
+}
+
+#accountTypeTable tr:hover,
+#categoryTable tr:hover,
+#categoryRuleTable tr:hover {
+    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
 }
