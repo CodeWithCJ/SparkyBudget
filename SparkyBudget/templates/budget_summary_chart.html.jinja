@@ -1,5 +1,6 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/budget_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
 </head>
 <div class="container">
     {% for data in budget_summary_chart %}
@@ -36,3 +37,4 @@
     </div> <!-- End of subcategory-container -->
     {% endfor %}
 </div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>

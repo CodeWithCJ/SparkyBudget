@@ -1,7 +1,8 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/budget_transaction_details.css') }}">
 
 <!-- Desktop Table Container -->
-<div class="budget-transaction-container">
+<div class="sb-table-container budget-transaction-container">
     <table border="1" class="budget-transaction-table">
         <thead>
             <tr>
@@ -75,3 +76,5 @@
 
 <!-- Include JavaScript -->
 <script src="{{ url_for('static', filename='js/budget_transaction_details.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>

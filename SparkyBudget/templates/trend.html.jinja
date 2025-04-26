@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.jqueryui.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/trend.css') }}">
     <link rel="stylesheet" href="/static/css/navigation_bar.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
@@ -153,7 +154,7 @@
 
     <div class="dt-buttons"> </div>
     <!-- DataTable for displaying transaction details -->
-    <div class="transaction-table-container">
+    <div class="sb-table-container transaction-table-container">
         <table id="transactionTable" class="transaction-table" style="width: 100%">
             <thead>
                 <tr>
@@ -286,5 +287,6 @@
     </script>
     <script src="{{ url_for('static', filename='js/trend.js') }}"></script>
     <script src="/static/js/navigation_bar.js"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

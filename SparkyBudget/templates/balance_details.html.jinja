@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_details.css') }}">   
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
 </head>
 <body>
     <!-- Add Account Button -->
@@ -62,7 +63,7 @@
     </div>
 
     <!-- Desktop Table Container -->
-    <div class="balance-details-wrapper">
+    <div class="sb-table-container balance-details-wrapper">
         <div class="balance-details-container">
             <table id="balanceTable" class="balance-details-table">
                 <thead>
@@ -141,5 +142,6 @@
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ url_for('static', filename='js/balance_details.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

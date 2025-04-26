@@ -56,6 +56,10 @@
             <span class="nav-text">Sync</span>
         </a>
         {% if current_user.is_authenticated %}        
+        <a class="nav-item" id="themeToggle">
+            <i class="fas fa-sun nav-icon"></i> {# Initial icon, will change with JS #}
+            <span class="nav-text">Theme</span>
+        </a>
         <a href="{{ url_for('logout') }}" class="nav-item">  
             <i class="fas fa-sign-out-alt nav-icon"></i>
             <span class="nav-text">Logout</span>

@@ -15,124 +15,15 @@ body {
     margin: 20px auto;
     max-width: 900px; /* Adjust max-width as needed */
     position: relative;
-    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
-    animation: glow 2s ease-in-out infinite alternate;
 }
 
 /* Glowing animation keyframes */
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.3);
-    }
-}
 
-.category-table-container th {
-    background: #282c35;
-    color: white; /* Ensure text is readable */
-}
 
 /* --- Base Table Styles --- */
 /*css needed for Transaction Table */
 
 /* Desktop Styles for transactionTable */
-.transaction-table-container {
-    margin: 20px auto;
-    width: 80%;
-}
-
-.transaction-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: linear-gradient(145deg, #2E3440, #353b48);
-    border-radius: 12px;
-    overflow: hidden;
-    margin: 0;
-}
-
-.transaction-table thead {
-    background: linear-gradient(90deg, #00bcd4, #0288d1);
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-}
-
-.transaction-table th {
-    padding: 16px 20px;
-    text-align: left;
-    border: none;
-    font-weight: 600;
-    color: white !important;
-    position: relative;
-    background: #282c35;
-}
-
-.transaction-table th::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 60%;
-    width: 1px;
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.transaction-table th:last-child::after {
-    display: none;
-}
-
-.transaction-table tbody {
-    background: transparent;
-}
-
-.transaction-table tr {
-    transition: all 0.3s ease;
-}
-
-
-.category-table-container tr:hover {
-    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
-    transform: translateY(-2px);
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
-}
-
-.category-table-container tr:hover {
-    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
-    transform: translateY(-2px);
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
-}
-
-.transaction-table td {
-    padding: 15px 20px;
-    text-align: left;
-    border: 1px solid rgba(95, 101, 102, 0.3); /* Add border to body cells */
-    color: #e0e7ff;
-    font-weight: 400;
-}
-
-.transaction-table td:last-child {
-    /* border-right: none; */ /* Keep border-right for consistency */
-}
-
-.transaction-table .re-categorize-button {
-    background: linear-gradient(90deg, #ff6f61, #ff8a65);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.transaction-table .re-categorize-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
-}
 
 /* --- Pagination, Info, etc. --- */
 .dataTables_paginate .paginate_button,
@@ -165,11 +56,7 @@ body {
 #accountTypeTable td,
 #categoryTable td,
 #categoryRuleTable td {
-    padding: 15px 20px;
-    text-align: left;
     border: 1px solid rgba(95, 101, 102, 0.3); /* Add border to body cells */
-    color: #e0e7ff;
-    font-weight: 400;
 }
 
 #accountTypeTable .delete-btn,
@@ -422,7 +309,4 @@ border-radius: 12px;
 #accountTypeTable tr:hover,
 #categoryTable tr:hover,
 #categoryRuleTable tr:hover {
-    background: rgba(0, 188, 212, 0.1) !important; /* Subtle blue background */
-    transform: translateY(-2px);
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
 }

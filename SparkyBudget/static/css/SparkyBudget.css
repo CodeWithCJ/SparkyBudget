@@ -1,0 +1,374 @@
+/* Master CSS file for SparkyBudget common styles and theming */
+
+/* CSS Variables for Theming */
+:root {
+    /* Dark Theme (Default) */
+    --background-color: #282c35;
+    --text-color: #e0e7ff;
+    --container-background: linear-gradient(145deg, #2E3440, #353b48);
+    --table-header-background: linear-gradient(90deg, #00bcd4, #0288d1);
+    --table-header-text-color: #ffffff;
+    --table-border-color: rgba(95, 101, 102, 0.3);
+    --table-row-hover-background: rgba(0, 188, 212, 0.1);
+    --heading-color: #61dafb;
+    --heading-text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+    --delete-button-color: #ff6b6b;
+    --delete-button-hover-color: #ff4c4c;
+    --mobile-row-background: #2E3440;
+    --button-background: linear-gradient(to top, #00154c, #12376e, #23487f);
+    --button-hover-background: linear-gradient(0deg,#A47CF3,#683FEA);
+}
+
+.light-theme {
+    /* Light Theme Overrides */
+    --background-color: #ffffff;
+    --text-color: #333;
+    --container-background: linear-gradient(145deg, #e0e0e0, #ffffff);
+    --table-header-background: #c0b283;
+    --table-header-text-color: #ffffff;
+    --table-border-color: rgba(0, 0, 0, 0.1);
+    --table-row-hover-background: rgba(2, 136, 209, 0.1);
+    --heading-color: #0288d1;
+    --heading-text-shadow: none;
+    --delete-button-color: #d32f2f;
+    --delete-button-hover-color: #c62828;
+    --mobile-row-background: #ffffff;
+    --button-background: linear-gradient(to top, #00154c, #12376e, #23487f);
+    --button-hover-background: linear-gradient(0deg,#A47CF3,#683FEA); /* Slightly darker cream for hover */
+}
+
+:root {
+    --even-row-background: #2e3440;
+    --odd-row-background: #353b48;
+}
+
+.light-theme {
+    --even-row-background: #f0f0f0; /* Light theme even color */
+    --odd-row-background: #ffffff; /* Light theme odd color */
+}
+
+/* Basic body styles using variables */
+body {
+    background: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+/* Glowing animation keyframes (remains the same) */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3), 0 0 40px rgba(0, 188, 212, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.3);
+    }
+}
+
+/* Container for styled tables with glowing effect */
+.sb-table-container {
+    background: var(--container-background);
+    padding: 20px;
+    border-radius: 16px;
+    margin: 20px auto;
+    max-width: 900px; /* Keep max-width for table layout */
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* Table styles */
+.sb-table-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--container-background);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 20px;
+    border: 0.25px solid var(--table-border-color) !important; /* Add border around the table */
+}
+
+.sb-table-container thead {
+    color: var(--table-header-text-color);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.sb-table-container th {
+    padding: 16px 20px;
+    text-align: left;
+    border: none;
+    font-weight: 600;
+    color: var(--table-header-text-color) !important;
+    position: relative;
+    background: var(--background-color);
+}
+
+.sb-table-container th::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3); /* This might need a variable */
+}
+
+.sb-table-container th:last-child::after {
+    display: none;
+}
+
+.sb-table-container tbody {
+    background: transparent;
+}
+
+.sb-table-container tr {
+    transition: all 0.3s ease;
+}
+
+.sb-table-container tr:hover {
+    background: var(--table-row-hover-background) !important; /* Subtle blue background */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5), 0 0 20px rgba(0, 188, 212, 0.3); /* Glowing effect */
+}
+
+.sb-table-container tbody tr:nth-child(even) {
+    background-color: var(--even-row-background, #2e3440); /* Default to dark theme even color */
+}
+
+.sb-table-container tbody tr:nth-child(odd) {
+    background-color: var(--odd-row-background, #353b48); /* Default to dark theme odd color */
+}
+
+.sb-table-container td {
+    padding: 15px 20px;
+    text-align: left;
+    border: 1px solid var(--table-border-color); /* Add border to body cells */
+    color: var(--text-color);
+    font-weight: 400;
+}
+
+.sb-table-container td:last-child {
+    border-right: none;
+}
+
+/* Center the "No data" message */
+.sb-table-container .text-center {
+    text-align: center;
+    font-style: italic;
+    color: #888; /* This might need a variable */
+}
+
+/* Header styles within the container */
+.sb-table-container h1 {
+    text-align: center;
+    color: var(--heading-color);
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: var(--heading-text-shadow);
+}
+
+/* Styles for the delete button column */
+.sb-delete-column {
+    text-align: center;
+    width: 50px;
+}
+
+/* Styles for the delete button */
+.sb-delete-btn {
+    background: none;
+    border: none;
+    color: var(--delete-button-color);
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.sb-delete-btn:hover {
+    color: var(--delete-button-hover-color);
+    transform: scale(1.2);
+}
+
+.sb-delete-btn:focus {
+    outline: none;
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    /* Adjust the table styles */
+    .sb-table-container table {
+        width: 100%;
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+
+    .sb-table-container table thead {
+        display: none;
+    }
+
+    .sb-table-container table tbody tr {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        border: 1px solid var(--table-border-color);
+        border-radius: 8px;
+        padding: 8px;
+        background: var(--mobile-row-background);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-left: 5px;
+        margin-right: 5px;
+        width: calc(100% - 10px);
+        box-sizing: border-box;
+    }
+
+    .sb-table-container table tbody tr td {
+        padding: 5px 8px;
+        border: none !important;
+        box-sizing: border-box;
+    }
+
+    /* Subcategory and amount in a single container */
+    .sb-table-container table tbody tr .sb-subcategory-amount {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        margin-left: 10px;
+    }
+
+    .sb-table-container table tbody tr .sb-subcategory {
+        font-weight: bold;
+        color: var(--heading-color); /* Using heading color for subcategory */
+        margin-bottom: 3px;
+    }
+
+    .sb-table-container table tbody tr .sb-amount {
+        font-size: 16px;
+        color: var(--text-color);
+    }
+
+    /* Delete button styling */
+    .sb-table-container table tbody tr .sb-delete-column {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        margin-left: 10px;
+    }
+
+    .sb-table-container table tbody tr .sb-delete-btn {
+        background: none;
+        border: none;
+        color: var(--delete-button-color);
+        cursor: pointer;
+        font-size: 18px;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .sb-table-container table tbody tr .sb-delete-btn:hover {
+        color: var(--delete-button-hover-color);
+        transform: scale(1.2);
+    }
+
+    .sb-delete-btn:focus {
+        outline: none;
+    }
+}
+
+/* Styles for the form wrapper */
+.sb-form-wrapper {
+    margin-top: 10px;
+    width: 35% !important; /* Keep the form width */
+    height: auto;
+    padding: 15px;
+    border: 1px solid var(--table-border-color); /* Use theme variable for border */
+    background: var(--container-background);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between form groups and button */
+    align-items: center;
+    position: relative;
+}
+
+.sb-form-wrapper .form-group {
+    display: flex;
+    align-items: center; /* Vertically center the label and input/select */
+    justify-content: space-between; /* Distribute space between label and input/select */
+    width: 100%; /* Ensure the group takes full width of the wrapper */
+
+}
+
+.sb-form-wrapper .budget-form-group label {
+    flex: 0 0 30%; /* Reduce label width for better balance */
+    text-align: left; /* Align text to the left */
+    color: var(--text-color); /* Use theme variable for text color */
+    font-size: 14px;
+}
+
+.sb-form-wrapper .budget-form-group select{
+    flex: 0 0 65% !important; /* Consistent width for both select and input */
+    width: 100% !important; /* Ensure they fill their allocated space */
+    box-sizing: border-box; /* Include padding and border in the width */
+
+}
+
+.sb-form-wrapper .budget-form-group input {
+    flex: 0 0 65% !important; /* Consistent width for both select and input */
+    width: 100% !important; /* Ensure they fill their allocated space */
+    box-sizing: border-box; /* Include padding and border in the width */
+
+}
+
+/* Styles for buttons within sb-form-wrapper */
+.sb-form-wrapper button {
+    border: none;
+    width: 10em; /* Reduced width */
+    height: 3em; /* Reduced height */
+    border-radius: 2em; /* Adjusted border-radius */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* Reduced gap */
+    background: var(--button-background);
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+    margin: 0 auto; /* Keep the button centered */
+
+   font-weight: 600;
+   color: white; /* Assuming white text for both themes for now */
+   font-size: small;
+
+}
+
+.sb-form-wrapper button:hover {
+    background: var(--button-hover-background);
+    /* The box-shadow might need adjustment for light theme */
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+    inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+    0px 0px 180px 0px #9917FF;
+    transform: translateY(-2px);
+    color: white; /* Assuming white text for both themes for now */
+}
+
+@media (max-width: 768px) {
+    .sb-form-wrapper {
+        width: 90% !important; /* Adjust width for mobile */
+        margin: 0 auto; /* Center the form on mobile */
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-header-logo #toggleBalanceSummary,
+    .mobile-header-logo .networth,
+    .mobile-header-logo .account {
+      display: none;
+    }
+}

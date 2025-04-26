@@ -1,10 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #282c35;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-}
 
 #budgetsummaryTable a {
     color: #fff; /* White font color for the hyperlink */
@@ -14,7 +7,7 @@ body {
 /* New container for each subcategory */
 .subcategory-container {
     border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
-    background: linear-gradient(145deg, #2E3440, #353b48); /* Subtle gradient for depth */
+    
     border-radius: 8px; /* Rounded corners for a smoother look */
     padding: 5px; /* Inner padding to keep content from touching the border */
     margin-bottom: 10px; /* Space between each subcategory section */
@@ -115,7 +108,7 @@ body {
         margin: 0 0 15px 0; /* Remove side margins, keep bottom margin */
         padding: 10px; /* Consistent padding */
         border: 1px solid #4a5263; /* Keep the adjusted border color */
-        background: linear-gradient(145deg, #2E3440, #353b48); /* Keep the gradient */
+        
         border-radius: 8px; /* Keep rounded corners */
         box-sizing: border-box;
     }

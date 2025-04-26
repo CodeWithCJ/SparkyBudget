@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Budget</title> {# Updated title #}
         <link rel="stylesheet" href="{{ url_for('static', filename='css/budget.css') }}"> {# Updated CSS link #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
         <link rel="stylesheet" href="/static/css/navigation_bar.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
@@ -15,10 +16,10 @@
     </head>
 <body>
     {% include 'components/navigation_bar.html.jinja' %}
-    <div class="recurring-budget-container">
+    <div class="sb-table-container">
         <h1>Recurring Budgets</h1>
         <form id="addBudgetForm">
-            <div class="addBudgetFormWrapper">  
+            <div class="sb-form-wrapper">
                 <div class="form-group">
                     <label for="subCategoryInput">Subcategory:</label>
                     <select id="subCategoryInput" class="select2" required>
@@ -74,5 +75,6 @@
             </tbody>
         </table>
     </div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

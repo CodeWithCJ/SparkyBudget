@@ -414,72 +414,31 @@ body {
 }
 
 .transaction-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: linear-gradient(145deg, #2E3440, #353b48);
-    border-radius: 12px;
-    overflow: hidden;
-    margin: 0;
 }
 
 .transaction-table thead {
-    background: linear-gradient(90deg, #00bcd4, #0288d1);
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
 }
 
 .transaction-table th {
-    padding: 16px 20px;
-    text-align: left;
-    border: none;
-    font-weight: 600;
-    color: white !important;
-    position: relative;
     background: #282c35;
+    color: white !important;
 }
 
 .transaction-table th::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 60%;
-    width: 1px;
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.transaction-table th:last-child::after {
-    display: none;
 }
 
 .transaction-table tbody {
-    background: transparent;
 }
 
 .transaction-table tr {
-    transition: all 0.3s ease;
 }
 
 .transaction-table tr:hover {
-    background: rgba(0, 188, 212, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
 }
 
 .transaction-table td {
-    padding: 15px 20px;
-    text-align: left;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    color: #e0e7ff;
-    font-weight: 400;
-}
-
-.transaction-table td:last-child {
-    border-right: none;
 }
 
 .transaction-table .re-categorize-button {

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/static/css/category.css">
     <link rel="stylesheet" href="/static/css/navigation_bar.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.jqueryui.css">
     
 </head>
@@ -20,7 +21,7 @@
     <main>
         <section>
             <h2>Account Types</h2>
-            <div class="category-table-container">
+            <div class="sb-table-container category-table-container">
                 <div class="containerAccountTypes">
                     <table id="accountTypeTable" class="display responsive-table dataTable" aria-label="Account Types Table">
                         <thead>
@@ -47,7 +48,7 @@
                     <button type="submit">Add</button>
                 </form>
             </div>
-            <div class="category-table-container">
+            <div class="sb-table-container category-table-container">
                 <div class="containerCategoryManagement">
         <table id="categoryTable" class="display responsive-table dataTable" aria-label="Category Table">
             <thead>
@@ -71,7 +72,7 @@
                     <button type="submit" id="submitAddSubCategoryRule">Add Rule</button>
                 </form>
             </div>
-            <div class="category-table-container">
+            <div class="sb-table-container category-table-container">
                 <div class="containerRuleManagement">
                     <table id="categoryRuleTable" class="display responsive-table dataTable" aria-label="Category Rule Table">
                         <thead>
@@ -96,5 +97,6 @@
     <script src="/static/js/category.js"></script>
     <script src="/static/js/navigation_bar.js"></script>
     
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

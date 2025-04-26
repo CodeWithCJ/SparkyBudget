@@ -6,6 +6,7 @@
     <title>Balance Summary</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/balance_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
     <script>
         window.appState = Object.assign({}, window.appState, {
             labels: {{ labels | default(()) | tojson }},
@@ -66,5 +67,6 @@
             </div>
         {% endfor %}
     </div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

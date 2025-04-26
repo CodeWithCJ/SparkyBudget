@@ -1,10 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #282c35;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-}
 
 body,
 html {
@@ -118,11 +111,6 @@ a.analyze-link:hover {
     display: none;
 }
 
-.select2-container--default .select2-results__option {
-    background-color: #3c444f !important; /* Set the background color to match the category page */
-    /* Set the text color to white for better visibility */
-    color: white;
-}
 
 .active {
     background-color: #336699;
@@ -325,7 +313,7 @@ html, body {
     flex: 4;
     padding: 20px;
     box-sizing: border-box;
-    background-color: #282c35;
+    
     overflow-y: auto; /* Keep the inner scrollbar */
     height: 100%; /* Take the full height of .content */
 }
