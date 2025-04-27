@@ -73,7 +73,7 @@ body {
     padding: 20px;
     border-radius: 16px;
     margin: 20px auto;
-    max-width: 900px; /* Keep max-width for table layout */
+   
     position: relative;
     box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
     animation: glow 2s ease-in-out infinite alternate;

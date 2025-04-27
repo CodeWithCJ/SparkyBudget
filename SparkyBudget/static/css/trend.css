@@ -407,34 +407,28 @@ body {
 /*css needed for Transaction Table */
 
 
+.sb-table-container {
+    margin: 20px auto;
+    width: 95%; /* Increased width to prevent overflow */
+}
+
 /* Desktop Styles for transactionTable */
 .transaction-table-container {
     margin: 20px auto;
-    width: 80%;
+    width: 95%; /* Increased width to prevent overflow */
 }
 
 .transaction-table {
+    width: 100%; /* Ensure table takes full width of container */
+    table-layout: fixed; /* Force table layout to fit container */
 }
 
-.transaction-table thead {
-}
 
 .transaction-table th {
     background: #282c35;
     color: white !important;
 }
 
-.transaction-table th::after {
-}
-
-.transaction-table tbody {
-}
-
-.transaction-table tr {
-}
-
-.transaction-table tr:hover {
-}
 
 .transaction-table td {
     border: none;
