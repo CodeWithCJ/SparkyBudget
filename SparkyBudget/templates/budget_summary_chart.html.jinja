@@ -7,8 +7,8 @@
     <div class="subcategory-container"> <!-- New container for each subcategory -->
         <div class="top-content">
             <div class="left-content">
-                <i class="fas fa-trash delete-icon" onclick="deleteBudget('{{ data.SubCategory }}')" style="color: #61DAFB;"></i>
-                <p href="#" onclick="showTransactionDetails(event,'{{ data.SubCategory }}','{{ data.TotalTransactionAmount }}')" style="color: #61DAFB;">
+                <i class="fas fa-trash delete-icon" onclick="deleteBudget('{{ data.SubCategory }}')"></i>
+                <p href="#" class="subcategory-text" onclick="showTransactionDetails(event,'{{ data.SubCategory }}','{{ data.TotalTransactionAmount }}')">
                     <img src="{{ data.ImageUrl }}" style="width:30px; height:30px; vertical-align:middle; margin-right: 8px;">
                     {{ data.SubCategory }}
                 </p>

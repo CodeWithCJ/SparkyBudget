@@ -212,22 +212,41 @@ function showTransactionDetails(event, selectedSubcategory, spentAmount) {
 
     console.log("Function called:", transactionYear, transactionMonth, selectedSubcategory);
 
-    var header = document.createElement("h4");
-    const usdFormatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    });
-    header.textContent = selectedSubcategory + " Expenses: " + usdFormatter.format(spentAmount);
-    header.style.color = "white";
-    header.style.textAlign = "center";
-
     document.getElementById("transactionDetails").innerHTML = "";
-    document.getElementById("transactionDetails").appendChild(header);
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            document.getElementById("transactionDetails").innerHTML += xhr.responseText;
+            // Get the received HTML content
+            var transactionDetailsHTML = xhr.responseText;
+
+            // Create a temporary div to hold the received HTML and work with its DOM
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = transactionDetailsHTML;
+
+            // Create the header element
+            var header = document.createElement("h4");
+            const usdFormatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+            header.textContent = selectedSubcategory + " Expenses: " + usdFormatter.format(spentAmount);
+            header.style.textAlign = "center";
+            header.classList.add('transaction-subcategory-header'); // Add the CSS class for styling
+
+            // Find the sb-table-container within the loaded HTML
+            var tableContainer = tempDiv.querySelector('.sb-table-container.budget-transaction-container');
+
+            // Insert the header as the first child of the table container
+            if (tableContainer) {
+                tableContainer.insertBefore(header, tableContainer.firstChild);
+            } else {
+                // Fallback: if container not found, prepend to the temp div
+                tempDiv.insertBefore(header, tempDiv.firstChild);
+            }
+
+            // Set the innerHTML of the transactionDetails div to the modified content
+            document.getElementById("transactionDetails").innerHTML = tempDiv.innerHTML;
             document.getElementById("transactionDetails").scrollIntoView({ behavior: "smooth" });
         }
     };

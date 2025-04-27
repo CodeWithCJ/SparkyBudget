@@ -25,7 +25,7 @@
     --text-color: #333;
     --container-background: linear-gradient(145deg, #e0e0e0, #ffffff);
     --table-header-background: #c0b283;
-    --table-header-text-color: #ffffff;
+    --table-header-text-color: #000; /* Black text color for table headers in light theme */
     --table-border-color: rgba(0, 0, 0, 0.1);
     --table-row-hover-background: rgba(2, 136, 209, 0.1);
     --heading-color: #0288d1;

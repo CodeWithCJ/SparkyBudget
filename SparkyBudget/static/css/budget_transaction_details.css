@@ -1,8 +1,14 @@
+.transaction-subcategory-header {
+    text-align: center;
+    color: var(--text-color); /* Use theme variable for text color */
+    margin-bottom: 15px; /* Add some space below the header */
+}
+
 /* Container for the table with glowing effect */
 .budget_transaction_details_wrapper {
     /*background: linear-gradient(135deg, #1e2a44 0%, #2a3b5a 100%);   */
-    background: linear-gradient(145deg, #2E3440, #353b48);
-    padding: 20px;
+    /* Removed background to avoid duplicate container appearance */
+    /* Removed padding to avoid duplicate container appearance */
     border-radius: 16px;
     margin: 10px 0;
     position: relative;

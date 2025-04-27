@@ -4,6 +4,19 @@
     text-decoration: none; /* Remove underline */
 }
 
+
+.subcategory-text {
+    color: #61DAFB; /* Default color for subcategory text and icon */
+}
+
+body.light-theme .subcategory-text {
+    color: #000; /* Black color for subcategory text and icon in light theme */
+}
+
+.delete-icon {
+    color: #ff6b6b; /* Red color for the delete icon */
+}
+
 /* New container for each subcategory */
 .subcategory-container {
     border: 1px solid #4a5263; /* Adjusted border color to complement the new background */
@@ -66,6 +79,10 @@
     height: 20px; /* Increase from default (e.g., 8px or 10px) */
     border-radius: 8px; /* Optional for rounded corners */
     background-color: #ffffff; /* Light gray background for the empty portion */
+}
+
+body.light-theme .category-bar {
+    background-color: #706e6e; /* Light gray background for the empty portion in light theme */
 }
 
 .subcategory-bar {
