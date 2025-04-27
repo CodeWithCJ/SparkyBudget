@@ -812,7 +812,7 @@ function renderIncomeExpenseChart(chartData) {
                 legend: {
                     display: true,
                     labels: {
-                        color: 'white'
+                        color: document.body.classList.contains('light-theme') ? '#000' : 'white'
                     }
                 },
             }

@@ -372,3 +372,55 @@ body {
       display: none;
     }
 }
+/* --- Generic Select2 Styles --- */
+
+/* Container for the Select2 dropdown */
+.sp-select2-dropdown .select2-container--default .select2-selection--single {
+    background-color: var(--background-color) !important; /* Use theme background */
+    color: var(--text-color) !important; /* Use theme text color */
+    border: 1px solid var(--table-border-color) !important; /* Use theme border color */
+    height: 38px !important; /* Adjust height if needed */
+    padding: 6px 12px !important; /* Adjust padding */
+}
+
+/* Style for the selected value */
+.sp-select2-dropdown .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--text-color) !important; /* Use theme text color for selected value */
+    line-height: 26px; /* Vertically align text */
+}
+
+/* Style for the dropdown arrow */
+.sp-select2-dropdown .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important; /* Match container height */
+}
+
+/* Style for the dropdown panel */
+.sp-select2-dropdown .select2-container--default .select2-dropdown {
+    background-color: var(--background-color) !important; /* Use theme background for dropdown */
+    border: 1px solid var(--table-border-color) !important; /* Use theme border color */
+}
+
+/* Style for dropdown options */
+.sp-select2-dropdown .select2-container--default .select2-results__option {
+    color: var(--text-color) !important; /* Use theme text color for options */
+    background-color: var(--background-color) !important; /* Use theme background for options */
+}
+
+/* Style for highlighted (hovered) option */
+.sp-select2-dropdown .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--table-row-hover-background) !important; /* Use theme hover background */
+    color: var(--text-color) !important; /* Use theme text color on hover */
+}
+
+/* Style for selected option */
+.sp-select2-dropdown .select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: var(--odd-row-background) !important; /* Use theme odd row background for selected */
+    color: var(--text-color) !important; /* Use theme text color for selected */
+}
+
+/* Style for the search input within the dropdown */
+.sp-select2-dropdown .select2-search input {
+    background-color: var(--even-row-background) !important; /* Use theme even row background for search input */
+    color: var(--text-color) !important; /* Use theme text color for search input */
+    border: 1px solid var(--table-border-color) !important; /* Use theme border color */
+}

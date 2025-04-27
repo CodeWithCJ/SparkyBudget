@@ -389,6 +389,16 @@ html, body {
     margin-top: 0;
 }
 
+/* Light theme styles for chart total text */
+.light-theme .chart-total {
+    color: var(--text-color); /* Use text color from SparkyBudget.css */
+}
+
+/* Light theme styles for chart legend text */
+.light-theme .chartjs-legend ul li {
+    color: var(--text-color) !important; /* Use text color from SparkyBudget.css */
+}
+
 /* Wrapper for side-by-side layout */
 .pieChartsWrapper {
     display: flex;
@@ -418,12 +428,21 @@ html, body {
     padding: 2px !important;
 }
 
+/* Light theme styles for chart legend text */
+.light-theme .chartjs-legend ul li {
+    color: var(--text-color) !important; /* Use text color from SparkyBudget.css */
+}
+
 @media (max-width: 768px) {
     .chartjs-legend ul {
         font-size: 6px !important;  /* Smaller on mobile */
     }
 }
 
+/* Light theme styles for chart legend text */
+.light-theme .chartjs-legend ul li {
+    color: var(--text-color) !important; /* Use text color from SparkyBudget.css */
+}
 
 
 
@@ -441,6 +460,12 @@ html, body {
     align-items: center;
     justify-content: center;
     position: relative; /* For positioning the glow */
+}
+
+/* Light theme styles for pie chart container */
+.light-theme .pieChartContainer {
+    border: 1px solid #bbbbbb; /* Lighter border color */
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0); /* Lighter background */
 }
 
 .budgetCalendarAddBugetWrapper {
@@ -1177,4 +1202,8 @@ header .icon svg {
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
     color: #fff !important; /* White color on hover */
+}
+/* Ensure chart legend text is black in light theme */
+.light-theme .chartjs-legend ul li, .light-theme .chartjs-legend ul li span {
+    color: #000 !important;
 }

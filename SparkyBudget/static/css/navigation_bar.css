@@ -242,3 +242,50 @@
       display: none; /* Mobile */
   }
 }
+
+/* Light theme styles for navigation bar */
+.light-theme .header-container {
+  background: #f8fafc; /* Light background color */
+  color: #333; /* Dark font color */
+}
+
+.light-theme .header-container::before {
+  background: linear-gradient(to right, #007bff, #6c757d); /* Adjust gradient for light theme */
+}
+
+.light-theme .nav-item {
+  color: #333; /* Dark font color for nav items */
+}
+
+.light-theme .nav-item:hover {
+  background: rgba(0, 123, 255, 0.1); /* Light theme hover background */
+}
+
+.light-theme .nav-item:hover .nav-text {
+  color: #007bff; /* Light theme hover text color */
+}
+
+.light-theme .nav-icon {
+  color: #333; /* Dark icon color */
+}
+
+.light-theme .nav-item.active {
+  color: #007bff; /* Light theme active text color */
+  background: rgba(0, 123, 255, 0.15); /* Light theme active background */
+}
+
+.light-theme .nav-item.active .nav-icon {
+  color: #333; /* Light theme active icon color */
+}
+
+.light-theme .nav-item:hover .nav-icon {
+  color: #333; /* Keep dark icon color on hover in light theme */
+}
+
+.light-theme .mobile-header-logo {
+  background: #f8fafc; /* Light background for mobile logo */
+}
+
+.light-theme .mobile-header-logo h1 {
+  color: #333; /* Dark font color for mobile logo text */
+}

@@ -1,31 +1,14 @@
-/* --- General Body Styles --- */
-body {
-    background-color: #282c35;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-}
 
 /* Container for the category table with glowing effect */
 .category-table-container {
     background: linear-gradient(145deg, #2E3440, #353b48);
     padding: 20px;
     border-radius: 16px;
-    margin: 20px auto;
-    max-width: 900px; /* Adjust max-width as needed */
+    
+   width: 40%;
     position: relative;
 }
 
-/* Glowing animation keyframes */
-
-
-/* --- Base Table Styles --- */
-/*css needed for Transaction Table */
-
-/* Desktop Styles for transactionTable */
-
-/* --- Pagination, Info, etc. --- */
 .dataTables_paginate .paginate_button,
 .dataTables_info,
 .dataTables_length label,
@@ -138,7 +121,7 @@ body {
     background: linear-gradient(145deg, #2E3440, #353b48);
     border-radius: 8px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    width: 25%; /* Set width to 40% for desktop */
+    width: 40%; /* Set width to 40% for desktop */
     margin-left: 20px; /* Align to the left with spacing */
 }
 
@@ -161,7 +144,7 @@ body {
 .containerAccountTypes,
 .containerCategoryManagement,
 .containerRuleManagement {
-    width: 100%;
+    width: 90%;
     box-sizing: border-box;
 }
 
@@ -187,18 +170,35 @@ border-radius: 12px;
     .containerAccountTypes,
     .containerCategoryManagement,
     .containerRuleManagement{
-        width: 80% !important; /* Adjusted width to match trend.css container */
+       
         margin: 20px auto; /* Adjusted margin to match trend.css container */
+    }
+    .category-table-container {
+        width: 60%;
+    }
+
+    }
+
+@media (max-width: 767px) {
+   
+    .category-table-container {
+        width: 85% !important; /* Full width on mobile */
+        
+    }
+
+    #accountTypeTable,
+    #categoryTable,
+    #categoryRuleTable {
+        width: 95% !important; /* Set table width to 95% on mobile */
+    }
+
+    .containerAccountTypes,
+    .containerCategoryManagement,
+    .containerRuleManagement {
+        width: 95% !important; /* Set container width to 95% on mobile */
     }
 }
 
-@media (max-width: 767px) {
-    .containerAccountTypes,
-    .containerCategoryManagement,
-    .containerRuleManagement{
-        width: 100% !important;
-    }
-}
 
 /* Style Datatables Dropdown */
 .dataTables_length select {
@@ -245,68 +245,11 @@ border-radius: 12px;
     }
   }
 
-@media (max-width: 767px) {
-    .AddSubCategoryContainer,
-    .AddSubCategoryRuleContainer {
-        width: 100%; /* Full width on mobile */
-        margin-left: 0; /* Remove left margin on mobile */
-    }
+
+
+.light-theme .AddSubCategoryContainer,
+.light-theme .AddSubCategoryRuleContainer {
+    background: #f8fafc; /* Light background color */
+    border-color: #cccccc; /* Lighter border color */
 }
 
-/* --- Select2 Dark Theme Styles --- */
-
-/* Container for the Select2 dropdown */
-.select2-container--default .select2-selection--single {
-    background-color: #3c444f !important; /* Dark background */
-    color: #eee !important; /* Light text */
-    border: 1px solid #555 !important; /* Darker border */
-    height: 38px !important; /* Adjust height if needed */
-    padding: 6px 12px !important; /* Adjust padding */
-}
-
-/* Style for the selected value */
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #eee !important; /* Light text for selected value */
-    line-height: 26px; /* Vertically align text */
-}
-
-/* Style for the dropdown arrow */
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 36px !important; /* Match container height */
-}
-
-/* Style for the dropdown panel */
-.select2-container--default .select2-dropdown {
-    background-color: #3c444f !important; /* Dark background for dropdown */
-    border: 1px solid #555 !important; /* Darker border */
-}
-
-/* Style for dropdown options */
-.select2-container--default .select2-results__option {
-    color: #eee !important; /* Light text for options */
-    background-color: #3c444f !important; /* Dark background for options */
-}
-
-/* Style for highlighted (hovered) option */
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #555 !important; /* Slightly lighter dark for hover */
-    color: #fff !important; /* White text on hover */
-}
-
-/* Style for selected option */
-.select2-container--default .select2-results__option[aria-selected="true"] {
-    background-color: #4a5261 !important; /* Different background for selected */
-    color: #fff !important; /* White text for selected */
-}
-
-/* Style for the search input within the dropdown */
-.select2-search input {
-    background-color: #4a5261 !important; /* Darker background for search input */
-    color: #eee !important; /* Light text for search input */
-    border: 1px solid #555 !important; /* Darker border */
-}
-
-#accountTypeTable tr:hover,
-#categoryTable tr:hover,
-#categoryRuleTable tr:hover {
-}

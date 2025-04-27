@@ -115,3 +115,25 @@
     }
 }
 
+
+/* Light theme styles */
+.light-theme .balance-summary-list {
+    color: #333; /* Darker text for light theme */
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0); /* Lighter background */
+}
+
+.light-theme .account-type-header {
+    background-color: #cccccc; /* Lighter header background */
+}
+
+.light-theme .account-sub-item {
+    background-color: #dddddd; /* Lighter sub-item background */
+    border-top: 1px solid #bbbbbb; /* Lighter border */
+}
+
+/* Light theme styles for the main container */
+.light-theme .balance-summary-container {
+    color: var(--text-color); /* Use text color from SparkyBudget.css */
+    background: var(--container-background); /* Use container background from SparkyBudget.css */
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.3); /* Adjust glow for light theme */
+}
