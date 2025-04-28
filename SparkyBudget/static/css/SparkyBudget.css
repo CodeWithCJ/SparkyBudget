@@ -21,8 +21,8 @@
 
 .light-theme {
     /* Light Theme Overrides */
-    --background-color: #ffffff;
-    --text-color: #333;
+    --background-color: #FAFAFA; /* Soft off-white */
+    --text-color: #444444; /* Dark gray */
     --container-background: linear-gradient(145deg, #e0e0e0, #ffffff);
     --table-header-background: #c0b283;
     --table-header-text-color: #000; /* Black text color for table headers in light theme */

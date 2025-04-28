@@ -90,29 +90,146 @@ function updateChart(aggregatedData) {
                 format: function (v, id, i, j) {
                     return '$' + Math.round(v);
                 },
-                color: '#E0E0E0',
+                color: textColor, // Use theme-dependent color
                 font: { weight: 'bold', size: 10 }
             }
         },
         axis: {
             x: {
                 type: 'category',
-                label: { text: 'Category', position: 'outer-center', color: '#E0E0E0', font: { weight: 'bold', size: 10 } }
+                label: { text: 'Category', position: 'outer-center', color: textColor, font: { weight: 'bold', size: 10 } }, // Use theme-dependent color
+                tick: {
+                    text: {
+                        fill: textColor // Use theme-dependent color for tick text
+                    }
+                }
             },
             y: {
-                label: { text: 'Expense Amount', position: 'outer-middle', color: '#E0E0E0', font: { weight: 'bold', size: 10 } },
-                tick: { format: function (value) { return '$' + Math.round(value); } }
+                label: { text: 'Expense Amount', position: 'outer-middle', color: textColor, font: { weight: 'bold', size: 10 } }, // Use theme-dependent color
+                tick: {
+                    format: function (value) { return '$' + Math.round(value); },
+                    text: {
+                        fill: textColor // Use theme-dependent color for tick text
+                    }
+                },
+                grid: {
+                    lines: [{ value: 0, position: 'start', class: 'grid-line' }] // Add class for styling
+                }
             }
         },
         grid: { y: { lines: [{ value: 0 }] } },
-        title: { text: 'Expense Trend' },
+        title: { text: 'Expense Trend', color: textColor }, // Use theme-dependent color
         legend: {
             show: false // Add this line to hide the legend
-        }       
+        }
     });
 
-    d3.selectAll('#bar_chart .c3-axis-x-label, #bar_chart .c3-axis-y-label').style('fill', '#E0E0E0');
-    d3.select('#bar_chart .c3-title').style('fill', '#E0E0E0');
+    // Update C3.js elements using D3.js with theme-dependent color
+    d3.selectAll('#bar_chart .c3-axis-x-label, #bar_chart .c3-axis-y-label').style('fill', textColor);
+    d3.select('#bar_chart .c3-title').style('fill', textColor);
+    d3.selectAll('#bar_chart .c3-axis-x .tick text, #bar_chart .c3-axis-y .tick text').style('fill', textColor);
+}
+
+function generateCategoryColors(numCategories) {
+   // Keep random color generation, but ensure visibility in both themes
+   // This might require a more sophisticated approach for better contrast
+   // For now, we'll keep the random generation.
+    var colors = [];
+    for (var i = 0; i < numCategories; i++) {
+        var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        colors.push(color);
+    }
+    return colors;
+}
+
+// Add a function to get theme-dependent colors for C3.js
+function getC3ThemeColors() {
+    const isLightTheme = document.body.classList.contains('light-theme');
+    return {
+        textColor: isLightTheme ? '#444444' : 'white',
+        gridColor: isLightTheme ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'
+    };
+}
+
+// Modify updateChart to use theme-dependent colors
+function updateChart(aggregatedData) {
+    var excludedCategories = ["Money Transfer", "Paycheck", "Interest Income", "CC Payment", "Transfer", "Credit Card Payment", "Transfer"];
+    var filteredData = Object.entries(aggregatedData)
+        .filter(([category, data]) => !excludedCategories.includes(category))
+        .reduce((obj, [category, data]) => {
+            obj[category] = data.totalAmount;
+            return obj;
+        }, {});
+
+    var categories = Object.keys(filteredData);
+    var totalAmounts = Object.values(filteredData);
+
+    for (var i = 0; i < categories.length; i++) {
+        var category = categories[i];
+        if (isNaN(filteredData[category])) {
+            console.error("NaN value found in totalAmount for category:", category, filteredData[category]);
+            filteredData[category] = 0;
+        }
+    }
+
+    var categoryColors = generateCategoryColors(categories.length);
+    const { textColor, gridColor } = getC3ThemeColors(); // Get theme colors
+
+    var chart = c3.generate({
+        bindto: '#bar_chart',
+        data: {
+            x: 'Category',
+            columns: [
+                ['Category'].concat(categories),
+                ['Expense Amount'].concat(totalAmounts)
+            ],
+            type: 'bar',
+            color: function (color, d) {
+                return categoryColors[d.index % categoryColors.length];
+            },
+            labels: {
+                format: function (v, id, i, j) {
+                    return '$' + Math.round(v);
+                },
+                color: textColor, // Use theme-dependent color
+                font: { weight: 'bold', size: 10 }
+            }
+        },
+        axis: {
+            x: {
+                type: 'category',
+                label: { text: 'Category', position: 'outer-center', color: textColor, font: { weight: 'bold', size: 10 } }, // Use theme-dependent color
+                tick: {
+                    text: {
+                        fill: textColor // Use theme-dependent color for tick text
+                    }
+                }
+            },
+            y: {
+                label: { text: 'Expense Amount', position: 'outer-middle', color: textColor, font: { weight: 'bold', size: 10 } }, // Use theme-dependent color
+                tick: {
+                    format: function (value) { return '$' + Math.round(value); },
+                    text: {
+                        fill: textColor // Use theme-dependent color for tick text
+                    }
+                },
+                grid: {
+                    lines: [{ value: 0, position: 'start', class: 'grid-line' }] // Add class for styling
+                }
+            }
+        },
+        grid: { y: { lines: [{ value: 0, class: 'grid-line' }] } }, // Add class for styling
+        title: { text: 'Expense Trend', color: textColor }, // Use theme-dependent color
+        legend: {
+            show: false // Add this line to hide the legend
+        }
+    });
+
+    // Update C3.js elements using D3.js with theme-dependent color
+    d3.selectAll('#bar_chart .c3-axis-x-label, #bar_chart .c3-axis-y-label').style('fill', textColor);
+    d3.select('#bar_chart .c3-title').style('fill', textColor);
+    d3.selectAll('#bar_chart .c3-axis-x .tick text, #bar_chart .c3-axis-y .tick text').style('fill', textColor);
+    d3.selectAll('#bar_chart .c3-grid line').style('stroke', gridColor); // Style grid lines
 }
 
 function generateCategoryColors(numCategories) {
@@ -151,6 +268,10 @@ function renderLineChart(lineChartData) {
         myLineChart.destroy();
     }
 
+    const isLightTheme = document.body.classList.contains('light-theme');
+    const textColor = isLightTheme ? '#444444' : 'white'; // Use dark gray for light theme, white for dark
+    const gridColor = isLightTheme ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'; // Use light gray for light theme, white for dark
+
     myLineChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -158,10 +279,10 @@ function renderLineChart(lineChartData) {
             datasets: [{
                 label: 'Salary',
                 data: salaries,
-                borderColor: '#FFD700',
+                borderColor: '#FFD700', // Keep line color consistent
                 fill: false,
                 datalabels: {
-                    color: 'white',
+                    color: textColor, // Use theme-dependent color
                     align: 'top',
                     font: { weight: 'bold', size: 10 },
                     formatter: function(value) { return '$' + Math.round(value); }
@@ -172,19 +293,19 @@ function renderLineChart(lineChartData) {
             maintainAspectRatio: false,
             responsive: true,
             scales: {
-                x: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                x: { ticks: { color: textColor }, grid: { color: gridColor } }, // Use theme-dependent colors
                 y: {
                     beginAtZero: true,
-                    ticks: { color: 'white', callback: function(value) { return '$' + Math.round(value); } },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    title: { display: true, text: 'Salary', color: 'white' },
+                    ticks: { color: textColor, callback: function(value) { return '$' + Math.round(value); } }, // Use theme-dependent colors
+                    grid: { color: gridColor }, // Use theme-dependent color
+                    title: { display: true, text: 'Salary', color: textColor }, // Use theme-dependent color
                     min: 5000
                 }
             },
             plugins: {
-                title: { display: true, text: 'Salary Trend', color: 'white', font: { size: 16, weight: 'bold' }, padding: { top: 10, bottom: 20 } },
-                legend: { display: true, position: 'top', labels: { color: 'rgba(255, 255, 255, 1)' } },
-                datalabels: { anchor: 'end', align: 'top', color: 'white', font: { weight: 'bold', size: 10 }, formatter: function(value) { return '$' + Math.round(value); } }
+                title: { display: true, text: 'Salary Trend', color: textColor, font: { size: 16, weight: 'bold' }, padding: { top: 10, bottom: 20 } }, // Use theme-dependent color
+                legend: { display: true, position: 'top', labels: { color: textColor } }, // Use theme-dependent color
+                datalabels: { anchor: 'end', align: 'top', color: textColor, font: { weight: 'bold', size: 10 }, formatter: function(value) { return '$' + Math.round(value); } } // Use theme-dependent color
             }
         },
         plugins: [ChartDataLabels]
@@ -987,6 +1108,10 @@ function renderSpendingTrendChart(chartData) {
         spendingTrendChart.destroy();
     }
 
+    const isLightTheme = document.body.classList.contains('light-theme');
+    const textColor = isLightTheme ? '#444444' : 'white'; // Use dark gray for light theme, white for dark
+    const gridColor = isLightTheme ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'; // Use light gray for light theme, white for dark
+
     // Prepare data for the chart: group by YearMonth and Category
     const groupedData = {};
     chartData.forEach(item => {
@@ -1039,25 +1164,25 @@ function renderSpendingTrendChart(chartData) {
             scales: {
                 x: {
                     stacked: true,
-                    ticks: { color: 'white' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    ticks: { color: textColor }, // Use theme-dependent color
+                    grid: { color: gridColor } // Use theme-dependent color
                 },
                 y: {
                     stacked: true,
                     ticks: {
-                        color: 'white',
+                        color: textColor, // Use theme-dependent color
                         callback: function (value) {
                             return '$' + Math.round(value);
                         }
                     },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    grid: { color: gridColor } // Use theme-dependent color
                 }
             },
             plugins: {
                 title: {
                     display: true,
                     text: 'Spending Trend by Category',
-                    color: 'white',
+                    color: textColor, // Use theme-dependent color
                     font: {
                         size: 16,
                         weight: 'bold'
@@ -1070,7 +1195,7 @@ function renderSpendingTrendChart(chartData) {
                 legend: {
                     display: true,
                     labels: {
-                        color: 'white'
+                        color: textColor // Use theme-dependent color
                     }
                 },
             },
