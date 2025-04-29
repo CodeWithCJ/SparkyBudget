@@ -85,7 +85,7 @@ def process_accounts_data(private_data_path):
             start_date_param = int(last_12_months.timestamp())
 
             # Append the parameters to the access URL
-            access_url_with_params = f"{access_url}/accounts?start-date={start_date_param}" # &pending=1
+            access_url_with_params = f"{access_url}/accounts?start-date={start_date_param}&pending=1" # 
 
             try:
                 # Fetch data from the API
