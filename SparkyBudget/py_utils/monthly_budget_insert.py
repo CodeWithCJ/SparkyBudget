@@ -2,7 +2,6 @@
 
 import sqlite3,  os, logging
 from datetime import datetime
-from flask import current_app
 
 
 # Get log level from environment, default to INFO if not set
@@ -11,13 +10,13 @@ logger = logging.getLogger(__name__)
 
 
 
-def month_budget_update_using_template():
+def month_budget_update_using_template(db_path):
     logger.info(f"month_budget_update_using_template executed at {datetime.now()}")
     from SparkyBudget import db_lock  # Import the db_lock from your app or shared module
     # Ensure that only one thread/process can access the DB at a time
     with db_lock:
         # Use the `with` statement to manage the SQLite connection and cursor
-        with sqlite3.connect(current_app.config['DATABASE_PATH']) as conn:
+        with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()
 
             # Check if it's the first day of the month

@@ -24,16 +24,22 @@ from py_utils.monthly_budget_insert import month_budget_update_using_template
 from py_utils.daily_balance_history import daily_balance_history_insert
 from py_utils.SimpleFinToDB import process_accounts_data
 
+# Global variable for private data path, defined directly
+PRIVATE_DATA_PATH_SCHEDULER = '/private'
+
+# Global variable for database path, defined directly
+DATABASE_PATH_SCHEDULER = '/private/db/SparkyBudget.db'
+
 def setup_scheduler():
     logger.info(f"Setting up scheduler at {datetime.now()} with timezone {time.tzname}")
     schedule.every().day.at("01:00").do(
-        lambda: run_with_error_handling("Monthly Budget Update", month_budget_update_using_template)
+        lambda: run_with_error_handling("Monthly Budget Update", lambda: month_budget_update_using_template(DATABASE_PATH_SCHEDULER))
     )
     schedule.every().day.at("23:55").do(
-        lambda: run_with_error_handling("Daily Balance History", daily_balance_history_insert)
+        lambda: run_with_error_handling("Daily Balance History", lambda: daily_balance_history_insert(DATABASE_PATH_SCHEDULER))
     )
     schedule.every(4).hours.do(
-        lambda: run_with_error_handling("Account Data Processing", process_accounts_data)
+        lambda: run_with_error_handling("Account Data Processing", lambda: process_accounts_data(PRIVATE_DATA_PATH_SCHEDULER))
     )
     # Test job for debugging
     #schedule.every(10).seconds.do(
