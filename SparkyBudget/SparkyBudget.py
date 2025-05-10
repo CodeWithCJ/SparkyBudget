@@ -96,9 +96,11 @@ def download_data():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
 
+# Initialize the database within the application context
+with app.app_context():
+    initialize_database() # Call the initialization function
+
 if __name__ == "__main__":
-    with app.app_context():
-        initialize_database() # Call the initialization function
     ssl_context = None
     if bool(int(os.getenv("USE_INTERNAL_HTTPS", 0))):
         ssl_context = (r"certs/cert.pem", r"certs/key.pem")
