@@ -9,12 +9,12 @@
         <i class="fas fa-piggy-bank"></i>
         <span class="nav-text">Balance</span>
     </div>
-    <a class="nav-item networth {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
+    <a class="nav-item networth1 {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
         onclick="dailybalanceDetailsToggleVisibility()">
         <i class="fas fa-line-chart nav-icon"></i>
         <span class="nav-text">Networth</span>
     </a>
-    <a class="nav-item account {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
+    <a class="nav-item account1 {% if 'budget_sumary_bp' in request.endpoint %}active{% endif %}"
             onclick="balanceDetailsTableToggleVisibility()">
             <i class="fas fa-info-circle nav-icon"></i>
             <span class="nav-text">Account</span>
