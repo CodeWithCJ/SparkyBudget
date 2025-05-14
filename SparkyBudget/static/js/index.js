@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    // Explicitly hide the balance summary container on mobile initially
+    $('.balance-summary-container').addClass('hide');
+
     // Fetch subcategories using an AJAX request
     $.get('/getDistinctSubcategories', function (subcategories) {
         $('#subCategoryInput').empty();
@@ -129,6 +132,11 @@ $(document).ready(function () {
 
     
 });
+
+    // Toggle visibility of balance summary on piggy bank icon click
+    $('#toggleBalanceSummary').on('click', function() {
+        $('.balance-summary-container').toggleClass('hide');
+    });
 
 function balanceDetailsTableToggleVisibility() {
     document.querySelector('.main-content').scrollTo(0, 0);

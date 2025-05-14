@@ -238,9 +238,7 @@ border-radius: 12px;
 
 
 @media (max-width: 768px) {
-    .mobile-header-logo #toggleBalanceSummary,
-    .mobile-header-logo .networth,
-    .mobile-header-logo .account {
+    .mobile-header-logo .nav-icon {
       display: none;
     }
   }

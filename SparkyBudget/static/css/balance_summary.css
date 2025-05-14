@@ -101,12 +101,6 @@
 }
 
 
-/* Hide balance summary by default on mobile (screens smaller than 768px) */
-@media (max-width: 768px) {
-    .balance-summary-container {
-        display: none;
-    }
-}
 
 /* Ensure the balance summary is visible on larger screens by default */
 @media (min-width: 769px) {

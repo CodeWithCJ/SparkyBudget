@@ -325,7 +325,16 @@ html, body {
     }
 
 
-    .balance-summary-container,
+    .balance-summary-container {
+        flex: none;
+        width: 100%;
+        display: none; /* Hide by default on mobile */
+    }
+
+    .balance-summary-container:not(.hide) {
+        display: block; /* Ensure it's displayed when not hidden */
+    }
+
     .main-content {
         flex: none;
         width: 100%;
