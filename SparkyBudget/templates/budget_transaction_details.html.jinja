@@ -12,6 +12,7 @@
                 <th>Payee</th>
                 <th>Amount</th>
                 <th><i class="fas fa-edit editable-icon"></i></th>
+                <th style="text-align:center;">Split</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,9 @@
                             <option value="" selected disabled>Select or type to search</option>
                         </select>
                         <button onclick="updateSubcategory('{{ detail[0] }}', event)" class="updateSubcategoryButton" style="display: none;">Submit</button>
+                    </td>
+                    <td>
+                        <button class="split-button" data-transaction-key="{{ detail[0] }}" data-transaction-amount="{{ detail[5] }}">Split</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -69,12 +73,45 @@
                 </select>
                 <button onclick="budget_transaction_details_updateSubcategory('{{ detail[0] }}', event)" class="budget_transaction_details_updateSubcategoryButton" style="display: none;">Submit</button>
             </div>
+            <div class="budget_transaction_details_field"> {# Add Split button field #}
+                <button class="split-button" data-transaction-key="{{ detail[0] }}" data-transaction-amount="{{ detail[5] }}">Split</button>
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<!-- Include JavaScript -->
-<script src="{{ url_for('static', filename='js/budget_transaction_details.js') }}"></script>
+<!-- Split Transaction Popup -->
+<div id="splitTransactionPopup" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+        <div class="popup-header">
+            <button id="splitTransactionCloseButton" class="close-button" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2>Split Transaction</h2>
+        </div>
+        <form id="splitTransactionForm">
+            <div class="form-group">
+                <label for="splitTransactionAmountInput">Amount</label>
+                <input type="number" id="splitTransactionAmountInput" name="splitTransactionAmountInput" placeholder="Enter split amount" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="splitTransactionSubcategorySelect">Subcategory</label>
+                <select id="splitTransactionSubcategorySelect" name="splitTransactionSubcategorySelect" class="select2" required>
+                    <option value="" disabled selected>Select a subcategory</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" id="splitTransactionSubmitButton" class="btn btn-primary">Split</button>
+                <button type="button" id="splitTransactionCancelButton" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
 
+
+<!-- Include JavaScript -->
+
+
+<script src="{{ url_for('static', filename='js/budget_transaction_details.js') }}"></script>
 <script src="{{ url_for('static', filename='js/theme.js') }}"></script>

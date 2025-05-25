@@ -152,20 +152,22 @@ BEGIN
         TransactionPayee,
         TransactionMemo,
 		TransactionPending,
-		SubCategory
-    ) VALUES (
-        (SELECT TransactionKey FROM f_transaction WHERE TransactionID = NEW.TransactionID),
-        NEW.AccountID,
-        NEW.AccountName,
-        NEW.TransactionID,
-        NEW.TransactionPosted,
-        NEW.TransactionAmount,
-        NEW.TransactionDescription,
-        NEW.TransactionPayee,
-        NEW.TransactionMemo,
+		SubCategory,
+		TransactionAmountNew
+		  ) VALUES (
+		      (SELECT TransactionKey FROM f_transaction WHERE TransactionID = NEW.TransactionID),
+		      NEW.AccountID,
+		      NEW.AccountName,
+		      NEW.TransactionID,
+		      NEW.TransactionPosted,
+		      NEW.TransactionAmount,
+		      NEW.TransactionDescription,
+		      NEW.TransactionPayee,
+		      NEW.TransactionMemo,
 		NEW.TransactionPending,
-		(SELECT SubCategory FROM f_transaction WHERE TransactionID = NEW.TransactionID)
-    );
+		(SELECT SubCategory FROM f_transaction WHERE TransactionID = NEW.TransactionID),
+		(SELECT TransactionAmountNew FROM f_transaction WHERE TransactionID = NEW.TransactionID) -- Preserve existing TransactionAmountNew
+		  );
 
     -- Remove the specific record from stg_transaction after insert
     DELETE FROM stg_transaction WHERE TransactionID = NEW.TransactionID;

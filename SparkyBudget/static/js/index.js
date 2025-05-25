@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    console.log('Document ready start');
     // Explicitly hide the balance summary container on mobile initially
     $('.balance-summary-container').addClass('hide');
 
@@ -131,7 +132,127 @@ $(document).ready(function () {
     });
 
     
+    console.log('Attaching split button handlers');
+
+    // Event handler for split button in budget_transaction_details.html (Desktop)
+    $(document).on('click', '.split-button', function () {
+        console.log('Split button clicked in desktop view');
+        const row = $(this).closest('tr');
+        const transactionKey = $(this).data('transaction-key');
+        const transactionAmount = parseFloat($(this).data('transaction-amount'));
+
+        $('#splitTransactionPopup').data('transactionKey', transactionKey);
+        $('#splitTransactionPopup').data('transactionAmount', transactionAmount);
+        $('#splitTransactionPopup').fadeIn(function() {
+            initializeSplitPopupHandlersAndDropdown();
+        });
+    });
+
+    // Event handler for split button in mobile view for budget_transaction_details.html
+    $(document).on('click', '.split-button', function () {
+        console.log('Split button clicked in mobile view');
+        const card = $(this).closest('.budget_transaction_details_card');
+        const transactionKey = $(this).data('transaction-key'); // Retrieves data-transaction-key from the button
+        const transactionAmountText = card.find('.budget_transaction_details_amount').text();
+        const transactionAmount = parseFloat(transactionAmountText.replace(/[^0-9.-]+/g, "")); // Extract and parse amount
+
+        $('#splitTransactionPopup').data('transactionKey', transactionKey);
+        $('#splitTransactionPopup').data('transactionAmount', transactionAmount);
+        $('#splitTransactionPopup').fadeIn(function() {
+            initializeSplitPopupHandlersAndDropdown();
+        });
+    });
+
+    // Handle split transaction form submission
+    $(document).on('submit', '#splitTransactionForm', function (e) {
+        e.preventDefault();
+        const transactionKey = $('#splitTransactionPopup').data('transactionKey');
+        const transactionAmount = $('#splitTransactionPopup').data('transactionAmount');
+        const splitAmountInput = $('#splitTransactionAmountInput').val().trim();
+        const splitAmount = parseFloat(splitAmountInput);
+        const subcategory = $('#splitTransactionSubcategorySelect').val();
+
+        console.log('Transaction Key:', transactionKey);
+        console.log('Split Amount Input:', splitAmountInput);
+        console.log('Parsed Split Amount:', splitAmount);
+        console.log('Selected Subcategory:', subcategory);
+        if (!splitAmountInput || isNaN(splitAmount) || splitAmount <= 0 || Math.abs(splitAmount) >= Math.abs(transactionAmount)) {
+            alert("Invalid amount! Please enter a number between 0 and " + Math.abs(transactionAmount));
+            return;
+        }
+
+        if (!subcategory) {
+            alert("Please select a subcategory!");
+            return;
+        }
+
+        const adjustedSplitAmount = transactionAmount < 0 ? -Math.abs(splitAmount) : Math.abs(splitAmount);
+
+        $.ajax({
+            url: '/splitTransaction', // Assuming this is the correct endpoint
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                transactionKey: transactionKey,
+                splitAmount: adjustedSplitAmount,
+                newSubcategory: subcategory
+            }),
+            success: function (response) {
+                alert("Transaction split successfully!");
+                location.reload(); // Reload the page to show updated transactions
+            },
+            error: function (error) {
+                console.error("Error splitting transaction:", error.responseJSON?.error || error);
+                alert("Failed to split transaction: " + (error.responseJSON?.error || "Unknown error"));
+            }
+        });
+
+        $('#splitTransactionPopup').fadeOut();
+    });
+
+    console.log('Document ready end');
 });
+
+
+
+function initializeSplitPopupHandlersAndDropdown() {
+    // Event listeners for the split transaction popup
+    $('#splitTransactionCloseButton, #splitTransactionCancelButton').on('click', function () {
+        console.log('Cancel button clicked');
+        $('#splitTransactionPopup').fadeOut();
+    });
+
+    $('#splitTransactionPopup').on('click', function (e) {
+        if ($(e.target).is('#splitTransactionPopup')) {
+            $('#splitTransactionPopup').fadeOut();
+        }
+    });
+
+    // Initialize select2 for the subcategory dropdown in the split popup
+    let splitSubcategoryData = [];
+    $.ajax({
+        url: '/getDistinctSubcategories', // Assuming this endpoint exists
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            console.log('Subcategory data for split popup:', data);
+            splitSubcategoryData = data.map(subcategory => ({ id: subcategory, text: subcategory }));
+            $('#splitTransactionSubcategorySelect').select2({
+                data: splitSubcategoryData,
+                placeholder: 'Select a subcategory',
+                allowClear: true,
+                matcher: function (params, data) {
+                    if ($.trim(params.term) === '') return data;
+                    if (data.text.toLowerCase().includes(params.term.toLowerCase())) return data;
+                    return null;
+                }
+            });
+        },
+        error: function (error) {
+            console.error('Error fetching subcategories for split popup:', error);
+        }
+    });
+}
 
     // Toggle visibility of balance summary on piggy bank icon click
     $('#toggleBalanceSummary').on('click', function() {
@@ -1149,3 +1270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+
+

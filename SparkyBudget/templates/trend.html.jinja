@@ -166,12 +166,13 @@
                     <th>Month</th>
                     <th>Formatted Month</th>
                     <th>Transaction Date</th>
+                    <th>Account</th>
                     <th>Description</th>
                     <th>Payee</th>
                     <th>Subcategory</th>
                     <th>Transaction Key</th>
                     <th>Transaction Amount</th>
-                    <th>Re-categorize <i class="fas fa-edit editable-icon"></i></th>                     
+                    <th>Re-categorize <i class="fas fa-edit editable-icon"></i></th>
                     <th style="text-align:center;">
                         Split
                         <button
@@ -186,15 +187,16 @@
             <tbody>
                 {% for transaction in transaction_data %}
                 <tr>
-                    <td>{{ transaction[0] }}</td>
-                    <td>{{ transaction[1] }}</td>
-                    <td>{{ transaction[2] }}</td>
-                    <td>{{ transaction[3] }}</td>
-                    <td>{{ transaction[4] }}</td>
-                    <td>{{ transaction[5] }}</td>
-                    <td>{{ transaction[6] }}</td>
-                    <td class="transaction-key" style="display: none;">{{ transaction[7] }}</td>
-                    <td>{{ transaction[8] | tocurrency }}</td>
+                    <td>{{ transaction[0] }}</td> {# Year #}
+                    <td>{{ transaction[1] }}</td> {# Month #}
+                    <td>{{ transaction[2] }}</td> {# Formatted Month #}
+                    <td>{{ transaction[3] }}</td> {# Transaction Date #}
+                    <td>{{ transaction[4] }}</td> {# AccountDisplayName #}
+                    <td>{{ transaction[5] }}</td> {# TransactionDescription #}
+                    <td>{{ transaction[6] }}</td> {# TransactionPayee #}
+                    <td>{{ transaction[7] }}</td> {# SubCategory #}
+                    <td class="transaction-key" style="display: none;">{{ transaction[8] }}</td> {# TransactionKey #}
+                    <td>{{ transaction[9] | tocurrency }}</td> {# TransactionAmount #}
                     <td>
                         <div class="subcategory-cell">
                             <button class="re-categorize-button">Re-categorize</button>
@@ -217,7 +219,7 @@
                 <button id="splitTransactionCloseButton" class="close-button" title="Close">
                     <i class="fas fa-times"></i>
                 </button>
-                <h2>Split Transaction</h2>             
+                <h2>Split Transaction</h2>
             </div>
             <form id="splitTransactionForm">
                 <div class="form-group">
@@ -230,7 +232,7 @@
                         <option value="" disabled selected>Select a subcategory</option>
                     </select>
                 </div>
-                <div class="form-actions">                    
+                <div class="form-actions">
                     <button type="submit" id="splitTransactionSubmitButton" class="btn btn-primary">Split</button>
                     <button type="button" id="splitTransactionCancelButton" class="btn btn-secondary">Cancel</button>
                 </div>
@@ -244,31 +246,35 @@
         <div class="transaction_details_card">
             <div class="transaction_details_header">
                 <div class="transaction_details_info">
-                    <span class="transaction_details_payee">{{ transaction[5] }}</span>
-                    <span class="transaction_details_date">{{ transaction[3] }}</span>
+                    <span class="transaction_details_payee">{{ transaction[6] }}</span> {# Payee is now at index 6 #}
+                    <span class="transaction_details_date">{{ transaction[3] }}</span> {# Transaction Date is still at index 3 #}
                 </div>
                 <div class="transaction_details_amount_container">
-                    <span class="transaction_details_amount">{{ transaction[8] | tocurrency }}</span>
+                    <span class="transaction_details_amount">{{ transaction[9] | tocurrency }}</span> {# Amount is now at index 9 #}
                     <span class="transaction_details_status" onclick="transaction_details_toggleDetails(this)">More ▼</span>
                 </div>
             </div>
             <div class="transaction_details_body" style="display: none;">
                 <div class="transaction_details_field">
                     <span class="transaction_details_label">Description:</span>
-                    <span>{{ transaction[4] }}</span>
+                    <span>{{ transaction[5] }}</span> {# Description is now at index 5 #}
+                </div>
+                 <div class="transaction_details_field"> {# Add Account field #}
+                    <span class="transaction_details_label">Account:</span>
+                    <span>{{ transaction[4] }}</span> {# AccountDisplayName is at index 4 #}
                 </div>
                 <div class="transaction_details_field">
                     <span class="transaction_details_label">Subcategory:</span>
-                    <span>{{ transaction[6] }}</span>
+                    <span>{{ transaction[7] }}</span> {# Subcategory is now at index 7 #}
                 </div>
                 <div class="transaction_details_field">
                     <span class="transaction_details_label">Amount:</span>
-                    <span>{{ transaction[8] | tocurrency }}</span>
+                    <span>{{ transaction[9] | tocurrency }}</span> {# Amount is now at index 9 #}
                 </div>
                 <!-- Hidden Transaction Key for internal use -->
                 <div class="transaction_details_field transaction-key" style="display: none;">
                     <span class="transaction_details_label">Transaction Key:</span>
-                    <span>{{ transaction[7] }}</span>
+                    <span>{{ transaction[8] }}</span> {# Transaction Key is now at index 8 #}
                 </div>
                 <div class="transaction_details_field">
                     <button class="transaction_details_reCategorizeButton re-categorize-button">Re-categorize</button>

@@ -40,10 +40,10 @@ def historical_trend():
 
     # Execute the SQL query for analyzing transactions
     custom_report_query = """
-        SELECT  
+        SELECT
             CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) as TransactionYear,
             strftime('%m', a11.TransactionPosted) as TransactionMonth,
-            CASE strftime('%m', TransactionPosted) 
+            CASE strftime('%m', TransactionPosted)
                 WHEN '01' THEN 'Jan'
                 WHEN '02' THEN 'Feb'
                 WHEN '03' THEN 'Mar'
@@ -58,7 +58,8 @@ def historical_trend():
                 WHEN '12' THEN 'Dec'
                 ELSE NULL
             END as FormattedTransactionMonth,
-            strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted,               
+            strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted,
+            CASE WHEN a12.DisplayAccountName IS NOT NULL AND a12.DisplayAccountName != '' THEN a12.DisplayAccountName ELSE a12.AccountName END AS AccountDisplayName,
             a11.TransactionDescription,
             a11.TransactionPayee,
             Coalesce(a11.SubCategory,'Unknown') as SubCategory,
@@ -66,12 +67,14 @@ def historical_trend():
             ROUND(SUM(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0)), 2) AS TransactionAmount
         FROM
             F_Transaction a11
+        JOIN
+            F_Balance a12 ON a11.AccountID = a12.AccountID
         WHERE
             TransactionPosted BETWEEN ? AND ?
         GROUP BY
             CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) ,
             strftime('%b', a11.TransactionPosted) ,
-            CASE strftime('%m', TransactionPosted) 
+            CASE strftime('%m', TransactionPosted)
                 WHEN '01' THEN 'Jan'
                 WHEN '02' THEN 'Feb'
                 WHEN '03' THEN 'Mar'
@@ -86,7 +89,8 @@ def historical_trend():
                 WHEN '12' THEN 'Dec'
                 ELSE NULL
             END ,
-            strftime('%m/%d/%Y', a11.TransactionPosted),               
+            strftime('%m/%d/%Y', a11.TransactionPosted),
+            AccountDisplayName,
             a11.TransactionDescription,
             a11.TransactionPayee,
             Coalesce(a11.SubCategory,'Unknown'),
@@ -136,10 +140,10 @@ def get_transaction_data():
 
         # Same query as in historical_trend
         custom_report_query = """
-            SELECT  
+            SELECT
                 CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) as TransactionYear,
                 strftime('%m', a11.TransactionPosted) as TransactionMonth,
-                CASE strftime('%m', TransactionPosted) 
+                CASE strftime('%m', TransactionPosted)
                     WHEN '01' THEN 'Jan'
                     WHEN '02' THEN 'Feb'
                     WHEN '03' THEN 'Mar'
@@ -154,7 +158,8 @@ def get_transaction_data():
                     WHEN '12' THEN 'Dec'
                     ELSE NULL
                 END as FormattedTransactionMonth,
-                strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted,               
+                strftime('%m/%d/%Y', a11.TransactionPosted) as TransactionPosted,
+                CASE WHEN a12.DisplayAccountName IS NOT NULL AND a12.DisplayAccountName != '' THEN a12.DisplayAccountName ELSE a12.AccountName END AS AccountDisplayName,
                 a11.TransactionDescription,
                 a11.TransactionPayee,
                 Coalesce(a11.SubCategory,'Unknown') as SubCategory,
@@ -162,12 +167,14 @@ def get_transaction_data():
                 ROUND(SUM(Coalesce(a11.TransactionAmountNew,a11.TransactionAmount,0)), 2) AS TransactionAmount
             FROM
                 F_Transaction a11
+            JOIN
+                F_Balance a12 ON a11.AccountID = a12.AccountID
             WHERE
                 TransactionPosted BETWEEN ? AND ?
             GROUP BY
                 CAST(strftime('%Y', a11.TransactionPosted) AS TEXT) ,
                 strftime('%b', a11.TransactionPosted) ,
-                CASE strftime('%m', TransactionPosted) 
+                CASE strftime('%m', TransactionPosted)
                     WHEN '01' THEN 'Jan'
                     WHEN '02' THEN 'Feb'
                     WHEN '03' THEN 'Mar'
@@ -182,7 +189,8 @@ def get_transaction_data():
                     WHEN '12' THEN 'Dec'
                     ELSE NULL
                 END ,
-                strftime('%m/%d/%Y', a11.TransactionPosted),               
+                strftime('%m/%d/%Y', a11.TransactionPosted),
+                AccountDisplayName,
                 a11.TransactionDescription,
                 a11.TransactionPayee,
                 Coalesce(a11.SubCategory,'Unknown'),
@@ -254,7 +262,8 @@ def split_transaction():
         split_amount = data.get("splitAmount")
         new_subcategory = data.get("newSubcategory")
         
-        logger.debug("Split Transaction:", transaction_key, split_amount, new_subcategory)
+        logger.debug(f"Split Transaction: transaction_key={transaction_key}, split_amount={split_amount}, new_subcategory={new_subcategory}")
+        print("Split Transaction:", transaction_key, split_amount, new_subcategory)
         
         # Validate inputs
         if not transaction_key or split_amount is None or not new_subcategory:

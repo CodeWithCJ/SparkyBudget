@@ -20,7 +20,7 @@ function aggregateData(transaction_data, selectedOption) {
     var aggregatedData = {};
     for (var i = 0; i < transaction_data.length; i++) {
         var selectedField = transaction_data[i][getIndexForSelectedOption(selectedOption)];
-        var transactionAmount = parseFloat(transaction_data[i][8]);
+        var transactionAmount = parseFloat(transaction_data[i][9]); // Updated index from 8 to 9
         var key = selectedField;
         if (aggregatedData[key]) {
             aggregatedData[key].count += 1;
@@ -46,9 +46,9 @@ function getIndexForSelectedOption(selectedOption) {
         case "Year": return 0;
         case "Month": return 1;
         case "FormattedMonth": return 2;
-        case "Payee": return 5;
-        case "Subcategory": return 6;
-        default: return 6;
+        case "Payee": return 6; // Updated index from 5 to 6
+        case "Subcategory": return 7; // Updated index from 6 to 7
+        default: return 7; // Updated default index from 6 to 7
     }
 }
 
@@ -322,7 +322,7 @@ $(document).ready(function () {
         "order": [],
         dom: 'Bfrtip',
         buttons: ['csv', 'excel', 'pdf'],
-        "columnDefs": [{ "targets": [0, 1, 2, 7], "visible": false }],
+        "columnDefs": [{ "targets": [0, 1, 2, 8], "visible": false }], // Updated index for Transaction Key from 7 to 8
         "stripeClasses": [],
         "createdRow": function (row, data, index) {
             $(row).addClass('custom-row-class');
@@ -366,7 +366,7 @@ $(document).ready(function () {
                             subcategorySelect.on('select2:select', function (e) {
                                 var updatedSubcategory = e.params.data.text;
                                 var rowData = table.row($(row)).data();
-                                var transactionId = rowData[7];
+                                var transactionId = rowData[8]; // Updated index from 7 to 8
 
                                 $.ajax({
                                     url: '/updateSubcategory',
@@ -547,30 +547,34 @@ $(function () {
                 <div class="transaction_details_card">
                     <div class="transaction_details_header">
                         <div class="transaction_details_info">
-                            <span class="transaction_details_payee">${transaction[5]}</span>
-                            <span class="transaction_details_date">${transaction[3]}</span>
+                            <span class="transaction_details_payee">${transaction[6]}</span> {# Payee is now at index 6 #}
+                            <span class="transaction_details_date">${transaction[3]}</span> {# Transaction Date is still at index 3 #}
                         </div>
                         <div class="transaction_details_amount_container">
-                            <span class="transaction_details_amount">$${transaction[8].toFixed(2)}</span>
+                            <span class="transaction_details_amount">$${transaction[9].toFixed(2)}</span> {# Amount is now at index 9 #}
                             <span class="transaction_details_status" onclick="transaction_details_toggleDetails(this)">More ▼</span>
                         </div>
                     </div>
                     <div class="transaction_details_body" style="display: none;">
                         <div class="transaction_details_field">
                             <span class="transaction_details_label">Description:</span>
-                            <span>${transaction[4]}</span>
+                            <span>${transaction[5]}</span> {# Description is now at index 5 #}
+                        </div>
+                         <div class="transaction_details_field"> {# Add Account field #}
+                            <span class="transaction_details_label">Account:</span>
+                            <span>${transaction[4]}</span> {# AccountDisplayName is at index 4 #}
                         </div>
                         <div class="transaction_details_field">
                             <span class="transaction_details_label">Subcategory:</span>
-                            <span>${transaction[6]}</span>
+                            <span>${transaction[7]}</span> {# Subcategory is now at index 7 #}
                         </div>
                         <div class="transaction_details_field">
                             <span class="transaction_details_label">Amount:</span>
-                            <span>$${transaction[8].toFixed(2)}</span>
+                            <span>$${transaction[9].toFixed(2)}</span> {# Amount is now at index 9 #}
                         </div>
                         <div class="transaction_details_field transaction-key" style="display: none;">
                             <span class="transaction_details_label">Transaction Key:</span>
-                            <span>${transaction[7]}</span>
+                            <span>${transaction[8]}</span> {# Transaction Key is now at index 8 #}
                         </div>
                         <div class="transaction_details_field">
                             <button class="transaction_details_reCategorizeButton re-categorize-button">Re-categorize</button>
@@ -584,7 +588,7 @@ $(function () {
             `;
             mobileContainer.append(cardHtml);
         });
-    }    
+    }
 });
 
 // JS Code for Add Transaction
@@ -720,8 +724,8 @@ $(document).ready(function () {
     $('#transactionTable').on('click', '.split-button', function () {
         const row = $(this).closest('tr');
         const rowData = table.row(row).data();
-        const transactionKey = rowData[7];
-        const transactionAmount = parseFloat(row.find('td:nth-child(9)').text().replace(/[^0-9.-]+/g, ""));
+        const transactionKey = rowData[8]; // Updated index from 7 to 8
+        const transactionAmount = parseFloat(row.find('td:nth-child(10)').text().replace(/[^0-9.-]+/g, "")); // Updated nth-child from 9 to 10
 
         $('#splitTransactionPopup').data('transactionKey', transactionKey);
         $('#splitTransactionPopup').data('transactionAmount', transactionAmount);
@@ -781,11 +785,23 @@ $(document).ready(function () {
     });
 });
 
+    // Event handler for split button in mobile view
+    $('.transaction-table-mobile-container').on('click', '.split-button', function () {
+        const card = $(this).closest('.transaction_details_card');
+        const transactionKey = card.find('.transaction-key span:last').text(); // Get transaction key from hidden field
+        const transactionAmountText = card.find('.transaction_details_amount').text();
+        const transactionAmount = parseFloat(transactionAmountText.replace(/[^0-9.-]+/g, "")); // Extract and parse amount
+
+        $('#splitTransactionPopup').data('transactionKey', transactionKey);
+        $('#splitTransactionPopup').data('transactionAmount', transactionAmount);
+        $('#splitTransactionPopup').fadeIn();
+    });
+
 // Initial fetch for line chart
 $(document).ready(function () {
     fetchLineChartData();
     fetchIncomeExpenseChartData();
-    fetchSpendingTrendChartData();    
+    fetchSpendingTrendChartData();
 });
 
 

@@ -506,6 +506,12 @@ body {
         flex-grow: 1;
     }
 
+    .transaction_details_amount_container {
+        display: flex;
+        flex-direction: column; /* Stack amount and status vertically */
+        align-items: flex-end; /* Right-align items within this container */
+    }
+
     .transaction_details_payee {
         font-size: 16px;
         font-weight: bold;
