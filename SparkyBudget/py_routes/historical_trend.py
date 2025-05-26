@@ -2,7 +2,7 @@
 
 from flask import Blueprint, jsonify, request, render_template, current_app
 from flask_login import login_required
-import sqlite3, re
+import sqlite3
 from datetime import datetime,timedelta, date
 from flask import request, jsonify
 import os, logging
@@ -281,7 +281,7 @@ def split_transaction():
 
         # Fetch the original transaction details using TransactionKey
         cursor.execute(
-            "SELECT AccountID, AccountName, TransactionID, TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee FROM F_Transaction WHERE TransactionKey = ?", 
+            "SELECT AccountID, AccountName, TransactionID, COALESCE(TransactionAmountNew, TransactionAmount) AS TransactionAmount, SubCategory, TransactionPosted, TransactionDescription, TransactionPayee FROM F_Transaction WHERE TransactionKey = ?",
             (transaction_key,)
         )
         original_transaction = cursor.fetchone()
@@ -299,15 +299,38 @@ def split_transaction():
         if abs(split_amount) >= abs(original_amount) or abs(split_amount) <= 0:
             return jsonify({"error": "Invalid split amount!"}), 400
 
-        # Check if the TransactionID ends with a _digit
-        match = re.match(r"(.+?)_(\d+)$", original_transaction_id)
-        if match:
-            base_id = match.group(1)  # Extract base part (before the last underscore)
-            max_suffix = int(match.group(2))  # Get the current suffix number
-            new_transaction_id = f"{base_id}_{max_suffix + 1}"  # Increment suffix
+        # Determine the base TransactionID (the part before the first underscore)
+        if '_' in original_transaction_id:
+            initial_id = original_transaction_id.split('_', 1)[0]
         else:
-            base_id = original_transaction_id  # No suffix, so it's the first split
-            new_transaction_id = f"{base_id}_1"  # Create the first split transaction
+            initial_id = original_transaction_id
+
+        # Find the maximum existing suffix for this base transaction ID
+        cursor.execute(
+            "SELECT TransactionID FROM F_Transaction WHERE TransactionID LIKE ? || '_%'",
+            (initial_id,)
+        )
+        related_transactions = cursor.fetchall()
+
+        max_suffix = 0
+        for row in related_transactions:
+            tx_id = row[0]
+            try:
+                # Extract the suffix after the first underscore
+                suffix_str = tx_id.split('_', 1)[1]
+                # Check if the suffix is purely numeric
+                if suffix_str.isdigit():
+                    suffix = int(suffix_str)
+                    max_suffix = max(max_suffix, suffix)
+            except (IndexError, ValueError):
+                # Handle cases where there's no suffix or it's not a simple number
+                continue # Ignore this transaction ID as it doesn't fit the expected pattern
+
+        # Calculate the new suffix
+        new_suffix = max_suffix + 1
+
+        # Construct the new transaction ID
+        new_transaction_id = f"{initial_id}_{new_suffix}"
 
         # Insert the new transaction for the split amount
         cursor.execute(
