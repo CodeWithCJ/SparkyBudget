@@ -97,6 +97,7 @@ CREATE TABLE "stg_Transaction" (
 	"TransactionPending"	TEXT
 );
 
+CREATE TABLE D_DB (DB_VERSION TEXT);
 
 
 CREATE TRIGGER tr_insert_stg_balance
@@ -152,22 +153,20 @@ BEGIN
         TransactionPayee,
         TransactionMemo,
 		TransactionPending,
-		SubCategory,
-		TransactionAmountNew
-		  ) VALUES (
-		      (SELECT TransactionKey FROM f_transaction WHERE TransactionID = NEW.TransactionID),
-		      NEW.AccountID,
-		      NEW.AccountName,
-		      NEW.TransactionID,
-		      NEW.TransactionPosted,
-		      NEW.TransactionAmount,
-		      NEW.TransactionDescription,
-		      NEW.TransactionPayee,
-		      NEW.TransactionMemo,
+		SubCategory
+    ) VALUES (
+        (SELECT TransactionKey FROM f_transaction WHERE TransactionID = NEW.TransactionID),
+        NEW.AccountID,
+        NEW.AccountName,
+        NEW.TransactionID,
+        NEW.TransactionPosted,
+        NEW.TransactionAmount,
+        NEW.TransactionDescription,
+        NEW.TransactionPayee,
+        NEW.TransactionMemo,
 		NEW.TransactionPending,
-		(SELECT SubCategory FROM f_transaction WHERE TransactionID = NEW.TransactionID),
-		(SELECT TransactionAmountNew FROM f_transaction WHERE TransactionID = NEW.TransactionID) -- Preserve existing TransactionAmountNew
-		  );
+		(SELECT SubCategory FROM f_transaction WHERE TransactionID = NEW.TransactionID)
+    );
 
     -- Remove the specific record from stg_transaction after insert
     DELETE FROM stg_transaction WHERE TransactionID = NEW.TransactionID;
@@ -196,3 +195,5 @@ BEGIN
 	
 END
 ;
+
+

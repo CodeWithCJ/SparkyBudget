@@ -27,7 +27,7 @@ def index():
                 AccountType,
                 SortOrder,
                 ROUND(SUM(Balance), 2) AS TotalBalance,
-                ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
+                ROUND(SUM(COALESCE(NULLIF(NULLIF(AvailableBalance, 0), ''), Balance)), 2) AS TotalAvailableBalance
             FROM
                 F_Balance a11
                 LEFT JOIN D_AccountTypes a12
@@ -42,7 +42,7 @@ def index():
                 'Net Cash' AS AccountType,
                 -1 AS SortOrder,
                 ROUND(SUM(Balance), 2) AS TotalBalance,
-                ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
+                ROUND(SUM(COALESCE(NULLIF(NULLIF(AvailableBalance, 0), ''), Balance)), 2) AS TotalAvailableBalance
             FROM
                 F_Balance a11
             LEFT JOIN D_AccountTypes a12
@@ -55,7 +55,7 @@ def index():
                 'Net Worth' AS AccountType,
                 1000 AS SortOrder,
                 ROUND(SUM(Balance), 2) AS TotalBalance,
-                ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance
+                ROUND(SUM(COALESCE(NULLIF(NULLIF(AvailableBalance, 0), ''), Balance)), 2) AS TotalAvailableBalance
             FROM
                 F_Balance a11
             LEFT JOIN D_AccountTypes a12
@@ -74,7 +74,7 @@ def index():
             AccountType,
             Coalesce(DisplayAccountName, AccountName) as AccountName,
             ROUND(SUM(Balance), 2) AS TotalBalance,
-            ROUND(SUM(AvailableBalance), 2) AS TotalAvailableBalance,
+            ROUND(SUM(COALESCE(NULLIF(NULLIF(AvailableBalance, 0), ''), Balance)), 2) AS TotalAvailableBalance,
             ABS(SUM(Balance)) + ABS(SUM(AvailableBalance)) as Dummy
         FROM
             F_Balance a11

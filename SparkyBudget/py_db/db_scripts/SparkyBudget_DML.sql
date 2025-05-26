@@ -1,4 +1,4 @@
-
+INSERT INTO D_DB (DB_VERSION) VALUES ('v0.18');
 
 INSERT INTO D_AccountTypes (AccountType, SortOrder, HideFromBudget) VALUES ('Checking', 0, 0);
 INSERT INTO D_AccountTypes (AccountType, SortOrder, HideFromBudget) VALUES ('Savings', 1, 0);
