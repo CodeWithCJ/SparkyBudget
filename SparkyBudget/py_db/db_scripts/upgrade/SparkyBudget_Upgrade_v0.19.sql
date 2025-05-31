@@ -15,20 +15,22 @@ BEGIN
         TransactionPayee,
         TransactionMemo,
 		TransactionPending,
-		SubCategory
-    ) VALUES (
-        (SELECT TransactionKey FROM f_transaction WHERE TransactionID = NEW.TransactionID),
-        NEW.AccountID,
-        NEW.AccountName,
-        NEW.TransactionID,
-        NEW.TransactionPosted,
-        NEW.TransactionAmount,
-        NEW.TransactionDescription,
-        NEW.TransactionPayee,
-        NEW.TransactionMemo,
+		SubCategory,
+		TransactionAmountNew -- Add TransactionAmountNew here
+		  ) VALUES (
+		      (SELECT TransactionKey FROM f_transaction WHERE TransactionID = NEW.TransactionID),
+		      NEW.AccountID,
+		      NEW.AccountName,
+		      NEW.TransactionID,
+		      NEW.TransactionPosted,
+		      NEW.TransactionAmount,
+		      NEW.TransactionDescription,
+		      NEW.TransactionPayee,
+		      NEW.TransactionMemo,
 		NEW.TransactionPending,
-		(SELECT SubCategory FROM f_transaction WHERE TransactionID = NEW.TransactionID)
-    );
+		(SELECT SubCategory FROM f_transaction WHERE TransactionID = NEW.TransactionID),
+		(SELECT TransactionAmountNew FROM f_transaction WHERE TransactionID = NEW.TransactionID) -- Select existing TransactionAmountNew
+		  );
 
     -- Remove the specific record from stg_transaction after insert
     DELETE FROM stg_transaction WHERE TransactionID = NEW.TransactionID;
@@ -59,4 +61,4 @@ END
 ;
 
 
-update D_DB set DB_VERSION = "v0.18";
+update D_DB set DB_VERSION = "v0.19";

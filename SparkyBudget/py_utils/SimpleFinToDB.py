@@ -116,10 +116,10 @@ def process_accounts_data(private_data_path):
 
                     # Insert data into the temporary table from F_Transaction
                     insert_into_temp_table_query = """
-                    INSERT INTO Temp_F_Transaction_Pending (TransactionID, SubCategory,TransactionAmountNew)
+                    INSERT INTO Temp_F_Transaction_Pending (TransactionID, SubCategory, TransactionAmountNew)
                     SELECT TransactionID, SubCategory, TransactionAmountNew
                     FROM F_Transaction
-                    WHERE TransactionPending = 1 AND SubCategory IS NOT NULL;
+                    WHERE TransactionPending = 1 and (TransactionAmountNew IS NOT NULL or SubCategory is not NULL);
                     """
                     cursor.execute(insert_into_temp_table_query)
 
@@ -198,11 +198,14 @@ def process_accounts_data(private_data_path):
                     # Update F_Transaction with SubCategory from the temporary table
                     update_F_Transaction_query = """
                     UPDATE F_Transaction
-                    SET 
-                        SubCategory = (
-                            SELECT SubCategory
-                            FROM Temp_F_Transaction_Pending
-                            WHERE Temp_F_Transaction_Pending.TransactionID = F_Transaction.TransactionID
+                    SET
+                        SubCategory = COALESCE(
+                            (
+                                SELECT SubCategory
+                                FROM Temp_F_Transaction_Pending
+                                WHERE Temp_F_Transaction_Pending.TransactionID = F_Transaction.TransactionID
+                            ),
+                            F_Transaction.SubCategory -- Keep existing SubCategory if the temporary table has NULL
                         ),
                         TransactionAmountNew = (
                             SELECT TransactionAmountNew
