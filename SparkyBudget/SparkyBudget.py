@@ -56,8 +56,12 @@ def create_app():
         int(os.getenv("USE_SECURE_SESSION_COOKIE", 1))
     )
     app.config["SESSION_COOKIE_HTTPONLY"] = True
-    #app.secret_key = secrets.token_hex(16)
-    app.secret_key = os.getenv("FLASK_SECRET_KEY", "your-very-secure-key")
+    import secrets
+    secret_key = os.getenv("FLASK_SECRET_KEY")
+    if secret_key is None:
+        secret_key = secrets.token_hex(16)
+        logger.warning("FLASK_SECRET_KEY environment variable not set. Generating a random key. For production, set FLASK_SECRET_KEY to a strong, persistent value.")
+    app.secret_key = secret_key
     login_manager = LoginManager(app)
     return app, login_manager
 
