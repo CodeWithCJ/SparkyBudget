@@ -7,26 +7,27 @@ from flask_login import LoginManager, login_required
 import dotenv
 import os
 
-# Load from private/.env first (lowest precedence)
-dotenv_path_private = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', '.env')
-dotenv.load_dotenv(dotenv_path_private, override=True)
-
-# Then load from the default location (main folder)
-dotenv.load_dotenv(override=True)
-
-DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', 'db', 'SparkyBudget.db') # Revert to original calculation
-PRIVATE_FOLDER_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private') # Define private folder path
-
-# Get log level from environment, default to INFO if not set
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+# Configure logging early to see initial env vars
 logging.basicConfig(
-    level=log_level,
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler()  # Logs to the console
     ]
 )
 logger = logging.getLogger(__name__)
+
+
+# Load from private/.env first (lowest precedence)
+dotenv_path_private = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', '.env')
+# Load from private/.env first (lowest precedence), but do not override existing env vars
+dotenv.load_dotenv(dotenv_path_private)
+
+# Then load from the default location (main folder), but do not override existing env vars
+dotenv.load_dotenv()
+
+DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private', 'db', 'SparkyBudget.db') # Revert to original calculation
+PRIVATE_FOLDER_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'private') # Define private folder path
 
 # py_utils
 from py_utils.auth import load_user, login, logout, before_request, unauthorized
@@ -47,6 +48,7 @@ from py_routes.manage_categories import manage_categories_bp
 
 
 def create_app():
+    logger.debug(f"FLASK_SECRET_KEY at app creation: {os.getenv('FLASK_SECRET_KEY')}")
     app = Flask(__name__, template_folder='./templates', static_folder='./static')
     app.jinja_env.add_extension("jinja2.ext.loopcontrols")
     app.config['DATABASE_PATH'] = DATABASE_PATH
