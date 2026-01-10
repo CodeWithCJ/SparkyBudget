@@ -60,7 +60,7 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: codewithcj/sparkybudget
+          subject-name: ghcr.io/${{ github.repository }}
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
           push-to-registry: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
