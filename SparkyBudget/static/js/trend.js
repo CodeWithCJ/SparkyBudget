@@ -322,7 +322,20 @@ $(document).ready(function () {
         "order": [],
         dom: 'Bfrtip',
         buttons: ['csv', 'excel', 'pdf'],
-        "columnDefs": [{ "targets": [0, 1, 2, 8], "visible": false }], // Updated index for Transaction Key from 7 to 8
+        "columnDefs": [
+            { "targets": [0, 1, 2, 8], "visible": false },
+            {
+                "targets": [3], // Transaction Date column
+                "type": "date", // Explicitly set column type to date
+                "render": function (data, type, row) {
+                    if (type === 'sort' || type === 'type') {
+                        // Ensure data is parsed correctly for sorting
+                        return moment(data, 'MM/DD/YYYY').unix();
+                    }
+                    return data; // Display original data
+                }
+            }
+        ],
         "stripeClasses": [],
         "createdRow": function (row, data, index) {
             $(row).addClass('custom-row-class');
@@ -476,6 +489,7 @@ $(function () {
     });
 
     $('#date_range').on('apply.daterangepicker', function (ev, picker) {
+        console.log('Date range applied event triggered.'); // Added log
         $('#start_date').val(picker.startDate.format('MM/DD/YYYY'));
         $('#end_date').val(picker.endDate.format('MM/DD/YYYY'));
 
@@ -485,15 +499,19 @@ $(function () {
             $(this).val(picker.startDate.format('MM/DD/YYYY'));
         }
 
+        var postData = { // Added postData variable for logging
+            start_date: picker.startDate.format('MM/DD/YYYY'),
+            end_date: picker.endDate.format('MM/DD/YYYY')
+        };
+        console.log('Sending AJAX request with data:', postData); // Added log
+
         $.ajax({
             url: '/get_transaction_data',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({
-                start_date: picker.startDate.format('MM/DD/YYYY'),
-                end_date: picker.endDate.format('MM/DD/YYYY')
-            }),
+            data: JSON.stringify(postData), // Using postData
             success: function (response) {
+                console.log('AJAX success response:', response); // Added log
                 if (response.transaction_data) {
                     window.appState.transaction_data = response.transaction_data;
                     aggregateData(window.appState.transaction_data, selectedOption);
@@ -520,6 +538,7 @@ $(function () {
     });
 
     function updateTransactionTable(transactionData) {
+        console.log('Updating transaction table with data:', transactionData); // Added log
         table.clear();
         transactionData.forEach(function (transaction) {
             table.row.add([
@@ -527,11 +546,12 @@ $(function () {
                 transaction[1], // Month
                 transaction[2], // Formatted Month
                 transaction[3], // Transaction Date
-                transaction[4], // Description
-                transaction[5], // Payee
-                transaction[6], // Subcategory
-                transaction[7], // Transaction Key
-                '$' + transaction[8].toFixed(2), // Transaction Amount
+                transaction[4], // Account
+                transaction[5], // Description
+                transaction[6], // Payee
+                transaction[7], // Subcategory
+                transaction[8], // Transaction Key
+                '$' + transaction[9].toFixed(2), // Transaction Amount
                 '<div class="subcategory-cell"><button class="re-categorize-button">Re-categorize</button><div class="subcategory-dropdown" style="display: none;"></div></div>',
                 '<button class="split-button">Split</button>'
             ]);
@@ -725,7 +745,7 @@ $(document).ready(function () {
         const row = $(this).closest('tr');
         const rowData = table.row(row).data();
         const transactionKey = rowData[8]; // Updated index from 7 to 8
-        const transactionAmount = parseFloat(row.find('td:nth-child(10)').text().replace(/[^0-9.-]+/g, "")); // Updated nth-child from 9 to 10
+        const transactionAmount = parseFloat(rowData[9].replace(/[^0-9.-]+/g, "")); // Transaction Amount is at index 9
 
         $('#splitTransactionPopup').data('transactionKey', transactionKey);
         $('#splitTransactionPopup').data('transactionAmount', transactionAmount);
@@ -1250,4 +1270,3 @@ function fetchSpendingTrendChartData() {
         }
     });
 }
-

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.jqueryui.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/trend.css') }}">
     <link rel="stylesheet" href="/static/css/navigation_bar.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/SparkyBudget.css') }}">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
@@ -36,6 +37,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 </head>
+
 <body>
     {% include 'components/navigation_bar.html.jinja' %}
     <div class="line-chart-container">
@@ -65,100 +67,108 @@
             <option value="Payee">Payee</option>
         </select>
     </div>
-    <div class="bar-chart-container">
-        <div class="bar-chart-wrap">
-            <div class="bar-chart-card">
-                <div id="bar_chart"></div>
+    <div class="charts-grid-container">
+        <div class="bar-chart-container">
+            <div class="bar-chart-wrap">
+                <div class="bar-chart-card">
+                    <div id="bar_chart"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Income vs. Expense Chart Container -->
+        <div class="income-expense-chart-container">
+            <div class="income-expense-chart-wrap">
+                <div class="income-expense-chart-card">
+                    <canvas id="incomeExpenseChartCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Net Cash Flow Chart Container -->
+        <div class="net-cashflow-chart-container">
+            <div class="net-cashflow-chart-wrap">
+                <div class="net-cashflow-chart-card">
+                    <canvas id="netCashFlowChartCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Spending Trend by Category Chart Container -->
+        <div class="spending-trend-chart-container">
+            <div class="spending-trend-chart-wrap">
+                <div class="spending-trend-chart-card">
+                    <canvas id="spendingTrendChartCanvas"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
 
-    <!-- Income vs. Expense Chart Container -->
-    <div class="income-expense-chart-container">
-        <div class="income-expense-chart-wrap">
-            <div class="income-expense-chart-card">
-                <canvas id="incomeExpenseChartCanvas"></canvas>
-            </div>
-        </div>
-    </div>  
-
-    <!-- Net Cash Flow Chart Container -->
-    <div class="net-cashflow-chart-container">
-        <div class="net-cashflow-chart-wrap">
-            <div class="net-cashflow-chart-card">
-                <canvas id="netCashFlowChartCanvas"></canvas>
-            </div>
-        </div>
-    </div>
-
-
-     <!-- Spending Trend by Category Chart Container -->
-     <div class="spending-trend-chart-container">
-        <div class="spending-trend-chart-wrap">
-            <div class="spending-trend-chart-card">
-                <canvas id="spendingTrendChartCanvas"></canvas>
-            </div>
-        </div>
-    </div>
-
-    
 
     <div class="dt-buttons"> </div>
     <!-- DataTable for displaying transaction details -->
     <div class="sb-table-container transaction-table-container">
 
-    <!-- Add Transaction Button -->
-    <button id="addTransactionButton" class="btn btn-primary">+ Add Transaction</button>
-    
-    <!-- Add Transaction Popup -->
-    <div id="addTransactionPopup" class="popup-overlay" style="display: none;">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h2>Add Transaction</h2>
-                <p>Enter the details of the new transaction.</p>
-                <button id="closeTransactionPopupButton" class="close-button">×</button>
+        <!-- Add Transaction Button -->
+        <button id="addTransactionButton" class="btn btn-primary">+ Add Transaction</button>
+
+        <!-- Add Transaction Popup -->
+        <div id="addTransactionPopup" class="popup-overlay" style="display: none;">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h2>Add Transaction</h2>
+                    <p>Enter the details of the new transaction.</p>
+                    <button id="closeTransactionPopupButton" class="close-button">×</button>
+                </div>
+                <form id="addTransactionForm">
+                    <div class="form-group">
+                        <label for="accountSelectInput">Account</label>
+                        <select id="accountSelectInput" name="accountSelectInput" class="select2" required>
+                            <option value="" disabled selected>Select an account</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDateInput">Date</label>
+                        <input type="date" id="transactionDateInput" name="transactionDateInput"
+                            value="{{ current_date }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDescriptionInput">Description</label>
+                        <input type="text" id="transactionDescriptionInput" name="transactionDescriptionInput"
+                            placeholder="Description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionPayeeInput">Payee</label>
+                        <input type="text" id="transactionPayeeInput" name="transactionPayeeInput" placeholder="Payee"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionAmountInput">Amount</label>
+                        <input type="number" id="transactionAmountInput" name="transactionAmountInput"
+                            placeholder="Enter amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subcategorySelectInput">Subcategory</label>
+                        <select id="subcategorySelectInput" name="subcategorySelectInput" class="select2" required>
+                            <option value="" disabled selected>Select a subcategory</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionMemoInput">Memo</label>
+                        <input type="text" id="transactionMemoInput" name="transactionMemoInput"
+                            placeholder="Memo (optional)">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="submitTransactionButton" class="btn btn-primary">Add
+                            Transaction</button>
+                        <button type="button" id="cancelTransactionButton" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
             </div>
-            <form id="addTransactionForm">
-                <div class="form-group">
-                    <label for="accountSelectInput">Account</label>
-                    <select id="accountSelectInput" name="accountSelectInput" class="select2" required>
-                        <option value="" disabled selected>Select an account</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="transactionDateInput">Date</label>
-                    <input type="date" id="transactionDateInput" name="transactionDateInput" value="{{ current_date }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionDescriptionInput">Description</label>
-                    <input type="text" id="transactionDescriptionInput" name="transactionDescriptionInput" placeholder="Description" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionPayeeInput">Payee</label>
-                    <input type="text" id="transactionPayeeInput" name="transactionPayeeInput" placeholder="Payee" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionAmountInput">Amount</label>
-                    <input type="number" id="transactionAmountInput" name="transactionAmountInput" placeholder="Enter amount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="subcategorySelectInput">Subcategory</label>
-                    <select id="subcategorySelectInput" name="subcategorySelectInput" class="select2" required>
-                        <option value="" disabled selected>Select a subcategory</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="transactionMemoInput">Memo</label>
-                    <input type="text" id="transactionMemoInput" name="transactionMemoInput" placeholder="Memo (optional)">
-                </div>                
-                <div class="form-actions">                    
-                    <button type="submit" id="submitTransactionButton" class="btn btn-primary">Add Transaction</button>
-                    <button type="button" id="cancelTransactionButton" class="btn btn-secondary">Cancel</button>
-                </div>
-            </form>
         </div>
-    </div>
         <table id="transactionTable" class="transaction-table" style="width: 100%">
             <thead>
                 <tr>
@@ -175,10 +185,8 @@
                     <th>Re-categorize <i class="fas fa-edit editable-icon"></i></th>
                     <th style="text-align:center;">
                         Split
-                        <button
-                            class="btn btn-sm btn-outline-secondary"
-                            title="Split Transaction"
-                            data-toggle="tooltip" data-placement="top">
+                        <button class="btn btn-sm btn-outline-secondary" title="Split Transaction" data-toggle="tooltip"
+                            data-placement="top">
                             <i class="fas fa-arrows-alt-h"></i>
                         </button>
                     </th>
@@ -224,11 +232,13 @@
             <form id="splitTransactionForm">
                 <div class="form-group">
                     <label for="splitTransactionAmountInput">Amount</label>
-                    <input type="number" id="splitTransactionAmountInput" name="splitTransactionAmountInput" placeholder="Enter split amount" step="0.01" required>
+                    <input type="number" id="splitTransactionAmountInput" name="splitTransactionAmountInput"
+                        placeholder="Enter split amount" step="0.01" required>
                 </div>
                 <div class="form-group">
                     <label for="splitTransactionSubcategorySelect">Subcategory</label>
-                    <select id="splitTransactionSubcategorySelect" name="splitTransactionSubcategorySelect" class="select2" required>
+                    <select id="splitTransactionSubcategorySelect" name="splitTransactionSubcategorySelect"
+                        class="select2" required>
                         <option value="" disabled selected>Select a subcategory</option>
                     </select>
                 </div>
@@ -247,11 +257,14 @@
             <div class="transaction_details_header">
                 <div class="transaction_details_info">
                     <span class="transaction_details_payee">{{ transaction[6] }}</span> {# Payee is now at index 6 #}
-                    <span class="transaction_details_date">{{ transaction[3] }}</span> {# Transaction Date is still at index 3 #}
+                    <span class="transaction_details_date">{{ transaction[3] }}</span> {# Transaction Date is still at
+                    index 3 #}
                 </div>
                 <div class="transaction_details_amount_container">
-                    <span class="transaction_details_amount">{{ transaction[9] | tocurrency }}</span> {# Amount is now at index 9 #}
-                    <span class="transaction_details_status" onclick="transaction_details_toggleDetails(this)">More ▼</span>
+                    <span class="transaction_details_amount">{{ transaction[9] | tocurrency }}</span> {# Amount is now
+                    at index 9 #}
+                    <span class="transaction_details_status" onclick="transaction_details_toggleDetails(this)">More
+                        ▼</span>
                 </div>
             </div>
             <div class="transaction_details_body" style="display: none;">
@@ -259,7 +272,7 @@
                     <span class="transaction_details_label">Description:</span>
                     <span>{{ transaction[5] }}</span> {# Description is now at index 5 #}
                 </div>
-                 <div class="transaction_details_field"> {# Add Account field #}
+                <div class="transaction_details_field"> {# Add Account field #}
                     <span class="transaction_details_label">Account:</span>
                     <span>{{ transaction[4] }}</span> {# AccountDisplayName is at index 4 #}
                 </div>
@@ -278,7 +291,8 @@
                 </div>
                 <div class="transaction_details_field">
                     <button class="transaction_details_reCategorizeButton re-categorize-button">Re-categorize</button>
-                    <div class="transaction_details_subcategoryDropdown subcategory-dropdown" style="display: none;"></div>
+                    <div class="transaction_details_subcategoryDropdown subcategory-dropdown" style="display: none;">
+                    </div>
                 </div>
                 <div class="transaction_details_field">
                     <button class="transaction_details_splitButton split-button">Split</button>
@@ -291,12 +305,14 @@
     <!-- Include DataTables initialization script with export options and date range filter -->
     <script>
         // merge any existing appState with the new data. since appState can be null, start with empty object as the base
+        const transactionData = {{ transaction_data | default ([]) | tojson | safe }};
         window.appState = Object.assign({}, window.appState, {
-            transaction_data: {{ transaction_data | tojson | safe }}
+            transaction_data: transactionData
         });
     </script>
     <script src="{{ url_for('static', filename='js/trend.js') }}"></script>
     <script src="/static/js/navigation_bar.js"></script>
-<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
+
 </html>
