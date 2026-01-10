@@ -15,6 +15,7 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 COPY SparkyBudget/ ./
 COPY entrypoint.sh ./entrypoint.sh
+RUN sed -i 's/\r$//' ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 EXPOSE 5000
 ENTRYPOINT ["./entrypoint.sh"]
