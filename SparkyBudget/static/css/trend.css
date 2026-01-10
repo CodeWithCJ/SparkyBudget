@@ -247,6 +247,22 @@ body {
     }
 }
 
+/* Grid Container for Charts */
+.charts-grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 95%; /* Use more width for grid */
+    max-width: 1400px;
+    margin: 20px auto;
+}
+
+@media (min-width: 1000px) {
+    .charts-grid-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 
 
 
@@ -257,10 +273,9 @@ body {
 /* Container for the bar chart */
 .bar-chart-container {
     position: relative;
-    width: 80%;
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 20px;
+    width: 100%; /* Fill grid cell */
+    /* Remove max-width and margin as they are handled by grid */
+    padding: 10px; /* Reduce padding slightly */
     height: auto;
     box-sizing: border-box;
     background: none !important; /* Ensure no background override */
@@ -762,10 +777,9 @@ body {
 /* Container for the income vs. expense chart */
 .income-expense-chart-container {
     position: relative;
-    width: 80%;
-    max-width: 1000px; /* Limit the maximum width for larger screens */
-    margin: 20px auto; /* Center the chart with some margin */
-    padding: 20px; /* Add padding for the glow effect */
+    width: 100%; /* Fill grid cell */
+    /* Remove max-width and margin */
+    padding: 10px;
     height: auto; /* Let the height adjust based on content */
     box-sizing: border-box;
 }
@@ -854,10 +868,9 @@ body {
 /* Container for the Net Cash Flow chart */
 .net-cashflow-chart-container {
     position: relative;
-    width: 80%;
-    max-width: 1000px; /* Limit the maximum width for larger screens */
-    margin: 20px auto; /* Center the chart with some margin */
-    padding: 20px; /* Add padding for the glow effect */
+    width: 100%; /* Fill grid cell */
+    /* Remove max-width and margin */
+    padding: 10px;
     height: auto; /* Let the height adjust based on content */
     box-sizing: border-box;
 }
@@ -946,10 +959,9 @@ body {
 /* Container for the Spending Trend chart */
 .spending-trend-chart-container {
     position: relative;
-    width: 80%;
-    max-width: 1000px; /* Limit the maximum width for larger screens */
-    margin: 20px auto; /* Center the chart with some margin */
-    padding: 20px; /* Add padding for the glow effect */
+    width: 100%; /* Fill grid cell */
+    /* Remove max-width and margin */
+    padding: 10px;
     height: auto; /* Let the height adjust based on content */
     box-sizing: border-box;
 }
