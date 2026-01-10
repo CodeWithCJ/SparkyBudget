@@ -63,3 +63,4 @@ jobs:
           subject-name: codewithcj/sparkybudget
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
           push-to-registry: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
