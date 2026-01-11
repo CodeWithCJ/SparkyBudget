@@ -75,6 +75,11 @@
                 <div class="AddSubCategoryRuleContainer">
                     <form id="addSubCategoryRuleForm" aria-label="Add Subcategory Rule Form">
                         <select id="subcategoryDropDown" name="subcategoryDropDown" required></select>
+                        <select id="accountNameDropDown" name="accountNameDropDown" required></select>
+                        <select id="rulePatternDropDown" name="rulePatternDropDown" required>
+                            <option value="Contains">Contains</option>
+                            <option value="Exact">Exact</option>
+                        </select>
                         <input type="text" id="matchword" name="matchword" placeholder="Enter New Match Word" required>
                         <button type="submit" id="submitAddSubCategoryRule">Add Rule</button>
                     </form>
@@ -86,6 +91,7 @@
                                 <th>Delete</th>
                                 <th>RuleKey</th>
                                 <th>Default_SubCategory</th>
+                                <th>AccountName</th>
                                 <th>Rule_Category</th>
                                 <th>Rule_Pattern</th>
                                 <th>Match_Word</th>

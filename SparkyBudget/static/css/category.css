@@ -137,7 +137,33 @@
 .AddSubCategoryContainer input[type="text"],
 .AddSubCategoryRuleContainer select,
 .AddSubCategoryRuleContainer input[type="text"] {
-    flex-grow: 1; /* Allow inputs and selects to take available space */
+    /* Removed flex-grow: 1 to prevent overriding explicit width settings */
+    background-color: #3c444f !important; /* Dark background for dropdowns and input */
+    color: #eee !important; /* Light text color */
+    border: 1px solid #555 !important; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 6px 10px !important; /* Adjust padding */
+    -moz-appearance: none; /* Remove default Firefox styles */
+    appearance: none; /* Remove default system styles */
+    min-width: 150px; /* Ensure a minimum width for dropdowns */
+}
+
+.AddSubCategoryRuleContainer input[type="text"]::placeholder {
+    color: #bbb !important; /* Lighter placeholder text color */
+    opacity: 1; /* Ensure placeholder is visible */
+}
+
+.AddSubCategoryRuleContainer select:focus,
+.AddSubCategoryRuleContainer input[type="text"]:focus {
+    border-color: #3399cc !important; /* Highlight border on focus */
+    outline: none !important; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(51, 153, 204, 0.5); /* Subtle glow on focus */
+}
+
+/* Style for dropdown options */
+.AddSubCategoryRuleContainer select option {
+    background-color: #3c444f !important; /* Dark background for options */
+    color: #eee !important; /* Light text color for options */
 }
 
 /* --- Container and Table Widths --- */
@@ -234,6 +260,70 @@ border-radius: 12px;
 /* Ensure the parent container doesn’t interfere */
 .dataTables_length {
     background-color: transparent !important; /* Prevent any white background */
+}
+
+/* Select2 adjustments for dark theme and width */
+.select2-container--default .select2-selection--single {
+    background-color: #3c444f !important; /* Dark background for Select2 input */
+    color: #eee !important; /* Light text color for Select2 input */
+    border: 1px solid #555 !important; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    height: 38px; /* Adjust height to match other inputs */
+    display: flex;
+    align-items: center;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #eee !important; /* Light text color for selected item */
+    line-height: 38px; /* Center text vertically */
+    padding-left: 10px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px; /* Adjust arrow height */
+    right: 5px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #eee transparent transparent transparent !important; /* Light arrow color */
+}
+
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-color: transparent transparent #eee transparent !important; /* Light arrow color when open */
+}
+
+.select2-dropdown {
+    background-color: #3c444f !important; /* Dark background for dropdown menu */
+    border: 1px solid #555 !important; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.select2-container--default .select2-results__option {
+    color: #eee !important; /* Light text color for options */
+    padding: 8px 10px;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #555 !important; /* Highlight background for selected option */
+    color: #fff !important; /* White text for highlighted option */
+}
+
+/* Specific width adjustments for Select2 dropdowns in the Transaction Rules section */
+#subcategoryDropDown + .select2-container,
+#accountNameDropDown + .select2-container,
+#rulePatternDropDown + .select2-container {
+    width: 200px !important;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #2E3440 !important; /* Dark background for search input in dropdown */
+    color: #eee !important; /* Light text color for search input */
+    border: 1px solid #555 !important;
+}
+
+/* Ensure width is applied correctly by Select2 */
+.select2-container {
+    width: 200px !important; /* Apply the desired width */
 }
 
 
