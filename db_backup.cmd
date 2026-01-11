@@ -1,0 +1,1 @@
+sqlite3 private/SparkyBudget.db .schema >db_schema.sql

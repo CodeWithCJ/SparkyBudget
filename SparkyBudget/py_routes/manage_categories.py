@@ -123,8 +123,9 @@ def add_subcategory_rule():
     try:
         # Get form data from the request
         default_subcategory = request.form['subcategoryDropDown']
+        account_name = request.form.get('accountNameDropDown', 'ALL') # Get AccountName, default to 'ALL'
         rule_category = 'Payee'
-        rule_pattern = 'Contains'
+        rule_pattern = request.form.get('rulePatternDropDown', 'Contains') # Get Rule_Pattern, default to 'Contains'
         match_word = request.form['matchword']
 
         # Connect to the SQLite database
@@ -133,12 +134,12 @@ def add_subcategory_rule():
 
         # SQL query to insert the new rule
         insert_query = """
-            INSERT INTO D_Category_Rule (Default_SubCategory, Rule_Category, Rule_Pattern, Match_Word)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO D_Category_Rule (Default_SubCategory, AccountName, Rule_Category, Rule_Pattern, Match_Word)
+            VALUES (?, ?, ?, ?, ?)
         """
 
         # Execute the query with the form data
-        cursor.execute(insert_query, (default_subcategory, rule_category, rule_pattern, match_word))
+        cursor.execute(insert_query, (default_subcategory, account_name, rule_category, rule_pattern, match_word))
         conn.commit()  # Commit the transaction
         conn.close()
 
@@ -250,13 +251,14 @@ def subcategory_rule_data():
             SELECT                
                 RuleKey,
                 Default_SubCategory,
+                AccountName,
                 Rule_Category,
                 Rule_Pattern,
                 Match_Word
             FROM
-                D_Category_Rule            
+                D_Category_Rule
             ORDER BY
-                2,3,4,5 ASC
+                AccountName ASC, Default_SubCategory ASC, Rule_Category ASC, Rule_Pattern ASC, Match_Word ASC
         """
         cursor.execute(subcategory_rule_query)
         subcategory_rule_data = cursor.fetchall()
@@ -267,9 +269,10 @@ def subcategory_rule_data():
             {
                 "RuleKey": row[0],
                 "Default_SubCategory": row[1],
-                "Rule_Category": row[2],
-                "Rule_Pattern": row[3],
-                "Match_Word": row[4],
+                "AccountName": row[2],
+                "Rule_Category": row[3],
+                "Rule_Pattern": row[4],
+                "Match_Word": row[5],
             }
             for row in subcategory_rule_data
         ]
@@ -288,15 +291,17 @@ def update_rule():
     try:
         RuleKey = request.form["RuleKey"]
         Match_Word = request.form["Match_Word"]
+        AccountName = request.form.get("AccountName", "ALL")
+        Rule_Pattern = request.form.get("Rule_Pattern", "Contains")
         conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
         cursor = conn.cursor()
 
         update_rule_query = """
             UPDATE D_Category_Rule
-            SET Match_Word = ?
+            SET Match_Word = ?, AccountName = ?, Rule_Pattern = ?
             WHERE RuleKey = ?
         """
-        update_rule_data = (Match_Word, RuleKey)
+        update_rule_data = (Match_Word, AccountName, Rule_Pattern, RuleKey)
 
         cursor.execute(update_rule_query, update_rule_data)
         conn.commit()
@@ -333,6 +338,36 @@ def delete_rule(RuleKey):
         return jsonify({"error": str(e)}), 500
         
         
+@manage_categories_bp.route('/getAccountNames')
+@login_required
+def account_names_data():
+    try:
+        conn = sqlite3.connect(current_app.config['DATABASE_PATH'])
+        cursor = conn.cursor()
+
+        account_names_query = """
+            SELECT DISTINCT
+                COALESCE(DisplayAccountName, AccountName)
+            FROM
+                F_Balance
+            ORDER BY
+                1 ASC
+        """
+        cursor.execute(account_names_query)
+        account_names = cursor.fetchall()
+        conn.close()
+
+        account_names_list = [{"AccountName": row[0]} for row in account_names]
+        account_names_list.insert(0, {"AccountName": "ALL"}) # Add 'ALL' option
+
+        return jsonify(account_names_list)
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+
+
+
 @manage_categories_bp.route('/getAccountTypes')
 @login_required
 def account_type_data():
@@ -356,7 +391,7 @@ def account_type_data():
         conn.close()
 
         # Format the fetched data for JSON response
-        account_types_list = [           
+        account_types_list = [
             {"AccountType": row[0], "HideFromBudget": row[1], "SortOrder": row[2]} for row in account_types
         ]  # Assuming 'AccountType', 'HideFromBudget', 'SortOrder' are column names in your table
 

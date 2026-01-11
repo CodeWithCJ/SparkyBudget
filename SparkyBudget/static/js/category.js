@@ -49,7 +49,7 @@ $(document).ready(function () {
                 "searchable": false
             }
         ],
-        "order": [[1, 'asc'], [2, 'asc'], [3, 'asc'], [4, 'asc']],
+        "order": [[2, 'asc'], [3, 'asc'], [4, 'asc'], [5, 'asc'], [6, 'asc']], // Order by AccountName, Default_SubCategory, Rule_Category, Rule_Pattern, Match_Word
         "columns": [
             {
                 "data": "RuleKey",
@@ -59,13 +59,14 @@ $(document).ready(function () {
             },
             { "data": "RuleKey" },
             { "data": "Default_SubCategory" },
+            { "data": "AccountName" }, // New column for AccountName
             { "data": "Rule_Category" },
             { "data": "Rule_Pattern" },
             {
                 "data": "Match_Word",
                 "render": function (data, type, row) {
                     if (type === 'display') {
-                        return '<input type="text" value="' + data + '" onBlur="updateRule(' + row.RuleKey + ', this.value)">';
+                        return '<input type="text" value="' + data + '" onBlur="updateRule(' + row.RuleKey + ', \'' + row.AccountName + '\', \'' + row.Rule_Pattern + '\', this.value)">';
                     }
                     return data;
                 }
@@ -83,10 +84,9 @@ $(document).ready(function () {
         // Populate the Select2 dropdown with fetched subcategories
         $('#category').select2({
             data: formattedCategories,
-            width: '180px',
             placeholder: 'Select or type to search',
             allowClear: true,
-        });
+        }).next('.select2-container').width('200px'); // Set width after initialization
     });
 
     $('#addCategoryForm').on('submit', function (e) {
@@ -124,10 +124,23 @@ $(document).ready(function () {
         // Populate the Select2 dropdown with fetched subcategories
         $('#subcategoryDropDown').select2({
             data: formattedSubCategories,
-            width: '180px',
             placeholder: 'Select or type to search',
             allowClear: true,
-        });
+        }).next('.select2-container').width('200px'); // Set width after initialization
+    });
+
+    $.get('/getAccountNames', function (accountNames) {
+        const formattedAccountNames = accountNames.map(x => ({
+            id: x.AccountName,
+            text: x.AccountName
+        }));
+        $('#accountNameDropDown').empty();
+        $('#accountNameDropDown').select2({
+            data: formattedAccountNames,
+            placeholder: 'Select Account',
+            allowClear: true,
+        }).next('.select2-container').width('200px'); // Set width after initialization
+        $('#accountNameDropDown').val('ALL').trigger('change'); // Select 'ALL' by default
     });
 
     // New function for adding Subcategory Rule
@@ -189,16 +202,18 @@ function updateSubCategory(subCategoryKey, newSubCategoryName) {
     });
 }
 
-function updateRule(RuleKey, Match_Word) {
+function updateRule(RuleKey, AccountName, Rule_Pattern, Match_Word) {
     $.ajax({
         url: '/updateRule',
         type: 'POST',
         data: {
             RuleKey: RuleKey,
-            Match_Word: Match_Word
+            Match_Word: Match_Word,
+            AccountName: AccountName,
+            Rule_Pattern: Rule_Pattern
         },
         success: function (response) {
-            $('#categoryTable').DataTable().ajax.reload();
+            $('#categoryRuleTable').DataTable().ajax.reload();
         }
     });
 }
