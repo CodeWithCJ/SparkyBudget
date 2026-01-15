@@ -53,7 +53,17 @@ BEGIN
 	 UPDATE F_Transaction
     SET SubCategory = (
         SELECT Default_SubCategory FROM (
-            SELECT Default_SubCategory, D_Category_Rule.AccountName
+            -- Specific Account, Exact Match (Highest Priority)
+            SELECT Default_SubCategory, D_Category_Rule.AccountName, D_Category_Rule.Rule_Pattern, 0 AS Priority
+            FROM D_Category_Rule
+            WHERE
+                LOWER(NEW.TransactionPayee) = LOWER(D_Category_Rule.Match_Word)
+                AND D_Category_Rule.Rule_Category = 'Payee'
+                AND D_Category_Rule.Rule_Pattern = 'Exact'
+                AND D_Category_Rule.AccountName = NEW.AccountName
+            UNION ALL
+            -- Specific Account, Contains Match
+            SELECT Default_SubCategory, D_Category_Rule.AccountName, D_Category_Rule.Rule_Pattern, 1 AS Priority
             FROM D_Category_Rule
             WHERE
                 (LOWER(NEW.TransactionPayee) LIKE '%' || LOWER(D_Category_Rule.Match_Word) || '%'
@@ -62,7 +72,17 @@ BEGIN
                 AND D_Category_Rule.Rule_Pattern = 'Contains'
                 AND D_Category_Rule.AccountName = NEW.AccountName
             UNION ALL
-            SELECT Default_SubCategory, D_Category_Rule.AccountName
+            -- ALL Accounts, Exact Match
+            SELECT Default_SubCategory, D_Category_Rule.AccountName, D_Category_Rule.Rule_Pattern, 2 AS Priority
+            FROM D_Category_Rule
+            WHERE
+                LOWER(NEW.TransactionPayee) = LOWER(D_Category_Rule.Match_Word)
+                AND D_Category_Rule.Rule_Category = 'Payee'
+                AND D_Category_Rule.Rule_Pattern = 'Exact'
+                AND D_Category_Rule.AccountName = 'ALL'
+            UNION ALL
+            -- ALL Accounts, Contains Match (Lowest Priority)
+            SELECT Default_SubCategory, D_Category_Rule.AccountName, D_Category_Rule.Rule_Pattern, 3 AS Priority
             FROM D_Category_Rule
             WHERE
                 (LOWER(NEW.TransactionPayee) LIKE '%' || LOWER(D_Category_Rule.Match_Word) || '%'
@@ -70,10 +90,9 @@ BEGIN
                 AND D_Category_Rule.Rule_Category = 'Payee'
                 AND D_Category_Rule.Rule_Pattern = 'Contains'
                 AND D_Category_Rule.AccountName = 'ALL'
-        )
+        ) AS SubQueryWithPattern
         ORDER BY
-            CASE WHEN AccountName = NEW.AccountName THEN 0 ELSE 1 END,
-            CASE WHEN Rule_Pattern = 'Exact' THEN 0 ELSE 1 END
+            SubQueryWithPattern.Priority ASC
         LIMIT 1
     )
     WHERE F_Transaction.TransactionID = NEW.TransactionID
