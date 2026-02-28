@@ -1,7 +1,6 @@
 -- SparkyBudget_Upgrade_v0.20.sql
 
 -- Add AccountName column to D_Category_Rule
-ALTER TABLE D_Category_Rule ADD COLUMN AccountName TEXT;
 
 -- Add TransactionAmount column to D_Category_Rule
 ALTER TABLE D_Category_Rule ADD COLUMN TransactionAmount REAL;
@@ -114,4 +113,4 @@ END
 -- Update DB_VERSION
 
 -- Update DB_VERSION
-UPDATE D_DB SET DB_VERSION = "v0.20";
+UPDATE SchemaVersion SET Version = 'v0.20';
