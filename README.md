@@ -58,7 +58,7 @@ The token can only be used once.  You will need to generate a new token from Sim
 
 
 # 💬 Need Help?  
-Refer detailed instrusctions and documentation in Wiki.  
+Refer detailed instructions and documentation in Wiki.  
 
 Join our Discord Community for installation support, configuration help, and contributions:  
 👉 https://discord.gg/vGjn4b6CVB   
