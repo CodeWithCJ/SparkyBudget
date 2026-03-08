@@ -160,12 +160,21 @@ def initialize_database():
                         try:
                             with open(script_path, 'r') as f:
                                 sql_script = f.read()
+                                # Use an explicit transaction for each script to ensure atomicity
+                                cursor.execute("BEGIN TRANSACTION")
                                 cursor.executescript(sql_script)
+                                cursor.execute("COMMIT")
+                            # After each script is successful, commit the connection as well
                             conn.commit()
 
 
                         except Exception as e:
                             logger.error(f"Error executing upgrade script {filename}: {e}")
+                            try:
+                                cursor.execute("ROLLBACK")
+                            except sqlite3.OperationalError:
+                                # In case there's no active transaction to rollback
+                                pass
                             conn.rollback() # Rollback changes from this script
                             raise # Stop upgrade process on error
 
